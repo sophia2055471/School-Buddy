@@ -3,21 +3,21 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>School Buddy - 先生用</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>School Buddy 先生用</title>
 <style>
 body {
   font-family: sans-serif;
   background: #f3f7fc;
+  padding: 20px;
   color: #26354a;
-  padding: 24px;
 }
 h1 { color: #8260ad; }
 .card {
   background: white;
   padding: 20px;
-  margin: 18px 0;
   border-radius: 18px;
+  margin: 18px 0;
 }
 input, textarea {
   box-sizing: border-box;
@@ -31,7 +31,7 @@ input, textarea {
 button {
   background: #8260ad;
   color: white;
-  border: none;
+  border: 0;
   padding: 14px;
   border-radius: 12px;
   font-size: 16px;
@@ -41,48 +41,66 @@ button {
 <body>
 
 <h1>School Buddy 📚</h1>
-<p>先生用ホーム画面</p>
+<p>先生専用ページ</p>
 
 <div class="card">
 <h2>📅 今日の予定を登録</h2>
 
-<label>日付</label>
 <input type="date" id="date">
+<input type="text" id="schedule" placeholder="授業・予定">
+<textarea id="instruction" placeholder="先生からの指示"></textarea>
 
-<label>授業・予定</label>
-<input type="text" id="schedule" placeholder="例：数学の授業">
-
-<label>先生からの指示</label>
-<textarea id="instruction" rows="4"
-placeholder="今日やることや注意点を入力"></textarea>
-
-<button onclick="registerSchedule()">登録する</button>
-<p id="result"></p>
+<button onclick="saveSchedule()">予定を保存する</button>
+<p id="message"></p>
 </div>
 
 <div class="card">
-<h2>📋 登録内容の確認</h2>
-<div id="preview">まだ予定は登録されていません。</div>
+<h2>📋 保存した予定</h2>
+<div id="saved"></div>
 </div>
 
 <script>
-function registerSchedule() {
+function saveSchedule() {
   const date = document.getElementById("date").value;
   const schedule = document.getElementById("schedule").value;
   const instruction = document.getElementById("instruction").value;
 
   if (!date || !schedule || !instruction) {
-    alert("すべて入力してください。");
+    alert("全部入力してね！");
     return;
   }
 
-  const preview = document.getElementById("preview");
-  preview.textContent =
-    date + " ／ " + schedule + " ／ " + instruction;
+  const data = {
+    date,
+    schedule,
+    instruction
+  };
 
-  document.getElementById("result").textContent =
-    "登録内容を画面に表示しました！";
+  localStorage.setItem("schoolBuddySchedule", JSON.stringify(data));
+
+  document.getElementById("message").textContent =
+    "予定を保存しました！🎉";
+
+  showSchedule();
 }
+
+function showSchedule() {
+  const data = JSON.parse(
+    localStorage.getItem("schoolBuddySchedule") || "null"
+  );
+
+  const saved = document.getElementById("saved");
+
+  if (!data) {
+    saved.textContent = "まだ予定はありません。";
+    return;
+  }
+
+  saved.textContent =
+    data.date + " ／ " + data.schedule + " ／ " + data.instruction;
+}
+
+showSchedule();
 </script>
 
 </body>
