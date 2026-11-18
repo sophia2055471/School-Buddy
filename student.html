@@ -3,61 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>School Buddy - 生徒ホーム</title>
+<title>School Buddy</title>
 <style>
 body {
   font-family: sans-serif;
-  background: #f3f7fc;
-  color: #26354a;
-  margin: 0;
-  padding: 24px;
+  background: #f4f7fc;
+  color: #30415d;
+  padding: 20px;
 }
-h1 { color: #478cbb; }
+header { text-align: center; }
+h1 { color: #568cba; }
 .card {
   background: white;
   padding: 20px;
-  margin: 16px 0;
   border-radius: 18px;
-  box-shadow: 0 3px 12px #dce5ef;
+  margin: 16px auto;
+  max-width: 500px;
+  box-shadow: 0 4px 15px #e1e8f2;
+}
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #ccd5e2;
+  border-radius: 10px;
+  font-size: 16px;
+  min-height: 100px;
 }
 button {
-  background: #478cbb;
-  color: white;
+  width: 100%;
+  padding: 14px;
   border: none;
-  padding: 13px 20px;
   border-radius: 12px;
+  background: #568cba;
+  color: white;
   font-size: 16px;
+  margin-top: 10px;
+}
+.menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.menu button {
+  background: #eaf1fb;
+  color: #41678f;
+}
+#answer {
+  background: #f0f5fb;
+  padding: 14px;
+  border-radius: 10px;
+  margin-top: 12px;
+  white-space: pre-wrap;
 }
 </style>
 </head>
 <body>
 
-<h1>School Buddy</h1>
+<header>
+<h1>School Buddy 🌷</h1>
 <p>こんにちは！今日も一緒に頑張ろう！</p>
-
-
+</header>
 
 <div class="card">
-<h2>📅 今日の予定</h2>
-<p>先生から登録された予定を確認できるよ。</p>
-<p>現在、予定はありません。</p>
+<h2>🤖 AIに質問しよう！</h2>
+<p>わからないことを自由に入力してね。</p>
+<textarea id="question" placeholder="例：この言葉の意味を教えて！"></textarea>
+<button onclick="askQuestion()">質問する</button>
+<div id="answer">ここに回答が表示されるよ！</div>
 </div>
 
 <div class="card">
-<h2>💬 会話の練習</h2>
-<p>先生や友達との会話を練習しよう。</p>
-<button onclick="alert('会話練習機能はこれから開発します！')">
-練習する
-</button>
+<h2>📚 学校サポート</h2>
+<div class="menu">
+<button onclick="showMessage('今日の予定')">📅 今日の予定</button>
+<button onclick="showMessage('写真で質問')">📸 写真で質問</button>
+<button onclick="showMessage('会話の練習')">💬 会話の練習</button>
+<button onclick="showMessage('言葉の意味')">📖 言葉の意味</button>
+</div>
+<div id="menuAnswer"></div>
 </div>
 
-<div class="card">
-<h2>📷 写真で質問</h2>
-<p>わからない問題や言葉を写真で質問しよう。</p>
-<button onclick="alert('写真質問機能はこれから開発します！')">
-写真を選ぶ
-</button>
-</div>
+<script>
+function askQuestion() {
+  const question = document.getElementById("question").value.trim();
+  const answer = document.getElementById("answer");
+
+  if (!question) {
+    answer.textContent = "質問を入力してね！";
+    return;
+  }
+
+  answer.textContent =
+    "質問を受け取ったよ！😊\n\n「" + question +
+    "」\n\n今は試作品だよ。本物のAI回答機能はこれから追加するね！";
+}
+
+function showMessage(name) {
+  document.getElementById("menuAnswer").textContent =
+    name + " の機能はこれから作っていくよ！";
+}
+</script>
 
 </body>
 </html>
