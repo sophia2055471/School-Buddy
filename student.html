@@ -94,6 +94,28 @@ function askQuestion() {
     return;
   }
 
+  let message = "";
+
+  if (question.includes("意味") || question.includes("言葉")) {
+    message = "言葉の意味を一緒に考えよう！まず、その言葉が使われている文章を見てみよう。";
+  } else if (question.includes("先生") || question.includes("質問")) {
+    message = "先生には『〇〇のところがわかりません。もう一度教えてください』と伝えてみよう！";
+  } else if (question.includes("宿題") || question.includes("勉強")) {
+    message = "大丈夫！まずは問題を一つずつ見てみよう。どこからわからないか探してみよう！";
+  } else {
+    message = "質問してくれてありがとう！もう少し詳しく教えてくれるかな？";
+  }
+
+  answer.textContent = message;
+}
+  const question = document.getElementById("question").value.trim();
+  const answer = document.getElementById("answer");
+
+  if (!question) {
+    answer.textContent = "質問を入力してね！";
+    return;
+  }
+
   answer.textContent =
     "質問を受け取ったよ！😊\n\n「" + question +
     "」\n\n今は試作品だよ。本物のAI回答機能はこれから追加するね！";
