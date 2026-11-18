@@ -1,112 +1,224 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>School Buddy</title>
+
 <style>
-body {
-  font-family: sans-serif;
-  background: #f4f7fc;
-  color: #30415d;
-  padding: 20px;
+* {
+  box-sizing: border-box;
 }
-header { text-align: center; }
-h1 { color: #568cba; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #F7F8FA;
+  color: #29364A;
+}
+
+header {
+  padding: 25px 20px;
+  text-align: center;
+}
+
+.logo {
+  color: #568CBA;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.subtitle {
+  color: #8491A3;
+}
+
+.container {
+  max-width: 850px;
+  margin: auto;
+  padding: 15px;
+}
+
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+  background: linear-gradient(120deg, #DCEEFF, #EDE7FF);
+  border-radius: 24px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.welcome-text {
+  flex: 1;
+  min-width: 180px;
+}
+
+.welcome h2 {
+  font-size: 25px;
+  margin-top: 0;
+}
+
+.buddy-image {
+  width: 180px;
+  max-width: 45%;
+  height: auto;
+  object-fit: contain;
+}
+
 .card {
   background: white;
-  padding: 20px;
-  border-radius: 18px;
-  margin: 16px auto;
-  max-width: 500px;
-  box-shadow: 0 4px 15px #e1e8f2;
+  padding: 22px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px #E8EDF4;
 }
+
 textarea {
   width: 100%;
-  box-sizing: border-box;
-  padding: 12px;
-  border: 1px solid #ccd5e2;
-  border-radius: 10px;
-  font-size: 16px;
-  min-height: 100px;
-}
-button {
-  width: 100%;
+  min-height: 110px;
   padding: 14px;
+  border: 1px solid #D6DEEA;
+  border-radius: 12px;
+  font-size: 16px;
+  resize: vertical;
+}
+
+button {
   border: none;
   border-radius: 12px;
-  background: #568cba;
-  color: white;
-  font-size: 16px;
-  margin-top: 10px;
+  padding: 14px;
+  font-size: 15px;
+  cursor: pointer;
 }
+
+.ask-button {
+  width: 100%;
+  margin-top: 12px;
+  background: #568CBA;
+  color: white;
+}
+
 .menu {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
+
 .menu button {
-  background: #eaf1fb;
-  color: #41678f;
+  background: #EAF1FB;
+  color: #41678F;
+  min-height: 65px;
 }
-#answer {
-  background: #f0f5fb;
+
+.menu button:nth-child(2) {
+  background: #F0EAFE;
+}
+
+.menu button:nth-child(3) {
+  background: #E5F5ED;
+}
+
+.menu button:nth-child(4) {
+  background: #FFF3D6;
+}
+
+#answer, #menuAnswer {
+  background: #F0F5FB;
+  border-radius: 12px;
   padding: 14px;
-  border-radius: 10px;
-  margin-top: 12px;
+  margin-top: 15px;
+  line-height: 1.7;
   white-space: pre-wrap;
-.buddy {
-  background: #eaf4fc;
-  border-radius: 20px;
-  padding: 18px;
-  margin: 20px auto;
-  max-width: 300px;
 }
 
-.buddy-face {
-  font-size: 55px;
-}
-
-.buddy p {
-  margin: 8px;
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #98A2B3;
+  font-size: 13px;
 }
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>School Buddy 🌷</h1>
-<p>こんにちは！今日も一緒に頑張ろう！</p>
-
-<div class="buddy">
-  <div class="buddy-face">🤖</div>
-  <p><strong>Buddy</strong></p>
-  <p>困ったときはいつでも相談してね！</p>
-</div>
+  <div class="logo">School Buddy 🌷</div>
+  <p class="subtitle">Your school life, made easier.</p>
 </header>
 
-<div class="card">
-<h2>🤖 AIに質問しよう！</h2>
-<p>わからないことを自由に入力してね。</p>
-<textarea id="question" placeholder="例：この言葉の意味を教えて！"></textarea>
-<button onclick="askQuestion()">質問する</button>
-<div id="answer">ここに回答が表示されるよ！</div>
-</div>
+<main class="container">
 
-<div class="card">
-<h2>📚 学校サポート</h2>
-<div class="menu">
-<button onclick="showMessage('今日の予定')">📅 今日の予定</button>
-<button onclick="showMessage('写真で質問')">📸 写真で質問</button>
-<button onclick="showMessage('会話の練習')">💬 会話の練習</button>
-<button onclick="showMessage('言葉の意味')">📖 言葉の意味</button>
-</div>
-<div id="menuAnswer"></div>
-</div>
+  <section class="welcome">
+    <div class="welcome-text">
+      <h2>こんにちは！👋</h2>
+      <p>今日も一緒に頑張ろう！</p>
+      <p><strong>Buddyがあなたをサポートするよ。</strong></p>
+    </div>
+
+    <img
+      src="buddy.png"
+      alt="School BuddyのキャラクターBuddy"
+      class="buddy-image">
+  </section>
+
+  <section class="card">
+    <h2>💬 Buddyに質問しよう</h2>
+    <p>わからないことを自由に入力してね。</p>
+
+    <textarea id="question"
+      placeholder="例：この言葉の意味を教えて！"></textarea>
+
+    <button class="ask-button" onclick="askQuestion()">
+      質問する →
+    </button>
+
+    <div id="answer">
+      ここにBuddyからの回答が表示されるよ！
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>📚 学校サポート</h2>
+    <p>使いたい機能を選んでね。</p>
+
+    <div class="menu">
+      <button onclick="showMessage('今日の予定')">
+        📅 今日の予定
+      </button>
+
+      <button onclick="showMessage('写真で質問')">
+        📸 写真で質問
+      </button>
+
+      <button onclick="showMessage('会話の練習')">
+        💬 会話の練習
+      </button>
+
+      <button onclick="showMessage('言葉の意味')">
+        📖 言葉の意味
+      </button>
+    </div>
+
+    <div id="menuAnswer">
+      選んだ機能の案内がここに表示されるよ！
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  School Buddy © 2026
+</footer>
 
 <script>
 function askQuestion() {
-  const question = document.getElementById("question").value.trim();
+  const question =
+    document.getElementById("question").value.trim();
+
   const answer = document.getElementById("answer");
 
   if (!question) {
@@ -117,33 +229,33 @@ function askQuestion() {
   let message = "";
 
   if (question.includes("意味") || question.includes("言葉")) {
-    message = "言葉の意味を一緒に考えよう！まず、その言葉が使われている文章を見てみよう。";
+    message =
+      "言葉の意味を一緒に考えよう！\nまず、その言葉が使われている文章を見てみよう。";
   } else if (question.includes("先生") || question.includes("質問")) {
-    message = "先生には『〇〇のところがわかりません。もう一度教えてください』と伝えてみよう！";
+    message =
+      "先生には『〇〇のところがわかりません。もう一度教えてください』と伝えてみよう！";
   } else if (question.includes("宿題") || question.includes("勉強")) {
-    message = "大丈夫！まずは問題を一つずつ見てみよう。どこからわからないか探してみよう！";
+    message =
+      "大丈夫！まずは問題を一つずつ見てみよう。";
   } else {
-    message = "質問してくれてありがとう！もう少し詳しく教えてくれるかな？";
+    message =
+      "質問してくれてありがとう！\nもう少し詳しく教えてくれるかな？";
   }
 
   answer.textContent = message;
 }
-  const question = document.getElementById("question").value.trim();
-  const answer = document.getElementById("answer");
-
-  if (!question) {
-    answer.textContent = "質問を入力してね！";
-    return;
-  }
-
-  answer.textContent =
-    "質問を受け取ったよ！😊\n\n「" + question +
-    "」\n\n今は試作品だよ。本物のAI回答機能はこれから追加するね！";
-}
 
 function showMessage(name) {
-  document.getElementById("menuAnswer").textContent =
-    name + " の機能はこれから作っていくよ！";
+  const area = document.getElementById("menuAnswer");
+
+  const messages = {
+    "今日の予定": "今日の予定を確認する機能を準備中だよ！",
+    "写真で質問": "教科書やプリントの写真から質問できる機能を準備中だよ！",
+    "会話の練習": "先生や友達との会話を練習できる機能を準備中だよ！",
+    "言葉の意味": "難しい言葉をやさしく説明する機能を準備中だよ！"
+  };
+
+  area.textContent = messages[name];
 }
 </script>
 
