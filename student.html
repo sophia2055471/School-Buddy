@@ -419,17 +419,9 @@ footer {
 </div>
 
 <script>
-function navigate(name, button) {
+unction navigate(name, button) {
   document.querySelectorAll(".nav button").forEach(item => {
-    item.classList.remove("active");
-  });
-
-  button.classList.add("active");
-
-  document.getElementById("featureMessage").textContent =
-    name + " のページはこれから作っていくよ！";
-}
-
+    item.classList.r
 function showFeature(name) {
   document.getElementById("featureMessage").textContent =
     name + " の機能は準備中だよ！";
