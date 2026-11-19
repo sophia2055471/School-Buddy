@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>School Buddy</title>
+<title>School Buddy Dashboard</title>
 
 <style>
 * {
@@ -13,205 +13,428 @@
 
 body {
   margin: 0;
-  padding: 20px;
   font-family: Arial, sans-serif;
-  background: #F7F8FA;
-  color: #29364A;
+  background: #9586ed;
+  color: #29364a;
 }
 
-header {
-  text-align: center;
-  padding: 15px;
+.dashboard {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr) 220px;
+  max-width: 1450px;
+  min-height: 90vh;
+  margin: 5vh auto;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 35px #5144a455;
 }
 
-.logo {
-  color: #568CBA;
-  font-size: 27px;
-  font-weight: bold;
-}
-
-.subtitle {
-  color: #8491A3;
-}
-
-.container {
-  max-width: 850px;
-  margin: auto;
-}
-
-.welcome {
+.sidebar {
+  padding: 25px 16px;
+  border-right: 1px solid #edf0f5;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  flex-wrap: wrap;
-  background: linear-gradient(120deg, #DCEEFF, #EDE7FF);
-  border-radius: 24px;
+  flex-direction: column;
+}
+
+.brand {
+  font-size: 21px;
+  font-weight: bold;
+  color: #315fb5;
+  margin-bottom: 35px;
+}
+
+.nav button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 13px 12px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #657184;
+  font-size: 14px;
+  margin-bottom: 7px;
+}
+
+.nav button.active {
+  background: #3268c3;
+  color: white;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 25px;
+}
+
+.main {
+  background: #f8f9fd;
   padding: 25px;
-  margin: 20px 0;
+  min-width: 0;
 }
 
-.welcome-text {
-  flex: 1;
-  min-width: 180px;
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
 }
 
-.welcome h2 {
+.search {
+  width: 65%;
+  max-width: 350px;
+  padding: 12px;
+  border: 1px solid #e1e5ed;
+  border-radius: 9px;
+}
+
+h1 {
   font-size: 25px;
+  margin-bottom: 5px;
+}
+
+.muted {
+  color: #8994a6;
+  font-size: 13px;
+}
+
+.hero {
+  background: linear-gradient(110deg, #3268b9, #588bd4);
+  color: white;
+  padding: 24px;
+  border-radius: 17px;
+  margin-bottom: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.hero small {
+  letter-spacing: 1px;
+}
+
+.hero h2 {
+  font-size: 21px;
+  margin: 12px 0;
+}
+
+.hero p {
+  font-size: 14px;
 }
 
 .buddy-image {
-  width: 220px;
-  max-width: 45%;
-  height: auto;
+  width: 145px;
+  height: 145px;
   object-fit: contain;
+  border-radius: 15px;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 18px;
+  margin-bottom: 15px;
 }
 
 .card {
   background: white;
-  padding: 22px;
-  border-radius: 20px;
+  padding: 19px;
+  border-radius: 16px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 15px #E8EDF4;
+  box-shadow: 0 3px 14px #dfe5f055;
+}
+
+.shortcuts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.shortcut {
+  padding: 19px 12px;
+  border: none;
+  border-radius: 12px;
+  background: #e6efff;
+  color: #315a9c;
+  font-size: 14px;
+  text-align: left;
+  min-height: 70px;
+}
+
+.shortcut:nth-child(2) {
+  background: #eee7ff;
+}
+
+.shortcut:nth-child(3) {
+  background: #e1f4eb;
+}
+
+.shortcut:nth-child(4) {
+  background: #fff0d6;
 }
 
 textarea {
   width: 100%;
-  min-height: 110px;
-  padding: 14px;
-  border: 1px solid #D6DEEA;
-  border-radius: 12px;
-  font-size: 16px;
+  min-height: 90px;
+  padding: 12px;
+  border: 1px solid #dce2ed;
+  border-radius: 10px;
+  font: inherit;
+  resize: vertical;
 }
 
-button {
-  border: none;
-  border-radius: 12px;
-  padding: 14px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.ask-button {
+.primary {
   width: 100%;
-  margin-top: 12px;
-  background: #568CBA;
+  padding: 13px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
   color: white;
+  background: #3268c3;
+  font-size: 15px;
 }
 
-.menu {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.menu button {
-  background: #EAF1FB;
-  color: #41678F;
-  min-height: 65px;
-}
-
-.menu button:nth-child(2) {
-  background: #F0EAFE;
-}
-
-.menu button:nth-child(3) {
-  background: #E5F5ED;
-}
-
-.menu button:nth-child(4) {
-  background: #FFF3D6;
-}
-
-#answer, #menuAnswer {
-  background: #F0F5FB;
-  border-radius: 12px;
-  padding: 14px;
-  margin-top: 15px;
-  line-height: 1.7;
+#answer {
+  margin-top: 12px;
+  padding: 13px;
+  background: #f0f4fc;
+  border-radius: 10px;
   white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.rightbar {
+  padding: 25px 17px;
+  border-left: 1px solid #edf0f5;
+}
+
+.profile {
+  text-align: center;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.avatar {
+  width: 65px;
+  height: 65px;
+  margin: 15px auto;
+  border-radius: 50%;
+  background: #e8e3ff;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+}
+
+.progress {
+  height: 10px;
+  background: #edf0f5;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-fill {
+  width: 65%;
+  height: 100%;
+  background: #4b82d0;
+  border-radius: 20px;
+}
+
+.reminder {
+  padding: 12px 0;
+  border-bottom: 1px solid #edf0f5;
+  font-size: 13px;
 }
 
 footer {
   text-align: center;
-  padding: 25px;
-  color: #98A2B3;
+  color: #8994a6;
+  font-size: 12px;
+  padding: 20px;
+}
+
+@media (max-width: 850px) {
+  .dashboard {
+    grid-template-columns: 150px minmax(0, 1fr);
+    margin: 10px;
+  }
+
+  .rightbar {
+    display: none;
+  }
+
+  .main {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard {
+    display: block;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .sidebar {
+    padding: 12px;
+    border-right: none;
+    border-bottom: 1px solid #edf0f5;
+  }
+
+  .brand {
+    margin-bottom: 10px;
+  }
+
+  .nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 5px;
+  }
+
+  .nav button {
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .sidebar-bottom {
+    display: none;
+  }
+
+  .hero {
+    padding: 16px;
+  }
+
+  .hero h2 {
+    font-size: 18px;
+  }
+
+  .buddy-image {
+    width: 105px;
+    height: 105px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">School Buddy 🌷</div>
-  <p class="subtitle">Your school life, made easier.</p>
-</header>
+<div class="dashboard">
 
-<main class="container">
+  <aside class="sidebar">
+    <div class="brand">✦ School Buddy</div>
 
-  <section class="welcome">
-    <div class="welcome-text">
-      <h2>こんにちは！👋</h2>
-      <p>今日も一緒に頑張ろう！</p>
-      <p><strong>Buddyがあなたをサポートするよ。</strong></p>
+    <nav class="nav">
+      <button class="active" onclick="navigate('Dashboard',this)">▦ ホーム</button>
+      <button onclick="navigate('今日の予定',this)">▣ 今日の予定</button>
+      <button onclick="navigate('学習サポート',this)">▤ 学習サポート</button>
+      <button onclick="navigate('会話の練習',this)">☏ 会話の練習</button>
+      <button onclick="navigate('言葉の意味',this)">◉ 言葉の意味</button>
+    </nav>
+
+    <div class="sidebar-bottom nav">
+      <button onclick="navigate('設定',this)">⚙ 設定</button>
+      <button onclick="navigate('ヘルプ',this)">ⓘ ヘルプ</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <input class="search" placeholder="⌕ 検索...">
+      <span>🔔</span>
     </div>
 
-    <img
-      src="./6472D021-8E55-41F0-B297-D98566EC3550.png"
-      alt="School BuddyのキャラクターBuddy"
-      class="buddy-image">
-  </section>
+    <h1>こんにちは！👋</h1>
+    <p class="muted">今日も一緒に頑張ろう！</p>
 
-  <section class="card">
-    <h2>💬 Buddyに質問しよう</h2>
-    <p>わからないことを自由に入力してね。</p>
+    <section class="hero">
+      <div>
+        <small>SCHOOL BUDDY</small>
+        <h2>あなたの学校生活を<br>もっと楽しく！</h2>
+        <p>Buddyと一緒に、一歩ずつ進もう。</p>
+      </div>
 
-    <textarea id="question"
-      placeholder="例：この言葉の意味を教えて！"></textarea>
+      <img
+        src="./6472D021-8E55-41F0-B297-D98566EC3550.png"
+        alt="Buddy"
+        class="buddy-image">
+    </section>
 
-    <button class="ask-button" onclick="askQuestion()">
-      質問する →
-    </button>
+    <section class="card">
+      <h2 class="section-title">✦ 学校サポート</h2>
 
-    <div id="answer">
-      ここにBuddyからの回答が表示されるよ！
-    </div>
-  </section>
+      <div class="shortcuts">
+        <button class="shortcut" onclick="showFeature('今日の予定')">📅 今日の予定</button>
+        <button class="shortcut" onclick="showFeature('写真で質問')">📸 写真で質問</button>
+        <button class="shortcut" onclick="showFeature('会話の練習')">💬 会話の練習</button>
+        <button class="shortcut" onclick="showFeature('言葉の意味')">📖 言葉の意味</button>
+      </div>
 
-  <section class="card">
-    <h2>📚 学校サポート</h2>
-    <p>使いたい機能を選んでね。</p>
+      <div id="featureMessage" class="muted" style="margin-top:15px"></div>
+    </section>
 
-    <div class="menu">
-      <button onclick="showMessage('今日の予定')">
-        📅 今日の予定
-      </button>
+    <section class="card">
+      <h2 class="section-title">💬 Buddyに質問しよう</h2>
+      <p class="muted">わからないことを自由に入力してね。</p>
 
-      <button onclick="showMessage('写真で質問')">
-        📸 写真で質問
-      </button>
+      <textarea id="question" placeholder="例：この言葉の意味を教えて！"></textarea>
 
-      <button onclick="showMessage('会話の練習')">
-        💬 会話の練習
-      </button>
+      <button class="primary" onclick="askQuestion()">質問する →</button>
 
-      <button onclick="showMessage('言葉の意味')">
-        📖 言葉の意味
-      </button>
-    </div>
+      <div id="answer">ここに回答が表示されるよ！</div>
+    </section>
 
-    <div id="menuAnswer">
-      選んだ機能の案内がここに表示されるよ！
-    </div>
-  </section>
+    <footer>School Buddy © 2026</footer>
 
-</main>
+  </main>
 
-<footer>
-  School Buddy © 2026
-</footer>
+  <aside class="rightbar">
+
+    <section class="profile">
+      <strong>Your Profile</strong>
+      <div class="avatar">🤖</div>
+      <strong>Buddy</strong>
+      <p class="muted">あなたの学習パートナー</p>
+    </section>
+
+    <section class="card">
+      <h3>Overall Progress</h3>
+      <p class="muted">学習サポートの進み具合</p>
+      <div class="progress">
+        <div class="progress-fill"></div>
+      </div>
+      <p class="muted">サンプル表示</p>
+    </section>
+
+    <section>
+      <h3>Reminders</h3>
+      <div class="reminder">📅 今日の予定を確認しよう</div>
+      <div class="reminder">📚 宿題をチェックしよう</div>
+      <div class="reminder">💬 Buddyと話してみよう</div>
+    </section>
+
+  </aside>
+
+</div>
 
 <script>
+function navigate(name, button) {
+  document.querySelectorAll(".nav button").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  button.classList.add("active");
+
+  document.getElementById("featureMessage").textContent =
+    name + " のページはこれから作っていくよ！";
+}
+
+function showFeature(name) {
+  document.getElementById("featureMessage").textContent =
+    name + " の機能は準備中だよ！";
+}
+
 function askQuestion() {
   const question = document.getElementById("question").value.trim();
   const answer = document.getElementById("answer");
@@ -221,30 +444,19 @@ function askQuestion() {
     return;
   }
 
-  let message = "";
-
   if (question.includes("意味") || question.includes("言葉")) {
-    message = "言葉の意味を一緒に考えよう！\nまず、その言葉が使われている文章を見てみよう。";
+    answer.textContent =
+      "言葉の意味を一緒に考えよう！文章の中でどう使われているか見てみよう。";
   } else if (question.includes("先生") || question.includes("質問")) {
-    message = "先生には『〇〇のところがわかりません。もう一度教えてください』と伝えてみよう！";
+    answer.textContent =
+      "『ここがわかりません。もう一度教えてください』と伝えてみよう！";
   } else if (question.includes("宿題") || question.includes("勉強")) {
-    message = "大丈夫！まずは問題を一つずつ見てみよう。";
+    answer.textContent =
+      "まずは一つずつ取り組んでみよう！どこから始めるか一緒に考えよう。";
   } else {
-    message = "質問してくれてありがとう！\nもう少し詳しく教えてくれるかな？";
+    answer.textContent =
+      "質問してくれてありがとう！もう少し詳しく教えてくれるかな？";
   }
-
-  answer.textContent = message;
-}
-
-function showMessage(name) {
-  const messages = {
-    "今日の予定": "今日の予定を確認する機能を準備中だよ！",
-    "写真で質問": "写真から質問できる機能を準備中だよ！",
-    "会話の練習": "先生や友達との会話を練習する機能を準備中だよ！",
-    "言葉の意味": "難しい言葉をやさしく説明する機能を準備中だよ！"
-  };
-
-  document.getElementById("menuAnswer").textContent = messages[name];
 }
 </script>
 
