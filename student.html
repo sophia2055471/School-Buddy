@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -12,19 +13,20 @@
 
 body {
   margin: 0;
+  padding: 20px;
   font-family: Arial, sans-serif;
   background: #F7F8FA;
   color: #29364A;
 }
 
 header {
-  padding: 25px 20px;
   text-align: center;
+  padding: 15px;
 }
 
 .logo {
   color: #568CBA;
-  font-size: 25px;
+  font-size: 27px;
   font-weight: bold;
 }
 
@@ -35,7 +37,6 @@ header {
 .container {
   max-width: 850px;
   margin: auto;
-  padding: 15px;
 }
 
 .welcome {
@@ -47,7 +48,7 @@ header {
   background: linear-gradient(120deg, #DCEEFF, #EDE7FF);
   border-radius: 24px;
   padding: 25px;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 
 .welcome-text {
@@ -57,11 +58,10 @@ header {
 
 .welcome h2 {
   font-size: 25px;
-  margin-top: 0;
 }
 
 .buddy-image {
-  width: 180px;
+  width: 220px;
   max-width: 45%;
   height: auto;
   object-fit: contain;
@@ -82,14 +82,13 @@ textarea {
   border: 1px solid #D6DEEA;
   border-radius: 12px;
   font-size: 16px;
-  resize: vertical;
 }
 
 button {
   border: none;
   border-radius: 12px;
   padding: 14px;
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -102,7 +101,7 @@ button {
 
 .menu {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
@@ -137,7 +136,6 @@ footer {
   text-align: center;
   padding: 25px;
   color: #98A2B3;
-  font-size: 13px;
 }
 </style>
 </head>
@@ -159,7 +157,7 @@ footer {
     </div>
 
     <img
-      src="src="6472D021-8E55-41F0-B297-D98566EC3550.png""
+      src="./6472D021-8E55-41F0-B297-D98566EC3550.png"
       alt="School BuddyのキャラクターBuddy"
       class="buddy-image">
   </section>
@@ -215,9 +213,7 @@ footer {
 
 <script>
 function askQuestion() {
-  const question =
-    document.getElementById("question").value.trim();
-
+  const question = document.getElementById("question").value.trim();
   const answer = document.getElementById("answer");
 
   if (!question) {
@@ -228,33 +224,27 @@ function askQuestion() {
   let message = "";
 
   if (question.includes("意味") || question.includes("言葉")) {
-    message =
-      "言葉の意味を一緒に考えよう！\nまず、その言葉が使われている文章を見てみよう。";
+    message = "言葉の意味を一緒に考えよう！\nまず、その言葉が使われている文章を見てみよう。";
   } else if (question.includes("先生") || question.includes("質問")) {
-    message =
-      "先生には『〇〇のところがわかりません。もう一度教えてください』と伝えてみよう！";
+    message = "先生には『〇〇のところがわかりません。もう一度教えてください』と伝えてみよう！";
   } else if (question.includes("宿題") || question.includes("勉強")) {
-    message =
-      "大丈夫！まずは問題を一つずつ見てみよう。";
+    message = "大丈夫！まずは問題を一つずつ見てみよう。";
   } else {
-    message =
-      "質問してくれてありがとう！\nもう少し詳しく教えてくれるかな？";
+    message = "質問してくれてありがとう！\nもう少し詳しく教えてくれるかな？";
   }
 
   answer.textContent = message;
 }
 
 function showMessage(name) {
-  const area = document.getElementById("menuAnswer");
-
   const messages = {
     "今日の予定": "今日の予定を確認する機能を準備中だよ！",
-    "写真で質問": "教科書やプリントの写真から質問できる機能を準備中だよ！",
-    "会話の練習": "先生や友達との会話を練習できる機能を準備中だよ！",
+    "写真で質問": "写真から質問できる機能を準備中だよ！",
+    "会話の練習": "先生や友達との会話を練習する機能を準備中だよ！",
     "言葉の意味": "難しい言葉をやさしく説明する機能を準備中だよ！"
   };
 
-  area.textContent = messages[name];
+  document.getElementById("menuAnswer").textContent = messages[name];
 }
 </script>
 
