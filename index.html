@@ -1,49 +1,423 @@
+
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>School Buddy</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f4f7fc;
-      color: #30415d;
-      text-align: center;
-      padding: 70px 20px;
-    }
-    h1 {
-      color: #568cba;
-      font-size: 42px;
-    }
-    p {
-      color: #7889a5;
-    }
-    a {
-      display: block;
-      max-width: 440px;
-      margin: 22px auto;
-      padding: 30px;
-      background: white;
-      color: #568cba;
-      text-decoration: none;
-      border-radius: 24px;
-      font-size: 23px;
-      font-weight: bold;
-      box-shadow: 0 5px 20px #dce4ef;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7f8fc">
+<title>School Buddy 2.0</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f7f8fc;
+  color: #29364a;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 7%;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.8px;
+}
+
+.logo span {
+  color: #9885df;
+}
+
+.language {
+  position: relative;
+}
+
+.language-button {
+  background: white;
+  border: 1px solid #e6e2f2;
+  border-radius: 30px;
+  padding: 11px 16px;
+  font-size: 14px;
+  color: #29364a;
+  cursor: pointer;
+}
+
+.language-menu {
+  display: none;
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 220px;
+  background: white;
+  border: 1px solid #eceaf3;
+  border-radius: 17px;
+  padding: 8px;
+  box-shadow: 0 15px 40px rgba(40, 35, 80, 0.12);
+  z-index: 10;
+  max-height: 330px;
+  overflow-y: auto;
+}
+
+.language-menu.open {
+  display: block;
+}
+
+.language-option {
+  width: 100%;
+  border: none;
+  background: white;
+  padding: 12px;
+  text-align: left;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #29364a;
+}
+
+.language-option:hover,
+.language-option.active {
+  background: #f0edff;
+}
+
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 55px 24px 80px;
+}
+
+.hero {
+  text-align: center;
+  padding: 45px 10px 55px;
+}
+
+.tag {
+  display: inline-block;
+  background: #eeeafd;
+  color: #7664c4;
+  padding: 8px 15px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: clamp(38px, 7vw, 66px);
+  line-height: 1.15;
+  letter-spacing: -2.5px;
+  margin: 25px 0 18px;
+}
+
+h1 span {
+  color: #9987df;
+}
+
+.subtitle {
+  color: #7d8798;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.roles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  max-width: 720px;
+  margin: 20px auto;
+}
+
+.role {
+  background: white;
+  border: 1px solid #ececf4;
+  border-radius: 25px;
+  padding: 30px 24px;
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  transition: 0.2s;
+  box-shadow: 0 8px 30px rgba(60, 55, 100, 0.04);
+}
+
+.role:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 35px rgba(60, 55, 100, 0.09);
+}
+
+.emoji {
+  width: 55px;
+  height: 55px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  font-size: 27px;
+  margin-bottom: 20px;
+}
+
+.student .emoji {
+  background: #e9e5ff;
+}
+
+.teacher .emoji {
+  background: #e2f2ff;
+}
+
+.role h2 {
+  margin: 0 0 9px;
+  font-size: 21px;
+}
+
+.role p {
+  color: #8992a2;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.arrow {
+  display: block;
+  text-align: right;
+  color: #9987df;
+  font-size: 23px;
+  margin-top: 18px;
+}
+
+footer {
+  text-align: center;
+  color: #a0a7b4;
+  font-size: 12px;
+  padding: 25px;
+}
+
+@media(max-width: 600px) {
+  header {
+    padding: 18px;
+  }
+
+  main {
+    padding: 30px 17px 55px;
+  }
+
+  .hero {
+    padding: 40px 5px;
+  }
+
+  .roles {
+    grid-template-columns: 1fr;
+  }
+
+  .role {
+    padding: 24px;
+  }
+}
+</style>
 </head>
+
 <body>
-  <h1>School Buddy</h1>
-  <p>あなたの学校生活をサポートします</p>
 
-  <h2>こんにちは！</h2>
-  <p>あなたはどちらですか？</p>
+<header>
+  <div class="logo">School <span>Buddy.</span></div>
 
-  <a href="student.html">🎒 生徒</a>
-  <a href="teacher.html">📚 先生</a>
+  <div class="language">
+    <button class="language-button"
+      onclick="toggleLanguageMenu()"
+      id="languageButton">
+      🌐 Language
+    </button>
 
-  <p>Learn, Communicate, and Grow.</p>
+    <div class="language-menu" id="languageMenu">
+      <button class="language-option" data-lang="en" onclick="setLanguage('en')">🇺🇸 English</button>
+      <button class="language-option" data-lang="ja" onclick="setLanguage('ja')">🇯🇵 日本語</button>
+      <button class="language-option" data-lang="ko" onclick="setLanguage('ko')">🇰🇷 한국어</button>
+      <button class="language-option" data-lang="zh" onclick="setLanguage('zh')">🇨🇳 中文</button>
+      <button class="language-option" data-lang="fr" onclick="setLanguage('fr')">🇫🇷 Français</button>
+      <button class="language-option" data-lang="es" onclick="setLanguage('es')">🇪🇸 Español</button>
+      <button class="language-option" data-lang="de" onclick="setLanguage('de')">🇩🇪 Deutsch</button>
+      <button class="language-option" data-lang="pt" onclick="setLanguage('pt')">🇧🇷 Português</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="tag" id="tag">YOUR LEARNING COMPANION</div>
+
+    <h1 id="heading">
+      School can be<br>
+      <span>easier together.</span>
+    </h1>
+
+    <p class="subtitle" id="subtitle">
+      A kinder way to learn, communicate and grow.<br>
+      Your personal school companion starts here.
+    </p>
+  </section>
+
+  <section class="roles">
+
+    <a class="role student" href="student.html">
+      <div class="emoji">🎒</div>
+      <h2 id="studentTitle">I'm a Student</h2>
+      <p id="studentText">
+        Learn at your own pace with your personal Buddy.
+      </p>
+      <span class="arrow">↗</span>
+    </a>
+
+    <a class="role teacher" href="teacher.html">
+      <div class="emoji">📚</div>
+      <h2 id="teacherTitle">I'm a Teacher</h2>
+      <p id="teacherText">
+        Support students and organize classroom information.
+      </p>
+      <span class="arrow">↗</span>
+    </a>
+
+  </section>
+</main>
+
+<footer id="footer">
+  School Buddy 2.0 · Learn in your own way.
+</footer>
+
+<script>
+const translations = {
+  en: {
+    button: "🌐 Language",
+    tag: "YOUR LEARNING COMPANION",
+    title: "School can be<br><span>easier together.</span>",
+    subtitle: "A kinder way to learn, communicate and grow.<br>Your personal school companion starts here.",
+    studentTitle: "I'm a Student",
+    studentText: "Learn at your own pace with your personal Buddy.",
+    teacherTitle: "I'm a Teacher",
+    teacherText: "Support students and organize classroom information.",
+    footer: "School Buddy 2.0 · Learn in your own way."
+  },
+  ja: {
+    button: "🌐 言語",
+    tag: "あなたの学習パートナー",
+    title: "学校生活を<br><span>もっと自分らしく。</span>",
+    subtitle: "学ぶこと、伝えること、成長することをサポート。<br>あなた専用のBuddyがここから始まります。",
+    studentTitle: "生徒です",
+    studentText: "自分のペースでBuddyと一緒に学ぼう。",
+    teacherTitle: "先生です",
+    teacherText: "生徒をサポートし、クラスの情報を管理しよう。",
+    footer: "School Buddy 2.0 · 自分らしい学び方を。"
+  },
+  ko: {
+    button: "🌐 언어",
+    tag: "당신의 학습 파트너",
+    title: "학교생활을<br><span>함께 더 쉽게.</span>",
+    subtitle: "배우고, 소통하고, 성장하는 것을 도와드려요.<br>나만의 Buddy와 함께 시작해요.",
+    studentTitle: "학생입니다",
+    studentText: "나만의 Buddy와 자신의 속도로 배워요.",
+    teacherTitle: "선생님입니다",
+    teacherText: "학생을 지원하고 교실 정보를 관리해요.",
+    footer: "School Buddy 2.0 · 나만의 방식으로 배우세요."
+  },
+  zh: {
+    button: "🌐 语言",
+    tag: "你的学习伙伴",
+    title: "让学校生活<br><span>变得更轻松。</span>",
+    subtitle: "帮助你学习、沟通和成长。<br>从你的专属 Buddy 开始。",
+    studentTitle: "我是学生",
+    studentText: "和你的 Buddy 一起按照自己的节奏学习。",
+    teacherTitle: "我是老师",
+    teacherText: "支持学生并管理班级信息。",
+    footer: "School Buddy 2.0 · 按自己的方式学习。"
+  },
+  fr: {
+    button: "🌐 Langue",
+    tag: "VOTRE PARTENAIRE D'APPRENTISSAGE",
+    title: "L'école devient<br><span>plus facile ensemble.</span>",
+    subtitle: "Apprendre, communiquer et grandir ensemble.<br>Votre Buddy personnel vous accompagne.",
+    studentTitle: "Je suis élève",
+    studentText: "Apprenez à votre rythme avec votre Buddy.",
+    teacherTitle: "Je suis enseignant",
+    teacherText: "Accompagnez les élèves et organisez la classe.",
+    footer: "School Buddy 2.0 · Apprenez à votre façon."
+  },
+  es: {
+    button: "🌐 Idioma",
+    tag: "TU COMPAÑERO DE APRENDIZAJE",
+    title: "La escuela puede ser<br><span>más fácil juntos.</span>",
+    subtitle: "Aprende, comunícate y crece.<br>Tu Buddy personal empieza aquí.",
+    studentTitle: "Soy estudiante",
+    studentText: "Aprende a tu ritmo con tu Buddy personal.",
+    teacherTitle: "Soy profesor",
+    teacherText: "Apoya a los estudiantes y organiza la clase.",
+    footer: "School Buddy 2.0 · Aprende a tu manera."
+  },
+  de: {
+    button: "🌐 Sprache",
+    tag: "DEIN LERNBEGLEITER",
+    title: "Schule kann<br><span>gemeinsam leichter sein.</span>",
+    subtitle: "Lernen, kommunizieren und wachsen.<br>Dein persönlicher Buddy ist für dich da.",
+    studentTitle: "Ich bin Schüler",
+    studentText: "Lerne in deinem Tempo mit deinem Buddy.",
+    teacherTitle: "Ich bin Lehrer",
+    teacherText: "Unterstütze Schüler und organisiere den Unterricht.",
+    footer: "School Buddy 2.0 · Lerne auf deine Weise."
+  },
+  pt: {
+    button: "🌐 Idioma",
+    tag: "SEU COMPANHEIRO DE APRENDIZAGEM",
+    title: "A escola pode ser<br><span>mais fácil juntos.</span>",
+    subtitle: "Aprenda, comunique-se e cresça.<br>Seu Buddy pessoal começa aqui.",
+    studentTitle: "Sou estudante",
+    studentText: "Aprenda no seu ritmo com seu Buddy.",
+    teacherTitle: "Sou professor",
+    teacherText: "Apoie os alunos e organize as informações da turma.",
+    footer: "School Buddy 2.0 · Aprenda do seu jeito."
+  }
+};
+
+function toggleLanguageMenu() {
+  document.getElementById("languageMenu").classList.toggle("open");
+}
+
+function setLanguage(lang) {
+  const t = translations[lang];
+  if (!t) return;
+
+  document.documentElement.lang = lang;
+
+  document.getElementById("languageButton").textContent = t.button;
+  document.getElementById("tag").textContent = t.tag;
+  document.getElementById("heading").innerHTML = t.title;
+  document.getElementById("subtitle").innerHTML = t.subtitle;
+  document.getElementById("studentTitle").textContent = t.studentTitle;
+  document.getElementById("studentText").textContent = t.studentText;
+  document.getElementById("teacherTitle").textContent = t.teacherTitle;
+  document.getElementById("teacherText").textContent = t.teacherText;
+  document.getElementById("footer").textContent = t.footer;
+
+  document.querySelectorAll(".language-option").forEach(option => {
+    option.classList.toggle("active", option.dataset.lang === lang);
+  });
+
+  document.getElementById("languageMenu").classList.remove("open");
+
+  document.documentElement.dataset.language = lang;
+}
+
+document.addEventListener("click", function(event) {
+  const menu = document.getElementById("languageMenu");
+  const button = document.getElementById("languageButton");
+
+  if (!menu.contains(event.target) && !button.contains(event.target)) {
+    menu.classList.remove("open");
+  }
+});
+
+setLanguage("en");
+</script>
+
 </body>
 </html>
