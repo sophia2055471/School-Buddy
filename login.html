@@ -142,6 +142,25 @@ button {
   .card { padding: 25px 20px; }
   .logo { font-size: 20px; }
 }
+.password-box {
+  position: relative;
+}
+
+.password-box input {
+  padding-right: 55px;
+}
+
+.eye-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;
+  margin: 0;
+  padding: 8px;
+  background: transparent;
+  color: #8171d5;
+}
 </style>
 </head>
 
@@ -203,7 +222,12 @@ button {
         <input id="loginId" type="email" placeholder="you@example.com" required>
 
         <label id="passwordLabel">Password</label>
-        <input type="password" placeholder="Your password" required>
+        <<div class="password-box">
+  <input id="loginPassword" type="password"
+         placeholder="Your password" required>
+  <button type="button" class="eye-button"
+          onclick="togglePassword()">👁️</button>
+</div>>
 
         <button type="submit" id="loginButton">Log in</button>
       </form>
@@ -560,6 +584,12 @@ document.getElementById("loginId").type = "email";
 
 setLanguage(currentLang);
 showScreen("methodScreen");
+  function togglePassword() {
+  const password = document.getElementById("loginPassword");
+
+password.type =
+    password.type === "password" ? "text" : "password";
+}
 </script>
 
 </body>
