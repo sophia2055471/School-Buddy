@@ -22,7 +22,10 @@ body {
   padding: 24px;
 }
 
-.container { width: 100%; max-width: 440px; }
+.container {
+  width: 100%;
+  max-width: 440px;
+}
 
 .top {
   display: flex;
@@ -31,7 +34,11 @@ body {
   margin-bottom: 25px;
 }
 
-.logo { font-size: 23px; font-weight: 700; }
+.logo {
+  font-size: 23px;
+  font-weight: 700;
+}
+
 .logo span { color: #8b7bea; }
 
 select, input {
@@ -138,10 +145,6 @@ button {
   margin-top: 16px;
 }
 
-@media(max-width:420px) {
-  .card { padding: 25px 20px; }
-  .logo { font-size: 20px; }
-}
 .password-box {
   position: relative;
 }
@@ -160,6 +163,11 @@ button {
   padding: 8px;
   background: transparent;
   color: #8171d5;
+}
+
+@media(max-width:420px) {
+  .card { padding: 25px 20px; }
+  .logo { font-size: 20px; }
 }
 </style>
 </head>
@@ -184,127 +192,97 @@ button {
 
   <div class="card">
 
-    <div class="role-label" id="roleLabel">STUDENT ACCOUNT</div>
+    <div class="role-label" id="roleLabel"></div>
 
+    <!-- LOGIN METHOD -->
     <section id="methodScreen">
-      <h1 id="welcome">Welcome back!</h1>
-      <p class="subtitle" id="methodSubtitle">
-        Choose how you would like to log in.
-      </p>
+      <h1 id="welcome"></h1>
+      <p class="subtitle" id="methodSubtitle"></p>
 
-      <button onclick="showLogin('email')" id="emailButton">
-        Email & Password
-      </button>
-
-      <button class="secondary" onclick="showLogin('school')" id="schoolButton">
-        School ID & Password
-      </button>
-
-      <button class="secondary" onclick="googleNotice()" id="googleButton">
-        Continue with Google
-      </button>
-
-      <button class="text-button" onclick="showRegister()" id="createButton">
-        Create an account
-      </button>
-
-      <button class="back" onclick="goHome()" id="homeButton">
-        ← Back to home
-      </button>
+      <button onclick="showLogin('email')" id="emailButton"></button>
+      <button class="secondary" onclick="showLogin('school')" id="schoolButton"></button>
+      <button class="secondary" onclick="googleNotice()" id="googleButton"></button>
+      <button class="text-button" onclick="showRegister()" id="createButton"></button>
+      <button class="back" onclick="goHome()" id="homeButton"></button>
     </section>
 
+    <!-- LOGIN -->
     <section id="loginScreen" class="hidden">
-      <h1 id="loginTitle">Log in</h1>
-      <p class="subtitle" id="loginSubtitle">Enter your details.</p>
+      <h1 id="loginTitle"></h1>
+      <p class="subtitle" id="loginSubtitle"></p>
 
-      <form onsubmit="demoSubmit(event, 'login')">
-        <label id="loginIdLabel">Email address</label>
-        <input id="loginId" type="email" placeholder="you@example.com" required>
+      <form onsubmit="demoSubmit(event,'login')">
+        <label id="loginIdLabel"></label>
+        <input id="loginId" type="email" required>
 
-        <label id="passwordLabel">Password</label>
-        <<div class="password-box">
-  <input id="loginPassword" type="password"
-         placeholder="Your password" required>
-  <button type="button" class="eye-button"
-          onclick="togglePassword()">👁️</button>
-</div>>
+        <label id="passwordLabel"></label>
 
-        <button type="submit" id="loginButton">Log in</button>
+        <div class="password-box">
+          <input id="loginPassword" type="password" required>
+          <button type="button" class="eye-button"
+            onclick="togglePassword()" aria-label="Show password">👁️</button>
+        </div>
+
+        <button type="submit" id="loginButton"></button>
         <button type="button" class="text-button"
-        onclick="showForgotPassword()" id="forgotButton">
-  Forgot password?
-</button>  
+          onclick="showForgotPassword()" id="forgotButton"></button>
       </form>
 
-      <button class="back" onclick="backToMethods()" id="backButton">
-        ← Back
-      </button>
+      <button class="back" onclick="backToMethods()" id="backButton"></button>
     </section>
-<section id="forgotScreen" class="hidden">
-  <h1 id="forgotTitle">Reset password</h1>
-  <p class="subtitle" id="forgotSubtitle">
-    Enter your email address to reset your password.
-  </p>
 
-  <form onsubmit="demoSubmit(event, 'forgot')">
-    <label>Email address</label>
-    <input type="email" placeholder="you@example.com" required>
+    <!-- FORGOT PASSWORD -->
+    <section id="forgotScreen" class="hidden">
+      <h1 id="forgotTitle"></h1>
+      <p class="subtitle" id="forgotSubtitle"></p>
 
-    <button type="submit">Send reset link</button>
-  </form>
+      <form onsubmit="demoSubmit(event,'forgot')">
+        <label id="forgotEmailLabel"></label>
+        <input id="forgotEmail" type="email" required>
+        <button type="submit" id="resetButton"></button>
+      </form>
 
-  <button class="back" onclick="backToMethods()">
-    ← Back
-  </button>
-</section>
+      <button class="back" onclick="backToLogin()" id="forgotBack"></button>
+    </section>
+
+    <!-- REGISTER -->
     <section id="registerScreen" class="hidden">
-      <h1 id="registerTitle">Create account</h1>
-      <p class="subtitle" id="registerSubtitle">
-        Let's set up your School Buddy account.
-      </p>
+      <h1 id="registerTitle"></h1>
+      <p class="subtitle" id="registerSubtitle"></p>
 
-      <form onsubmit="demoSubmit(event, 'register')">
+      <form onsubmit="demoSubmit(event,'register')">
+        <label id="nicknameLabel"></label>
+        <input type="text" id="nicknameInput" required>
 
-        <label id="nicknameLabel">Nickname</label>
-        <input type="text" placeholder="Your nickname" required>
+        <label id="registerEmailLabel"></label>
+        <input type="email" id="registerEmailInput" required>
 
-        <label id="registerEmailLabel">Email address</label>
-        <input type="email" placeholder="you@example.com" required>
+        <label id="registerPasswordLabel"></label>
+        <input type="password" id="registerPasswordInput" required>
 
-        <label id="registerPasswordLabel">Create password</label>
-        <input type="password" placeholder="Create a password" required>
-
-        <label id="gradeLabel">Grade</label>
-        <select required>
-          <option value="" id="gradePlaceholder">Select your grade</option>
-          <option>1st year</option>
-          <option>2nd year</option>
-          <option>3rd year</option>
-          <option>Other</option>
+        <label id="gradeLabel"></label>
+        <select id="gradeSelect" required>
+          <option value="" id="gradePlaceholder"></option>
+          <option value="1" id="grade1"></option>
+          <option value="2" id="grade2"></option>
+          <option value="3" id="grade3"></option>
+          <option value="other" id="gradeOther"></option>
         </select>
 
-        <label id="classLabel">Class</label>
-        <input type="text" placeholder="Your class" required>
+        <label id="classLabel"></label>
+        <input type="text" id="classInput" required>
 
-        <label id="tempPasswordLabel">School temporary password (optional)</label>
-        <input type="text" placeholder="If provided by your school">
+        <label id="tempPasswordLabel"></label>
+        <input type="text" id="tempPasswordInput">
 
-        <button type="submit" id="registerButton">Create account</button>
+        <button type="submit" id="registerButton"></button>
       </form>
 
-      <div class="notice" id="registerNotice">
-        Email verification and account approval will be connected when the secure account system is ready.
-      </div>
-
-      <button class="back" onclick="backToMethods()" id="registerBack">
-        ← Back
-      </button>
+      <div class="notice" id="registerNotice"></div>
+      <button class="back" onclick="backToMethods()" id="registerBack"></button>
     </section>
 
-    <p class="message" id="message">
-      A little support can make a big difference.
-    </p>
-
+    <p class="message" id="message"></p>
   </div>
 </div>
 
@@ -319,44 +297,266 @@ if (selectedRole !== "student" && selectedRole !== "teacher") {
 const screens = [
   "methodScreen",
   "loginScreen",
-  "registerScreen",
-  "forgotScreen"
+  "forgotScreen",
+  "registerScreen"
 ];
-function showForgotPassword() {
-  showScreen("forgotScreen");
-}  
 
-function hideAll() {
-  screens.forEach(id => document.getElementById(id).classList.add("hidden"));
+const translations = {
+en: {
+ role:"STUDENT ACCOUNT", teacherRole:"TEACHER ACCOUNT",
+ welcome:"Welcome back!", methodSubtitle:"Choose how you would like to log in.",
+ emailButton:"Email & Password", schoolButton:"School ID & Password",
+ googleButton:"Continue with Google", createButton:"Create an account",
+ homeButton:"← Back to home", loginTitle:"Log in",
+ loginSubtitle:"Enter your details.", email:"Email address",
+ schoolId:"School ID", password:"Password", loginButton:"Log in",
+ back:"← Back", forgotButton:"Forgot password?",
+ forgotTitle:"Reset password",
+ forgotSubtitle:"Enter your email address to reset your password.",
+ resetButton:"Send reset link",
+ registerTitle:"Create account",
+ registerSubtitle:"Let's set up your School Buddy account.",
+ nickname:"Nickname", registerEmail:"Email address",
+ registerPassword:"Create password", grade:"Grade",
+ gradePlaceholder:"Select your grade",
+ grade1:"1st year", grade2:"2nd year", grade3:"3rd year", gradeOther:"Other",
+ className:"Class", tempPassword:"School temporary password (optional)",
+ tempPlaceholder:"If provided by your school",
+ registerButton:"Create account",
+ registerNotice:"Preview only. Secure registration and email verification are not connected yet.",
+ googleNotice:"Google sign-in is not connected yet.",
+ loginNotice:"Login is a preview. Authentication is not connected yet.",
+ forgotNotice:"Password reset is a preview. Email delivery is not connected yet.",
+ message:"A little support can make a big difference."
+},
+ja: {
+ role:"生徒アカウント", teacherRole:"先生アカウント",
+ welcome:"おかえりなさい！", methodSubtitle:"ログイン方法を選んでね。",
+ emailButton:"メールアドレスとパスワード", schoolButton:"学校IDとパスワード",
+ googleButton:"Googleで続ける", createButton:"新規登録",
+ homeButton:"← トップページへ戻る", loginTitle:"ログイン",
+ loginSubtitle:"アカウント情報を入力してね。", email:"メールアドレス",
+ schoolId:"学校ID", password:"パスワード", loginButton:"ログイン",
+ back:"← 戻る", forgotButton:"パスワードを忘れた場合",
+ forgotTitle:"パスワードを再設定",
+ forgotSubtitle:"再設定用のメールアドレスを入力してください。",
+ resetButton:"再設定リンクを送信",
+ registerTitle:"新規登録",
+ registerSubtitle:"School Buddyのアカウントを作ろう。",
+ nickname:"ニックネーム", registerEmail:"メールアドレス",
+ registerPassword:"パスワード", grade:"学年",
+ gradePlaceholder:"学年を選択",
+ grade1:"1年生", grade2:"2年生", grade3:"3年生", gradeOther:"その他",
+ className:"クラス", tempPassword:"学校の仮パスワード（任意）",
+ tempPlaceholder:"学校から配布されている場合",
+ registerButton:"アカウントを作成",
+ registerNotice:"現在はプレビューです。安全な登録機能とメール認証はまだ接続されていません。",
+ googleNotice:"Googleログインはまだ接続されていません。",
+ loginNotice:"現在はプレビューです。ログイン認証はまだ接続されていません。",
+ forgotNotice:"現在はプレビューです。メール送信機能はまだ接続されていません。",
+ message:"小さなサポートが、大きな変化につながる。"
+},
+ko: {
+ role:"학생 계정", teacherRole:"교사 계정",
+ welcome:"다시 오신 것을 환영합니다!", methodSubtitle:"로그인 방법을 선택하세요.",
+ emailButton:"이메일 및 비밀번호", schoolButton:"학교 ID 및 비밀번호",
+ googleButton:"Google로 계속하기", createButton:"계정 만들기",
+ homeButton:"← 홈으로", loginTitle:"로그인",
+ loginSubtitle:"계정 정보를 입력하세요.", email:"이메일 주소",
+ schoolId:"학교 ID", password:"비밀번호", loginButton:"로그인",
+ back:"← 뒤로", forgotButton:"비밀번호를 잊으셨나요?",
+ forgotTitle:"비밀번호 재설정",
+ forgotSubtitle:"재설정할 이메일 주소를 입력하세요.",
+ resetButton:"재설정 링크 보내기",
+ registerTitle:"계정 만들기",
+ registerSubtitle:"School Buddy 계정을 설정하세요.",
+ nickname:"닉네임", registerEmail:"이메일 주소",
+ registerPassword:"비밀번호 만들기", grade:"학년",
+ gradePlaceholder:"학년 선택",
+ grade1:"1학년", grade2:"2학년", grade3:"3학년", gradeOther:"기타",
+ className:"반", tempPassword:"학교 임시 비밀번호 (선택)",
+ tempPlaceholder:"학교에서 받은 경우 입력하세요",
+ registerButton:"계정 만들기",
+ registerNotice:"미리보기입니다. 안전한 가입과 이메일 인증은 아직 연결되지 않았습니다.",
+ googleNotice:"Google 로그인은 아직 연결되지 않았습니다.",
+ loginNotice:"미리보기입니다. 로그인 인증은 아직 연결되지 않았습니다.",
+ forgotNotice:"미리보기입니다. 이메일 전송은 아직 연결되지 않았습니다.",
+ message:"작은 도움이 큰 변화를 만들 수 있어요."
+},
+zh: {
+ role:"学生账户", teacherRole:"教师账户",
+ welcome:"欢迎回来！", methodSubtitle:"请选择登录方式。",
+ emailButton:"邮箱和密码", schoolButton:"学校ID和密码",
+ googleButton:"使用Google继续", createButton:"创建账户",
+ homeButton:"← 返回首页", loginTitle:"登录",
+ loginSubtitle:"请输入账户信息。", email:"邮箱地址",
+ schoolId:"学校ID", password:"密码", loginButton:"登录",
+ back:"← 返回", forgotButton:"忘记密码？",
+ forgotTitle:"重置密码",
+ forgotSubtitle:"请输入用于重置密码的邮箱地址。",
+ resetButton:"发送重置链接",
+ registerTitle:"创建账户",
+ registerSubtitle:"创建你的School Buddy账户。",
+ nickname:"昵称", registerEmail:"邮箱地址",
+ registerPassword:"设置密码", grade:"年级",
+ gradePlaceholder:"选择年级",
+ grade1:"一年级", grade2:"二年级", grade3:"三年级", gradeOther:"其他",
+ className:"班级", tempPassword:"学校提供的临时密码（可选）",
+ tempPlaceholder:"如果学校提供了临时密码，请填写",
+ registerButton:"创建账户",
+ registerNotice:"当前为预览页面。安全注册和邮箱验证尚未连接。",
+ googleNotice:"Google登录尚未连接。",
+ loginNotice:"当前为预览页面。账户验证尚未连接。",
+ forgotNotice:"当前为预览页面。邮件发送功能尚未连接。",
+ message:"一点点支持，也能带来很大的改变。"
+},
+fr: {
+ role:"COMPTE ÉLÈVE", teacherRole:"COMPTE ENSEIGNANT",
+ welcome:"Bon retour !", methodSubtitle:"Choisissez votre méthode de connexion.",
+ emailButton:"E-mail et mot de passe", schoolButton:"Identifiant scolaire",
+ googleButton:"Continuer avec Google", createButton:"Créer un compte",
+ homeButton:"← Retour à l'accueil", loginTitle:"Connexion",
+ loginSubtitle:"Entrez vos informations.", email:"Adresse e-mail",
+ schoolId:"Identifiant scolaire", password:"Mot de passe",
+ loginButton:"Se connecter", back:"← Retour",
+ forgotButton:"Mot de passe oublié ?",
+ forgotTitle:"Réinitialiser le mot de passe",
+ forgotSubtitle:"Entrez votre adresse e-mail.",
+ resetButton:"Envoyer le lien",
+ registerTitle:"Créer un compte",
+ registerSubtitle:"Configurez votre compte School Buddy.",
+ nickname:"Pseudonyme", registerEmail:"Adresse e-mail",
+ registerPassword:"Créer un mot de passe", grade:"Année scolaire",
+ gradePlaceholder:"Choisir votre année",
+ grade1:"1re année", grade2:"2e année", grade3:"3e année", gradeOther:"Autre",
+ className:"Classe", tempPassword:"Mot de passe temporaire (facultatif)",
+ tempPlaceholder:"Si votre école vous en a fourni un",
+ registerButton:"Créer un compte",
+ registerNotice:"Aperçu uniquement. L'inscription sécurisée n'est pas encore connectée.",
+ googleNotice:"La connexion Google n'est pas encore disponible.",
+ loginNotice:"Aperçu uniquement. L'authentification n'est pas encore connectée.",
+ forgotNotice:"Aperçu uniquement. L'envoi d'e-mails n'est pas encore connecté.",
+ message:"Un peu de soutien peut faire une grande différence."
+},
+es: {
+ role:"CUENTA DE ESTUDIANTE", teacherRole:"CUENTA DE DOCENTE",
+ welcome:"¡Bienvenido de nuevo!", methodSubtitle:"Elige cómo iniciar sesión.",
+ emailButton:"Correo y contraseña", schoolButton:"ID escolar y contraseña",
+ googleButton:"Continuar con Google", createButton:"Crear una cuenta",
+ homeButton:"← Volver al inicio", loginTitle:"Iniciar sesión",
+ loginSubtitle:"Introduce tus datos.", email:"Correo electrónico",
+ schoolId:"ID escolar", password:"Contraseña",
+ loginButton:"Iniciar sesión", back:"← Volver",
+ forgotButton:"¿Olvidaste tu contraseña?",
+ forgotTitle:"Restablecer contraseña",
+ forgotSubtitle:"Introduce tu correo electrónico.",
+ resetButton:"Enviar enlace",
+ registerTitle:"Crear una cuenta",
+ registerSubtitle:"Configura tu cuenta de School Buddy.",
+ nickname:"Apodo", registerEmail:"Correo electrónico",
+ registerPassword:"Crear contraseña", grade:"Curso",
+ gradePlaceholder:"Selecciona tu curso",
+ grade1:"1.er año", grade2:"2.º año", grade3:"3.er año", gradeOther:"Otro",
+ className:"Clase", tempPassword:"Contraseña temporal (opcional)",
+ tempPlaceholder:"Si tu escuela te proporcionó una",
+ registerButton:"Crear cuenta",
+ registerNotice:"Vista previa. El registro seguro aún no está conectado.",
+ googleNotice:"El inicio de sesión con Google aún no está conectado.",
+ loginNotice:"Vista previa. La autenticación aún no está conectada.",
+ forgotNotice:"Vista previa. El envío de correos aún no está conectado.",
+ message:"Un poco de apoyo puede marcar una gran diferencia."
+},
+de: {
+ role:"SCHÜLERKONTO", teacherRole:"LEHRERKONTO",
+ welcome:"Willkommen zurück!", methodSubtitle:"Wähle deine Anmeldemethode.",
+ emailButton:"E-Mail und Passwort", schoolButton:"Schul-ID und Passwort",
+ googleButton:"Mit Google fortfahren", createButton:"Konto erstellen",
+ homeButton:"← Zur Startseite", loginTitle:"Anmelden",
+ loginSubtitle:"Gib deine Daten ein.", email:"E-Mail-Adresse",
+ schoolId:"Schul-ID", password:"Passwort",
+ loginButton:"Anmelden", back:"← Zurück",
+ forgotButton:"Passwort vergessen?",
+ forgotTitle:"Passwort zurücksetzen",
+ forgotSubtitle:"Gib deine E-Mail-Adresse ein.",
+ resetButton:"Link senden",
+ registerTitle:"Konto erstellen",
+ registerSubtitle:"Richte dein School Buddy-Konto ein.",
+ nickname:"Spitzname", registerEmail:"E-Mail-Adresse",
+ registerPassword:"Passwort erstellen", grade:"Klassenstufe",
+ gradePlaceholder:"Klassenstufe auswählen",
+ grade1:"1. Jahr", grade2:"2. Jahr", grade3:"3. Jahr", gradeOther:"Andere",
+ className:"Klasse", tempPassword:"Vorläufiges Schulpasswort (optional)",
+ tempPlaceholder:"Falls von deiner Schule bereitgestellt",
+ registerButton:"Konto erstellen",
+ registerNotice:"Vorschau. Die sichere Registrierung ist noch nicht verbunden.",
+ googleNotice:"Google-Anmeldung ist noch nicht verbunden.",
+ loginNotice:"Vorschau. Die Anmeldung ist noch nicht verbunden.",
+ forgotNotice:"Vorschau. Der E-Mail-Versand ist noch nicht verbunden.",
+ message:"Ein wenig Unterstützung kann viel bewirken."
+},
+pt: {
+ role:"CONTA DE ESTUDANTE", teacherRole:"CONTA DE PROFESSOR",
+ welcome:"Bem-vindo de volta!", methodSubtitle:"Escolha como deseja entrar.",
+ emailButton:"E-mail e senha", schoolButton:"ID escolar e senha",
+ googleButton:"Continuar com Google", createButton:"Criar uma conta",
+ homeButton:"← Voltar ao início", loginTitle:"Entrar",
+ loginSubtitle:"Insira seus dados.", email:"Endereço de e-mail",
+ schoolId:"ID escolar", password:"Senha",
+ loginButton:"Entrar", back:"← Voltar",
+ forgotButton:"Esqueceu a senha?",
+ forgotTitle:"Redefinir senha",
+ forgotSubtitle:"Insira seu endereço de e-mail.",
+ resetButton:"Enviar link",
+ registerTitle:"Criar uma conta",
+ registerSubtitle:"Configure sua conta School Buddy.",
+ nickname:"Apelido", registerEmail:"Endereço de e-mail",
+ registerPassword:"Criar senha", grade:"Ano escolar",
+ gradePlaceholder:"Selecione seu ano",
+ grade1:"1º ano", grade2:"2º ano", grade3:"3º ano", gradeOther:"Outro",
+ className:"Turma", tempPassword:"Senha temporária da escola (opcional)",
+ tempPlaceholder:"Se fornecida pela sua escola",
+ registerButton:"Criar conta",
+ registerNotice:"Prévia. O cadastro seguro ainda não está conectado.",
+ googleNotice:"O login do Google ainda não está conectado.",
+ loginNotice:"Prévia. A autenticação ainda não está conectada.",
+ forgotNotice:"Prévia. O envio de e-mails ainda não está conectado.",
+ message:"Um pouco de apoio pode fazer uma grande diferença."
 }
+};
+
+let currentLang = localStorage.getItem("schoolBuddyLanguage") || "en";
 
 function showScreen(id) {
-  hideAll();
+  screens.forEach(screen => {
+    document.getElementById(screen).classList.add("hidden");
+  });
   document.getElementById(id).classList.remove("hidden");
 }
 
 function showLogin(method) {
   showScreen("loginScreen");
 
+  const t = translations[currentLang];
   const label = document.getElementById("loginIdLabel");
   const input = document.getElementById("loginId");
 
-  if (method === "school") {
-    label.textContent = translations[currentLang].schoolId;
-    input.type = "text";
-    input.placeholder = "School ID";
-  } else {
-    label.textContent = translations[currentLang].email;
-    input.type = "email";
-    input.placeholder = "you@example.com";
-  }
+  label.textContent = method === "school" ? t.schoolId : t.email;
+  input.type = method === "school" ? "text" : "email";
+  input.placeholder = method === "school" ? t.schoolId : "you@example.com";
 
-  document.getElementById("loginSubtitle").textContent =
-    translations[currentLang].loginSubtitle;
+  document.getElementById("loginSubtitle").textContent = t.loginSubtitle;
 }
 
 function showRegister() {
   showScreen("registerScreen");
+}
+
+function showForgotPassword() {
+  showScreen("forgotScreen");
+}
+
+function backToLogin() {
+  showScreen("loginScreen");
 }
 
 function backToMethods() {
@@ -371,186 +571,24 @@ function googleNotice() {
   alert(translations[currentLang].googleNotice);
 }
 
+function togglePassword() {
+  const input = document.getElementById("loginPassword");
+  input.type = input.type === "password" ? "text" : "password";
+}
+
 function demoSubmit(event, type) {
   event.preventDefault();
 
+  const t = translations[currentLang];
+
   if (type === "register") {
-    alert(translations[currentLang].registerNotice);
+    alert(t.registerNotice);
+  } else if (type === "forgot") {
+    alert(t.forgotNotice);
   } else {
-    alert(translations[currentLang].loginNotice);
+    alert(t.loginNotice);
   }
 }
-
-const translations = {
-en: {
- role:"STUDENT ACCOUNT", teacherRole:"TEACHER ACCOUNT",
- welcome:"Welcome back!", methodSubtitle:"Choose how you would like to log in.",
- emailButton:"Email & Password", schoolButton:"School ID & Password",
- googleButton:"Continue with Google", createButton:"Create an account",
- homeButton:"← Back to home", loginTitle:"Log in",
- loginSubtitle:"Enter your details.", email:"Email address",
- schoolId:"School ID", password:"Password", loginButton:"Log in",
- back:"← Back", registerTitle:"Create account",
- registerSubtitle:"Let's set up your School Buddy account.",
- nickname:"Nickname", registerEmail:"Email address",
- registerPassword:"Create password", grade:"Grade",
- gradePlaceholder:"Select your grade", className:"Class",
- tempPassword:"School temporary password (optional)",
- registerButton:"Create account",
- registerNotice:"Account creation is a preview. Secure registration and email verification are not connected yet.",
- googleNotice:"Google sign-in is not connected yet.",
- loginNotice:"Login is a preview. Account authentication is not connected yet.",
- message:"A little support can make a big difference."
-},
-ja: {
- role:"生徒アカウント", teacherRole:"先生アカウント",
- welcome:"おかえりなさい！", methodSubtitle:"ログイン方法を選んでね。",
- emailButton:"メールアドレスとパスワード",
- schoolButton:"学校IDとパスワード",
- googleButton:"Googleで続ける", createButton:"新規登録",
- homeButton:"← トップページへ戻る", loginTitle:"ログイン",
- loginSubtitle:"アカウント情報を入力してね。",
- email:"メールアドレス", schoolId:"学校ID",
- password:"パスワード", loginButton:"ログイン",
- back:"← 戻る", registerTitle:"新規登録",
- registerSubtitle:"School Buddyのアカウントを作ろう。",
- nickname:"ニックネーム", registerEmail:"メールアドレス",
- registerPassword:"パスワード", grade:"学年",
- gradePlaceholder:"学年を選択", className:"クラス",
- tempPassword:"学校から配布された仮パスワード（任意）",
- registerButton:"アカウントを作成",
- registerNotice:"現在は画面のプレビューです。安全な登録機能とメール認証はまだ接続されていません。",
- googleNotice:"Googleログインはまだ接続されていません。",
- loginNotice:"現在は画面のプレビューです。ログイン認証はまだ接続されていません。",
- message:"小さなサポートが、大きな変化につながる。"
-},
-ko: {
- role:"학생 계정", teacherRole:"교사 계정",
- welcome:"다시 오신 것을 환영합니다!", methodSubtitle:"로그인 방법을 선택하세요.",
- emailButton:"이메일 및 비밀번호", schoolButton:"학교 ID 및 비밀번호",
- googleButton:"Google로 계속하기", createButton:"계정 만들기",
- homeButton:"← 홈으로", loginTitle:"로그인",
- loginSubtitle:"계정 정보를 입력하세요.", email:"이메일 주소",
- schoolId:"학교 ID", password:"비밀번호", loginButton:"로그인",
- back:"← 뒤로", registerTitle:"계정 만들기",
- registerSubtitle:"School Buddy 계정을 설정하세요.",
- nickname:"닉네임", registerEmail:"이메일 주소",
- registerPassword:"비밀번호 만들기", grade:"학년",
- gradePlaceholder:"학년 선택", className:"반",
- tempPassword:"학교 임시 비밀번호 (선택)",
- registerButton:"계정 만들기",
- registerNotice:"현재 미리보기입니다. 안전한 가입과 이메일 인증은 아직 연결되지 않았습니다.",
- googleNotice:"Google 로그인은 아직 연결되지 않았습니다.",
- loginNotice:"현재 미리보기입니다. 로그인 인증은 아직 연결되지 않았습니다.",
- message:"작은 도움이 큰 변화를 만들 수 있어요."
-},
-zh: {
- role:"学生账户", teacherRole:"教师账户",
- welcome:"欢迎回来！", methodSubtitle:"请选择登录方式。",
- emailButton:"邮箱和密码", schoolButton:"学校ID和密码",
- googleButton:"使用Google继续", createButton:"创建账户",
- homeButton:"← 返回首页", loginTitle:"登录",
- loginSubtitle:"请输入账户信息。", email:"邮箱地址",
- schoolId:"学校ID", password:"密码", loginButton:"登录",
- back:"← 返回", registerTitle:"创建账户",
- registerSubtitle:"创建你的School Buddy账户。",
- nickname:"昵称", registerEmail:"邮箱地址",
- registerPassword:"设置密码", grade:"年级",
- gradePlaceholder:"选择年级", className:"班级",
- tempPassword:"学校提供的临时密码（可选）",
- registerButton:"创建账户",
- registerNotice:"当前为预览页面。安全注册和邮箱验证尚未连接。",
- googleNotice:"Google登录尚未连接。",
- loginNotice:"当前为预览页面。账户验证尚未连接。",
- message:"一点点支持，也能带来很大的改变。"
-},
-fr: {
- role:"COMPTE ÉLÈVE", teacherRole:"COMPTE ENSEIGNANT",
- welcome:"Bon retour !", methodSubtitle:"Choisissez votre méthode de connexion.",
- emailButton:"E-mail et mot de passe", schoolButton:"Identifiant scolaire",
- googleButton:"Continuer avec Google", createButton:"Créer un compte",
- homeButton:"← Retour à l'accueil", loginTitle:"Connexion",
- loginSubtitle:"Entrez vos informations.", email:"Adresse e-mail",
- schoolId:"Identifiant scolaire", password:"Mot de passe",
- loginButton:"Se connecter", back:"← Retour",
- registerTitle:"Créer un compte",
- registerSubtitle:"Configurez votre compte School Buddy.",
- nickname:"Pseudonyme", registerEmail:"Adresse e-mail",
- registerPassword:"Créer un mot de passe", grade:"Année scolaire",
- gradePlaceholder:"Choisir votre année", className:"Classe",
- tempPassword:"Mot de passe temporaire (facultatif)",
- registerButton:"Créer un compte",
- registerNotice:"Aperçu uniquement. L'inscription sécurisée et la vérification par e-mail ne sont pas encore connectées.",
- googleNotice:"La connexion Google n'est pas encore disponible.",
- loginNotice:"Aperçu uniquement. L'authentification n'est pas encore connectée.",
- message:"Un peu de soutien peut faire une grande différence."
-},
-es: {
- role:"CUENTA DE ESTUDIANTE", teacherRole:"CUENTA DE DOCENTE",
- welcome:"¡Bienvenido de nuevo!", methodSubtitle:"Elige cómo iniciar sesión.",
- emailButton:"Correo y contraseña", schoolButton:"ID escolar y contraseña",
- googleButton:"Continuar con Google", createButton:"Crear una cuenta",
- homeButton:"← Volver al inicio", loginTitle:"Iniciar sesión",
- loginSubtitle:"Introduce tus datos.", email:"Correo electrónico",
- schoolId:"ID escolar", password:"Contraseña",
- loginButton:"Iniciar sesión", back:"← Volver",
- registerTitle:"Crear una cuenta",
- registerSubtitle:"Configura tu cuenta de School Buddy.",
- nickname:"Apodo", registerEmail:"Correo electrónico",
- registerPassword:"Crear contraseña", grade:"Curso",
- gradePlaceholder:"Selecciona tu curso", className:"Clase",
- tempPassword:"Contraseña temporal de la escuela (opcional)",
- registerButton:"Crear cuenta",
- registerNotice:"Vista previa. El registro seguro y la verificación por correo aún no están conectados.",
- googleNotice:"El inicio de sesión con Google aún no está conectado.",
- loginNotice:"Vista previa. La autenticación aún no está conectada.",
- message:"Un poco de apoyo puede marcar una gran diferencia."
-},
-de: {
- role:"SCHÜLERKONTO", teacherRole:"LEHRERKONTO",
- welcome:"Willkommen zurück!", methodSubtitle:"Wähle deine Anmeldemethode.",
- emailButton:"E-Mail und Passwort", schoolButton:"Schul-ID und Passwort",
- googleButton:"Mit Google fortfahren", createButton:"Konto erstellen",
- homeButton:"← Zur Startseite", loginTitle:"Anmelden",
- loginSubtitle:"Gib deine Daten ein.", email:"E-Mail-Adresse",
- schoolId:"Schul-ID", password:"Passwort",
- loginButton:"Anmelden", back:"← Zurück",
- registerTitle:"Konto erstellen",
- registerSubtitle:"Richte dein School Buddy-Konto ein.",
- nickname:"Spitzname", registerEmail:"E-Mail-Adresse",
- registerPassword:"Passwort erstellen", grade:"Klassenstufe",
- gradePlaceholder:"Klassenstufe auswählen", className:"Klasse",
- tempPassword:"Vorläufiges Schulpasswort (optional)",
- registerButton:"Konto erstellen",
- registerNotice:"Vorschau. Sichere Registrierung und E-Mail-Bestätigung sind noch nicht verbunden.",
- googleNotice:"Google-Anmeldung ist noch nicht verbunden.",
- loginNotice:"Vorschau. Die Anmeldung ist noch nicht verbunden.",
- message:"Ein wenig Unterstützung kann viel bewirken."
-},
-pt: {
- role:"CONTA DE ESTUDANTE", teacherRole:"CONTA DE PROFESSOR",
- welcome:"Bem-vindo de volta!", methodSubtitle:"Escolha como deseja entrar.",
- emailButton:"E-mail e senha", schoolButton:"ID escolar e senha",
- googleButton:"Continuar com Google", createButton:"Criar uma conta",
- homeButton:"← Voltar ao início", loginTitle:"Entrar",
- loginSubtitle:"Insira seus dados.", email:"Endereço de e-mail",
- schoolId:"ID escolar", password:"Senha",
- loginButton:"Entrar", back:"← Voltar",
- registerTitle:"Criar uma conta",
- registerSubtitle:"Configure sua conta School Buddy.",
- nickname:"Apelido", registerEmail:"Endereço de e-mail",
- registerPassword:"Criar senha", grade:"Ano escolar",
- gradePlaceholder:"Selecione seu ano", className:"Turma",
- tempPassword:"Senha temporária da escola (opcional)",
- registerButton:"Criar conta",
- registerNotice:"Prévia. O cadastro seguro e a verificação por e-mail ainda não estão conectados.",
- googleNotice:"O login do Google ainda não está conectado.",
- loginNotice:"Prévia. A autenticação ainda não está conectada.",
- message:"Um pouco de apoio pode fazer uma grande diferença."
-}
-};
-
-let currentLang = localStorage.getItem("schoolBuddyLanguage") || "en";
 
 function setLanguage(lang) {
   currentLang = translations[lang] ? lang : "en";
@@ -559,7 +597,7 @@ function setLanguage(lang) {
   document.documentElement.lang = currentLang;
   document.getElementById("language").value = currentLang;
 
-  const ids = {
+  const textMap = {
     welcome:"welcome",
     methodSubtitle:"methodSubtitle",
     emailButton:"emailButton",
@@ -569,55 +607,58 @@ function setLanguage(lang) {
     homeButton:"homeButton",
     loginTitle:"loginTitle",
     loginSubtitle:"loginSubtitle",
-    password:"passwordLabel",
+    passwordLabel:"password",
     loginButton:"loginButton",
-    back:"backButton",
+    forgotButton:"forgotButton",
+    backButton:"back",
+    forgotTitle:"forgotTitle",
+    forgotSubtitle:"forgotSubtitle",
+    forgotEmailLabel:"email",
+    resetButton:"resetButton",
+    forgotBack:"back",
     registerTitle:"registerTitle",
     registerSubtitle:"registerSubtitle",
-    nickname:"nicknameLabel",
-    registerEmail:"registerEmailLabel",
-    registerPassword:"registerPasswordLabel",
-    grade:"gradeLabel",
+    nicknameLabel:"nickname",
+    registerEmailLabel:"registerEmail",
+    registerPasswordLabel:"registerPassword",
+    gradeLabel:"grade",
     gradePlaceholder:"gradePlaceholder",
-    className:"classLabel",
-    tempPassword:"tempPasswordLabel",
+    grade1:"grade1",
+    grade2:"grade2",
+    grade3:"grade3",
+    gradeOther:"gradeOther",
+    classLabel:"className",
+    tempPasswordLabel:"tempPassword",
     registerButton:"registerButton",
     registerNotice:"registerNotice",
+    registerBack:"back",
     message:"message"
   };
 
-  Object.entries(ids).forEach(([key,id]) => {
+  Object.entries(textMap).forEach(([id,key]) => {
     document.getElementById(id).textContent = t[key];
   });
 
-  document.getElementById("registerBack").textContent = t.back;
   document.getElementById("roleLabel").textContent =
     selectedRole === "teacher" ? t.teacherRole : t.role;
 
-  document.getElementById("language").value = currentLang;
+  document.getElementById("loginId").placeholder = t.email;
+  document.getElementById("forgotEmail").placeholder = t.email;
+  document.getElementById("nicknameInput").placeholder = t.nickname;
+  document.getElementById("registerEmailInput").placeholder = t.email;
+  document.getElementById("registerPasswordInput").placeholder = t.registerPassword;
+  document.getElementById("classInput").placeholder = t.className;
+  document.getElementById("tempPasswordInput").placeholder = t.tempPlaceholder;
+
   localStorage.setItem("schoolBuddyLanguage", currentLang);
 }
 
-document.getElementById("language").addEventListener("change", e => {
-  setLanguage(e.target.value);
+document.getElementById("language").addEventListener("change", event => {
+  setLanguage(event.target.value);
 });
-
-document.getElementById("registerPasswordLabel").textContent =
-  translations[currentLang].registerPassword;
-
-document.getElementById("loginIdLabel").textContent =
-  translations[currentLang].email;
-
-document.getElementById("loginId").type = "email";
 
 setLanguage(currentLang);
 showScreen("methodScreen");
-  function togglePassword() {
-  const password = document.getElementById("loginPassword");
-
-password.type =
-    password.type === "password" ? "text" : "password";
-}
 </script>
 
 </body>
