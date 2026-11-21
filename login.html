@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7f8fc">
+<title>Login | School Buddy 2.0</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #f7f8fc;
+  color: #29364a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.container {
+  width: 100%;
+  max-width: 440px;
+}
+
+.logo {
+  text-align: center;
+  font-size: 25px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.logo span { color: #8b7bea; }
+
+.card {
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 10px 35px rgba(50, 55, 90, .07);
+}
+
+h1 {
+  font-size: 25px;
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: #8991a2;
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #e4e6ee;
+  border-radius: 12px;
+  background: #fbfbfd;
+  font-size: 15px;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: #9788ec;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 13px;
+  background: #8d7bea;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 22px;
+}
+
+.secondary {
+  background: #f0edff;
+  color: #695bb5;
+  margin-top: 12px;
+}
+
+.text-button {
+  background: none;
+  color: #8171d5;
+  padding: 10px;
+  margin-top: 12px;
+}
+
+.hidden { display: none; }
+
+.message {
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+  margin-top: 18px;
+}
+
+.role {
+  border: 1px solid #e9e8f2;
+  padding: 20px;
+  border-radius: 16px;
+  margin-top: 14px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.role:hover {
+  border-color: #9b8bea;
+  background: #faf9ff;
+}
+
+.role strong { display: block; margin-bottom: 5px; }
+.role small { color: #8991a2; }
+
+.back {
+  color: #8171d5;
+  background: none;
+  margin-top: 8px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="logo">School <span>Buddy.</span></div>
+
+  <div class="card">
+
+    <section id="roleScreen">
+      <h1>Welcome!</h1>
+      <p class="subtitle">Your learning companion starts here.</p>
+
+      <div class="role" onclick="chooseRole('student')">
+        <strong>🎓 Student</strong>
+        <small>Continue as a student</small>
+      </div>
+
+      <div class="role" onclick="chooseRole('teacher')">
+        <strong>📚 Teacher</strong>
+        <small>Continue as a teacher</small>
+      </div>
+    </section>
+
+    <section id="methodScreen" class="hidden">
+      <h1>Welcome back!</h1>
+      <p class="subtitle">Choose your login method.</p>
+
+      <button onclick="showLogin('email')">Email & Password</button>
+      <button class="secondary" onclick="showLogin('school')">School ID & Password</button>
+      <button class="secondary" onclick="showLogin('google')">Continue with Google</button>
+      <button class="text-button" onclick="showRegister()">Create an account</button>
+      <button class="back" onclick="goBack()">← Back</button>
+    </section>
+
+    <section id="loginScreen" class="hidden">
+      <h1>Log in</h1>
+      <p class="subtitle" id="loginDescription">Enter your details.</p>
+
+      <form onsubmit="demoSubmit(event, 'login')">
+        <label id="loginIdLabel">Email address</label>
+        <input id="loginId" type="email" placeholder="you@example.com" required>
+
+        <label>Password</label>
+        <input type="password" placeholder="Your password" required>
+
+        <button type="submit">Log in</button>
+      </form>
+      <button class="back" onclick="backToMethods()">← Back</button>
+    </section>
+
+    <section id="registerScreen" class="hidden">
+      <h1>Create account</h1>
+      <p class="subtitle">Let's set up your School Buddy account.</p>
+
+      <form onsubmit="demoSubmit(event, 'register')">
+        <label>Nickname</label>
+        <input type="text" placeholder="Your nickname" required>
+
+        <label>Email address</label>
+        <input type="email" placeholder="you@example.com" required>
+
+        <label>Password</label>
+        <input type="password" placeholder="Create a password" required>
+
+        <label>Grade</label>
+        <select required>
+          <option value="">Select your grade</option>
+          <option>1st year</option>
+          <option>2nd year</option>
+          <option>3rd year</option>
+          <option>Other</option>
+        </select>
+
+        <label>Class</label>
+        <input type="text" placeholder="Your class" required>
+
+        <button type="submit">Create account</button>
+      </form>
+
+      <button class="back" onclick="backToMethods()">← Back</button>
+    </section>
+
+    <p class="message" id="message">
+      A little support can make a big difference.
+    </p>
+
+  </div>
+</div>
+
+<script>
+let selectedRole = "";
+
+function hideAll() {
+  document.querySelectorAll(".card section").forEach(section => {
+    section.classList.add("hidden");
+  });
+}
+
+function chooseRole(role) {
+  selectedRole = role;
+  hideAll();
+  document.getElementById("methodScreen").classList.remove("hidden");
+}
+
+function showLogin(method) {
+  hideAll();
+  document.getElementById("loginScreen").classList.remove("hidden");
+
+  const label = document.getElementById("loginIdLabel");
+  const input = document.getElementById("loginId");
+  const description = document.getElementById("loginDescription");
+
+  if (method === "school") {
+    label.textContent = "School ID";
+    input.type = "text";
+    input.placeholder = "Enter your school ID";
+    description.textContent = "Log in with your school account.";
+  } else {
+    label.textContent = "Email address";
+    input.type = "email";
+    input.placeholder = "you@example.com";
+    description.textContent = "Log in with your email account.";
+  }
+}
+
+function showRegister() {
+  hideAll();
+  document.getElementById("registerScreen").classList.remove("hidden");
+}
+
+function goBack() {
+  hideAll();
+  document.getElementById("roleScreen").classList.remove("hidden");
+}
+
+function backToMethods() {
+  hideAll();
+  document.getElementById("methodScreen").classList.remove("hidden");
+}
+
+function demoSubmit(event, type) {
+  event.preventDefault();
+
+  if (type === "register") {
+    alert("Registration screen preview! Account creation is not connected yet.");
+  } else {
+    alert("Login screen preview! Authentication is not connected yet.");
+  }
+}
+</script>
+
+</body>
+</html>
