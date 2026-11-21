@@ -418,10 +418,12 @@ footer {
 </div>
 
 <script>
-unction navigate(name, button) {
+function navigate(name, button) {
   document.querySelectorAll(".nav button").forEach(item => {
-    item.classList.r
-function showFeature(name) {
+    item.classList.remove("active");
+  });
+  button.classList.add("active");
+}function showFeature(name) {
   document.getElementById("featureMessage").textContent =
     name + " の機能は準備中だよ！";
 }
