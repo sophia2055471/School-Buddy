@@ -230,13 +230,33 @@ button {
 </div>>
 
         <button type="submit" id="loginButton">Log in</button>
+        <button type="button" class="text-button"
+        onclick="showForgotPassword()" id="forgotButton">
+  Forgot password?
+</button>  
       </form>
 
       <button class="back" onclick="backToMethods()" id="backButton">
         ← Back
       </button>
     </section>
+<section id="forgotScreen" class="hidden">
+  <h1 id="forgotTitle">Reset password</h1>
+  <p class="subtitle" id="forgotSubtitle">
+    Enter your email address to reset your password.
+  </p>
 
+  <form onsubmit="demoSubmit(event, 'forgot')">
+    <label>Email address</label>
+    <input type="email" placeholder="you@example.com" required>
+
+    <button type="submit">Send reset link</button>
+  </form>
+
+  <button class="back" onclick="backToMethods()">
+    ← Back
+  </button>
+</section>
     <section id="registerScreen" class="hidden">
       <h1 id="registerTitle">Create account</h1>
       <p class="subtitle" id="registerSubtitle">
@@ -296,7 +316,15 @@ if (selectedRole !== "student" && selectedRole !== "teacher") {
   selectedRole = "student";
 }
 
-const screens = ["methodScreen", "loginScreen", "registerScreen"];
+const screens = [
+  "methodScreen",
+  "loginScreen",
+  "registerScreen",
+  "forgotScreen"
+];
+function showForgotPassword() {
+  showScreen("forgotScreen");
+}  
 
 function hideAll() {
   screens.forEach(id => document.getElementById(id).classList.add("hidden"));
