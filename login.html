@@ -589,17 +589,40 @@ function togglePassword() {
   input.type = input.type === "password" ? "text" : "password";
 }
 
-function demoSubmit(event, type) {
+async function demoSubmit(event, type) {
   event.preventDefault();
 
   const t = translations[currentLang];
 
-  if (type === "register") {
-    alert(t.registerNotice);
-  } else if (type === "forgot") {
-    alert(t.forgotNotice);
-  } else {
-    alert(t.loginNotice);
+  try {
+    if (type === "register") {
+      const email = document.getElementById("registerEmailInput").value.trim();
+      const password = document.getElementById("registerPasswordInput").value;
+
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      alert("Account created successfully!");
+      showScreen("loginScreen");
+
+    } else if (type === "forgot") {
+      const email = document.getElementById("forgotEmail").value.trim();
+
+      await sendPasswordResetEmail(auth, email);
+
+      alert("Password reset email sent!");
+
+    } else if (type === "login") {
+      const email = document.getElementById("loginId").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      await signInWithEmailAndPassword(auth, email, password);
+
+      alert("Login successful!");
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong: " + error.message);
   }
 }
 
