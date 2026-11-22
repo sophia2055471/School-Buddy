@@ -4,104 +4,380 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>School Buddy 先生用</title>
+<meta name="theme-color" content="#eaf3ff">
+<title>School Buddy. | Teacher</title>
 <style>
-body {
-  font-family: sans-serif;
-  background: #f3f7fc;
-  padding: 20px;
-  color: #26354a;
+:root{
+  --bg:#eaf3ff;
+  --text:#202b45;
+  --muted:#78849d;
+  --purple:#8875ef;
+  --line:rgba(133,151,190,.18);
+  --shadow:0 12px 35px rgba(94,125,180,.10);
 }
-h1 { color: #8260ad; }
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 18px;
-  margin: 18px 0;
+*{box-sizing:border-box}
+body{
+  margin:0;padding:25px;
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  color:var(--text);
+  background:radial-gradient(ellipse at 15% 5%,#fff,transparent 38%),
+  linear-gradient(135deg,#eaf3ff,#f5f6ff 55%,#e5f0ff);
 }
-input, textarea {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 13px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  font-size: 16px;
+.container{max-width:1050px;margin:auto}
+header{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;margin-bottom:30px;
 }
-button {
-  background: #8260ad;
-  color: white;
-  border: 0;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 16px;
+.brand{font-size:27px;font-weight:800;letter-spacing:-1px}
+.brand span{color:var(--purple)}
+.subtitle{color:var(--muted);font-size:14px}
+.card{
+  padding:25px;margin-bottom:22px;
+  background:rgba(255,255,255,.86);
+  border:1px solid white;border-radius:27px;
+  box-shadow:var(--shadow);
+}
+h1{font-size:30px;margin:8px 0}
+h2{font-size:21px;margin:0 0 20px}
+label{display:block;font-size:14px;font-weight:650;margin:13px 0 7px}
+input,select{
+  width:100%;padding:14px;border:1px solid var(--line);
+  border-radius:13px;background:white;color:var(--text);
+  font:inherit;font-size:16px;
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+button{
+  border:0;border-radius:13px;padding:14px 19px;
+  background:var(--purple);color:white;font:inherit;
+  font-weight:650;cursor:pointer;
+}
+button:disabled{opacity:.5;cursor:wait}
+.primary{width:100%;margin-top:20px}
+.secondary{background:#eeeaff;color:#725ce3}
+.danger{background:#fff0f1;color:#bd5263;padding:9px 13px}
+.status{
+  padding:13px 16px;border-radius:13px;
+  background:#f0edff;color:#6957c4;
+  margin-bottom:20px;font-size:14px;
+}
+.lesson{
+  display:grid;grid-template-columns:55px 1fr auto;
+  align-items:center;gap:13px;padding:15px 5px;
+  border-bottom:1px solid var(--line);
+}
+.lesson:last-child{border-bottom:0}
+.period{
+  display:grid;place-items:center;width:45px;height:43px;
+  background:#eeeaff;color:#725ce3;border-radius:13px;
+  font-weight:750;
+}
+.lesson-title{font-weight:700}
+.lesson-detail{font-size:13px;color:var(--muted);margin-top:5px}
+.empty{padding:20px;color:var(--muted);text-align:center}
+.actions{display:flex;gap:8px;align-items:center}
+#logoutButton{background:white;color:#725ce3;border:1px solid var(--line)}
+@media(max-width:600px){
+  body{padding:15px}
+  .card{padding:19px}
+  .grid{grid-template-columns:1fr}
+  header{align-items:flex-start}
 }
 </style>
 </head>
 <body>
+<div class="container">
 
-<h1>School Buddy 📚</h1>
-<p>先生専用ページ</p>
+<header>
+  <div>
+    <div class="brand">School <span>Buddy.</span></div>
+    <div class="subtitle">Teacher Dashboard</div>
+  </div>
+  <button id="logoutButton" type="button">ログアウト</button>
+</header>
 
-<div class="card">
-<h2>📅 今日の予定を登録</h2>
+<div class="status" id="status">Firebaseに接続しています...</div>
 
-<input type="date" id="date">
-<input type="text" id="schedule" placeholder="授業・予定">
-<textarea id="instruction" placeholder="先生からの指示"></textarea>
+<section class="card">
+  <div class="subtitle">TEACHER DASHBOARD</div>
+  <h1>先生用ダッシュボード</h1>
+  <p class="subtitle" id="teacherInfo">先生の情報を確認しています...</p>
+</section>
 
-<button onclick="saveSchedule()">予定を保存する</button>
-<p id="message"></p>
+<section class="card">
+  <h2>📅 クラスの時間割を登録</h2>
+
+  <form id="scheduleForm">
+    <div class="grid">
+      <div>
+        <label for="weekday">曜日</label>
+        <select id="weekday" required>
+          <option value="1">月曜日</option>
+          <option value="2">火曜日</option>
+          <option value="3">水曜日</option>
+          <option value="4">木曜日</option>
+          <option value="5">金曜日</option>
+          <option value="6">土曜日</option>
+        </select>
+      </div>
+      <div>
+        <label for="period">何時間目？</label>
+        <select id="period" required>
+          <option value="1">1時間目</option>
+          <option value="2">2時間目</option>
+          <option value="3">3時間目</option>
+          <option value="4">4時間目</option>
+          <option value="5">5時間目</option>
+          <option value="6">6時間目</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="subject">授業名</label>
+    <input id="subject" placeholder="例：数学" maxlength="40" required>
+
+    <div class="grid">
+      <div>
+        <label for="startTime">開始時刻</label>
+        <input id="startTime" type="time" value="08:45" required>
+      </div>
+      <div>
+        <label for="endTime">終了時刻</label>
+        <input id="endTime" type="time" value="09:30" required>
+      </div>
+    </div>
+
+    <label for="room">教室</label>
+    <input id="room" placeholder="例：3年1組・理科室" maxlength="40">
+
+    <button class="primary" id="saveButton" type="submit">
+      時間割を保存する
+    </button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>📚 登録した時間割</h2>
+  <div class="grid">
+    <div>
+      <label for="filterDay">表示する曜日</label>
+      <select id="filterDay">
+        <option value="1">月曜日</option>
+        <option value="2">火曜日</option>
+        <option value="3">水曜日</option>
+        <option value="4">木曜日</option>
+        <option value="5">金曜日</option>
+        <option value="6">土曜日</option>
+      </select>
+    </div>
+  </div>
+  <div id="savedSchedule" class="empty">読み込み中...</div>
+</section>
+
 </div>
 
-<div class="card">
-<h2>📋 保存した予定</h2>
-<div id="saved"></div>
-</div>
+<script type="module">
+import { firebaseConfig } from "./firebase-config.js";
 
-<script>
-function saveSchedule() {
-  const date = document.getElementById("date").value;
-  const schedule = document.getElementById("schedule").value;
-  const instruction = document.getElementById("instruction").value;
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
-  if (!date || !schedule || !instruction) {
-    alert("全部入力してね！");
+import {
+  getAuth,onAuthStateChanged,signOut
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+import {
+  getFirestore,doc,getDoc,collection,getDocs,
+  setDoc,deleteDoc
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+let currentUser=null;
+let classId=null;
+
+const status=document.getElementById("status");
+const saved=document.getElementById("savedSchedule");
+
+const days={
+  1:"月曜日",2:"火曜日",3:"水曜日",
+  4:"木曜日",5:"金曜日",6:"土曜日"
+};
+
+function setStatus(message){
+  status.textContent=message;
+}
+
+function scheduleCollection(){
+  return collection(db,"classes",classId,"schedule");
+}
+
+async function loadSchedule(){
+  saved.replaceChildren();
+
+  try{
+    const day=Number(document.getElementById("filterDay").value);
+    const snapshot=await getDocs(scheduleCollection());
+
+    const lessons=snapshot.docs
+      .map(d=>({id:d.id,...d.data()}))
+      .filter(item=>Number(item.weekday)===day)
+      .sort((a,b)=>Number(a.period)-Number(b.period));
+
+    if(!lessons.length){
+      saved.textContent="この曜日の時間割はまだありません。";
+      saved.className="empty";
+      return;
+    }
+
+    saved.className="";
+
+    lessons.forEach(item=>{
+      const row=document.createElement("div");
+      row.className="lesson";
+
+      const number=document.createElement("div");
+      number.className="period";
+      number.textContent=item.period+"";
+
+      const info=document.createElement("div");
+      const title=document.createElement("div");
+      title.className="lesson-title";
+      title.textContent=item.subject;
+
+      const detail=document.createElement("div");
+      detail.className="lesson-detail";
+      detail.textContent=
+        item.startTime+" – "+item.endTime+
+        (item.room?" ／ "+item.room:"");
+
+      info.append(title,detail);
+
+      const remove=document.createElement("button");
+      remove.className="danger";
+      remove.type="button";
+      remove.textContent="削除";
+
+      remove.addEventListener("click",async()=>{
+        if(!confirm("この時間割を削除しますか？"))return;
+
+        try{
+          await deleteDoc(doc(scheduleCollection(),item.id));
+          await loadSchedule();
+          setStatus("時間割を削除しました。");
+        }catch(error){
+          console.error(error);
+          setStatus("削除できませんでした。");
+        }
+      });
+
+      row.append(number,info,remove);
+      saved.append(row);
+    });
+
+  }catch(error){
+    console.error(error);
+    setStatus("時間割を読み込めませんでした。");
+  }
+}
+
+document.getElementById("scheduleForm")
+.addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  if(!currentUser||!classId)return;
+
+  const weekday=Number(document.getElementById("weekday").value);
+  const period=Number(document.getElementById("period").value);
+  const subject=document.getElementById("subject").value.trim();
+  const startTime=document.getElementById("startTime").value;
+  const endTime=document.getElementById("endTime").value;
+  const room=document.getElementById("room").value.trim();
+
+  if(!subject||!startTime||!endTime){
+    alert("必要な項目を入力してね。");
     return;
   }
 
-  const data = {
-    date,
-    schedule,
-    instruction
-  };
-
-  localStorage.setItem("schoolBuddySchedule", JSON.stringify(data));
-
-  document.getElementById("message").textContent =
-    "予定を保存しました！🎉";
-
-  showSchedule();
-}
-
-function showSchedule() {
-  const data = JSON.parse(
-    localStorage.getItem("schoolBuddySchedule") || "null"
-  );
-
-  const saved = document.getElementById("saved");
-
-  if (!data) {
-    saved.textContent = "まだ予定はありません。";
+  if(startTime>=endTime){
+    alert("終了時刻は開始時刻より後にしてね。");
     return;
   }
 
-  saved.textContent =
-    data.date + " ／ " + data.schedule + " ／ " + data.instruction;
-}
+  const saveButton=document.getElementById("saveButton");
+  saveButton.disabled=true;
 
-showSchedule();
+  try{
+    const id=weekday+"_"+period;
+
+    await setDoc(doc(scheduleCollection(),id),{
+      weekday,
+      weekdayName:days[weekday],
+      period,
+      subject,
+      startTime,
+      endTime,
+      room,
+      updatedAt:Date.now(),
+      updatedBy:currentUser.uid
+    });
+
+    document.getElementById("subject").value="";
+    document.getElementById("room").value="";
+    document.getElementById("filterDay").value=String(weekday);
+
+    await loadSchedule();
+    setStatus("時間割を保存しました！🎉");
+
+  }catch(error){
+    console.error(error);
+    setStatus("保存できませんでした。アクセス権限を確認してください。");
+  }finally{
+    saveButton.disabled=false;
+  }
+});
+
+document.getElementById("filterDay")
+.addEventListener("change",loadSchedule);
+
+document.getElementById("logoutButton")
+.addEventListener("click",async()=>{
+  await signOut(auth);
+  location.href="login.html?role=teacher";
+});
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){
+    location.href="login.html?role=teacher";
+    return;
+  }
+
+  currentUser=user;
+
+  try{
+    const profile=await getDoc(doc(db,"users",user.uid));
+
+    if(!profile.exists()||profile.data().role!=="teacher"||!profile.data().classId){
+      setStatus("先生のアカウントまたはクラス情報が確認できません。");
+      document.getElementById("scheduleForm").style.display="none";
+      saved.textContent="管理者による先生アカウントの設定が必要です。";
+      return;
+    }
+
+    classId=profile.data().classId;
+
+    document.getElementById("teacherInfo").textContent=
+      "担当クラス："+classId;
+
+    setStatus("Firebaseに接続しました。");
+    await loadSchedule();
+
+  }catch(error){
+    console.error(error);
+    setStatus("Firebaseの情報を確認できませんでした。");
+  }
+});
 </script>
-
 </body>
 </html>
