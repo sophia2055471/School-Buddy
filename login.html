@@ -299,6 +299,7 @@ import {
   import {
   getFirestore,
   doc,
+  getDoc,
   setDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
@@ -604,7 +605,19 @@ async function demoSubmit(event, type) {
       const email = document.getElementById("registerEmailInput").value.trim();
       const password = document.getElementById("registerPasswordInput").value;
 
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+const nickname = document.getElementById("nicknameInput").value.trim();
+const grade = document.getElementById("gradeSelect").value;
+const className = document.getElementById("classInput").value.trim();
+
+await setDoc(doc(db, "users", userCredential.user.uid), {
+  nickname: nickname,
+  grade: grade,
+  className: className,
+  role: "student",
+  createdAt: serverTimestamp()
+});
 
       alert("Account created successfully!");
       showScreen("loginScreen");
@@ -621,8 +634,8 @@ async function demoSubmit(event, type) {
       const password = document.getElementById("loginPassword").value;
 
       await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = selectedRole === "teacher" ? "teacher.html" : "student.html";
 
-      alert("Login successful!");
     }
 
   } catch (error) {
