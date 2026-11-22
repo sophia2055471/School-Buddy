@@ -41,38 +41,68 @@ body {
 
 /* 起動アニメーション */
 
+
 .splash {
   position: fixed;
   inset: 0;
   z-index: 9999;
   display: grid;
   place-items: center;
+  overflow: hidden;
   background: #080a12;
   color: white;
-  clip-path: ellipse(150% 150% at 50% 0%);
-  transition: clip-path 1s cubic-bezier(.76,0,.24,1);
+  clip-path: inset(0);
+  transition: clip-path 1.15s cubic-bezier(.76,0,.24,1);
+}
+
+.splash::before {
+  content: "";
+  position: absolute;
+  width: 55vw;
+  height: 55vw;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(145,125,255,.38),
+    rgba(100,170,255,.13) 45%,
+    transparent 70%);
+  filter: blur(25px);
+  animation: glowMove 2s ease-in-out infinite alternate;
 }
 
 .splash-logo {
-  font-size: clamp(30px, 5vw, 52px);
+  position: relative;
+  z-index: 2;
+  font-size: clamp(32px,5vw,58px);
   font-weight: 750;
-  letter-spacing: -1.8px;
-  animation: logoAppear .65s ease both;
+  letter-spacing: -2px;
+  animation: premiumLogo 1.5s cubic-bezier(.2,.8,.2,1) both;
 }
 
 .splash-logo span {
-  color: #a18dfc;
+  color: #a998ff;
 }
 
 .splash.leaving {
-  clip-path: ellipse(150% 0% at 50% 0%);
+  clip-path: inset(0 0 100% 0 round 0 0 45% 45%);
   pointer-events: none;
 }
 
-@keyframes logoAppear {
-  from { opacity: 0; transform: translateY(14px) scale(.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes premiumLogo {
+  0% {
+    opacity: 0;
+    transform: scale(.78) translateY(20px);
+    filter: blur(12px);
+  }
+  45% { opacity: 1; filter: blur(0); }
+  75% { transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
 }
+
+@keyframes glowMove {
+  from { transform: translate(-12%,-8%) scale(.8); }
+  to { transform: translate(12%,8%) scale(1.2); }
+}
+
 
 .app {
   width: min(1600px, 100%);
@@ -256,6 +286,7 @@ body {
   gap: 24px;
 }
 
+
 .card {
   min-width: 0;
   padding: 25px;
@@ -264,47 +295,26 @@ body {
   background: var(--white);
   backdrop-filter: blur(22px);
   box-shadow: var(--shadow);
-  animation: cardAppear .55s ease both;
 }
 
-.home-grid .card:nth-child(2) {
-  animation-delay: .1s;
+.home-grid .card:first-child {
+  opacity: 0;
+  transform: translateX(-35px);
 }
 
-@keyframes cardAppear {
-  from { opacity: 0; transform: translateY(13px); }
-  to { opacity: 1; transform: translateY(0); }
+.home-grid .card:last-child {
+  opacity: 0;
+  transform: translateX(35px);
 }
 
-.card-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 22px;
+.app.ready .home-grid .card:first-child {
+  animation: revealLeft .9s .55s cubic-bezier(.2,.8,.2,1) both;
 }
 
-.card-title {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  margin: 0;
-  font-size: 23px;
-  font-weight: 730;
+.app.ready .home-grid .card:last-child {
+  animation: revealRight .9s .72s cubic-bezier(.2,.8,.2,1) both;
 }
 
-.card-icon {
-  display: grid;
-  place-items: center;
-  width: 47px;
-  height: 47px;
-  border-radius: 16px;
-  background: linear-gradient(145deg,#eeeaff,#e2eaff);
-  color: #8068ec;
-  font-size: 23px;
-}
-
-.text-link {
   border: 0;
   background: transparent;
   color: #8068ec;
