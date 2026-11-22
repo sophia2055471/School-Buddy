@@ -630,13 +630,39 @@ await setDoc(doc(db, "users", userCredential.user.uid), {
       alert("Password reset email sent!");
 
     } else if (type === "login") {
-      const email = document.getElementById("loginId").value.trim();
-      const password = document.getElementById("loginPassword").value;
+  const email = document.getElementById("loginId").value.trim();
+  const password = document.getElementById("loginPassword").value;
 
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = selectedRole === "teacher" ? "teacher.html" : "student.html";
+  const userCredential = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 
+  if (selectedRole === "student") {
+    const profileRef = doc(
+      db,
+      "users",
+      userCredential.user.uid
+    );
+
+    const profileSnap = await getDoc(profileRef);
+
+    if (!profileSnap.exists()) {
+      await setDoc(profileRef, {
+        nickname: "",
+        grade: "",
+        className: "",
+        role: "student",
+        createdAt: serverTimestamp()
+      });
     }
+
+    window.location.href = "student.html";
+  } else {
+    window.location.href = "teacher.html";
+  }
+}
 
   } catch (error) {
     console.error(error);
