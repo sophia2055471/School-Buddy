@@ -1,97 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>School Buddy Dashboard</title>
+
+<meta name="theme-color" content="#eaf3ff">
+
+<title>School Buddy.</title>
 
 <style>
+
+:root {
+
+  --bg: #eaf3ff;
+
+  --bg2: #f5f8ff;
+
+  --white: rgba(255,255,255,.78);
+
+  --white-solid: #ffffff;
+
+  --text: #202b45;
+
+  --muted: #78849d;
+
+  --purple: #8875ef;
+
+  --purple-light: #eeeaff;
+
+  --blue: #8ebcf5;
+
+  --line: rgba(133,151,190,.16);
+
+  --shadow: 0 12px 35px rgba(94,125,180,.10);
+
+}
+
 * {
+
   box-sizing: border-box;
+
 }
 
 body {
+
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #9586ed;
-  color: #29364a;
+
+  min-height: 100vh;
+
+  font-family: -apple-system, BlinkMacSystemFont,
+
+    "Helvetica Neue", Arial, sans-serif;
+
+  color: var(--text);
+
+  background:
+
+    radial-gradient(ellipse at 15% 5%, #ffffff 0%, transparent 38%),
+
+    radial-gradient(ellipse at 90% 30%, #d9eaff 0%, transparent 42%),
+
+    linear-gradient(135deg, #eaf3ff, #f5f6ff 55%, #e5f0ff);
+
+  overflow-x: hidden;
+
 }
 
-.dashboard {
+/* 起動アニメーション */
+
+.splash {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr) 220px;
-  max-width: 1450px;
-  min-height: 90vh;
-  margin: 5vh auto;
-  background: #fff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 12px 35px #5144a455;
-}
 
-.sidebar {
-  padding: 25px 16px;
-  border-right: 1px solid #edf0f5;
-  display: flex;
-  flex-direction: column;
-}
-
-.brand {
-  font-size: 21px;
-  font-weight: bold;
-  color: #315fb5;
-  margin-bottom: 35px;
-}
-
-.nav button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 13px 12px;
-  border: none;
-  border-radius: 9px;
-  background: transparent;
-  color: #657184;
-  font-size: 14px;
-  margin-bottom: 7px;
-  cursor: pointer;
-}
-
-.nav button.active {
-  background: #3268c3;
-  color: white;
-}
-
-.sidebar-bottom {
-  margin-top: auto;
-  padding-top: 25px;
-}
-
-.main {
-  background: #f8f9fd;
-  padding: 25px;
-  min-width: 0;
-}
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 28px;
-}
-
-.search {
-  width: 65%;
-  max-width: 350px;
-  padding: 12px;
-  border: 1px solid #e1e5ed;
-  border-radius: 9px;
-}
-
-h1 {
-  font-size: 25px;
-  margin-bottom: 5px;
-}
-
-.muted {
+  place-items: center;
