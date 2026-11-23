@@ -1,105 +1,1819 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>School Buddy 先生用</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Buddy | Teacher</title>
+
 <style>
-body {
-  font-family: sans-serif;
-  background: #f3f7fc;
-  padding: 20px;
-  color: #26354a;
+:root {
+  --navy: #17243a;
+  --navy2: #243650;
+  --blue: #7189b5;
+  --blue-light: #edf2fa;
+  --bg: #f5f7fb;
+  --white: #fff;
+  --text: #253147;
+  --muted: #8993a5;
+  --line: #e9edf3;
+  --radius: 18px;
 }
-h1 { color: #8260ad; }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Noto Sans JP", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+
+/* OPENING */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #101b2c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity .9s ease, visibility .9s ease;
+}
+
+.splash::before,
+.splash::after {
+  content: "";
+  position: absolute;
+  width: 470px;
+  height: 470px;
+  border: 1px solid rgba(150,180,220,.2);
+  border-radius: 50%;
+  box-shadow: 0 0 70px rgba(100,140,200,.1);
+  animation: float 8s ease-in-out infinite alternate;
+}
+
+.splash::after {
+  width: 340px;
+  height: 340px;
+  border-color: rgba(190,205,235,.2);
+  animation-delay: -3s;
+}
+
+.splash-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  animation: appear 1.4s ease both;
+}
+
+.splash-name {
+  color: white;
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 600;
+  letter-spacing: -2px;
+}
+
+.splash-tagline {
+  color: #aab7ca;
+  font-size: 10px;
+  letter-spacing: 5px;
+  margin-top: 18px;
+}
+
+.splash.hide { opacity: 0; visibility: hidden; }
+
+@keyframes float {
+  from { transform: scale(.9) rotate(-8deg); }
+  to { transform: scale(1.08) rotate(8deg); }
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* LAYOUT */
+
+.app {
+  display: flex;
+  min-height: 100vh;
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+
+.app.ready { opacity: 1; }
+
+.sidebar {
+  width: 245px;
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background: var(--navy);
+  color: white;
+  padding: 30px 17px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  padding: 0 12px;
+  margin-bottom: 13px;
+}
+
+.brand span { color: #a9bbdc; }
+
+.brand-caption {
+  font-size: 9px;
+  color: #91a0b8;
+  letter-spacing: 2px;
+  padding: 0 12px;
+  margin-bottom: 42px;
+}
+
+.menu-label {
+  color: #8594aa;
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  padding: 0 12px;
+  margin-bottom: 12px;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nav-button {
+  border: none;
+  background: transparent;
+  color: #b5bfd0;
+  border-radius: 11px;
+  text-align: left;
+  padding: 13px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: .2s;
+}
+
+.nav-button:hover { background: rgba(255,255,255,.08); }
+
+.nav-button.active {
+  background: #344965;
+  color: white;
+  font-weight: 600;
+}
+
+.nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid rgba(255,255,255,.12);
+  padding: 20px 12px 0;
+}
+
+.teacher-side-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.teacher-side-role {
+  color: #9eacc0;
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 4%;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+.topbar select {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.top-button {
+  width: 39px;
+  height: 39px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: white;
+  color: var(--navy);
+}
+
+.profile {
+  width: 39px;
+  height: 39px;
+  border: none;
+  border-radius: 50%;
+  background: var(--navy);
+  color: white;
+  font-weight: 700;
+}
+
+.page {
+  display: none;
+  max-width: 1150px;
+  margin: auto;
+  animation: appear .3s ease;
+}
+
+.page.active { display: block; }
+
+.page-heading { margin-bottom: 27px; }
+
+.page-heading h1 {
+  margin: 0 0 8px;
+  font-size: clamp(25px, 4vw, 32px);
+  letter-spacing: -1px;
+}
+
+.page-heading p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}
+
 .card {
   background: white;
-  padding: 20px;
-  border-radius: 18px;
-  margin: 18px 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 23px;
 }
-input, textarea {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 13px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+
+.grid-two {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+}
+
+.grid-three {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 15px;
+}
+
+.primary-button {
+  border: none;
   border-radius: 10px;
-  font-size: 16px;
-}
-button {
-  background: #8260ad;
+  background: var(--navy);
   color: white;
-  border: 0;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 16px;
+  padding: 11px 17px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.primary-button:hover { background: var(--navy2); }
+
+.secondary-button {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+}
+
+.danger-button {
+  border: 1px solid #f0dede;
+  background: #fffafa;
+  color: #b65d5d;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 11px;
+}
+
+.field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e5e9f0;
+  border-radius: 10px;
+  background: white;
+  color: var(--text);
+  outline: none;
+  font-size: 13px;
+}
+
+.field:focus { border-color: #8197bc; }
+
+textarea.field {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* HOME */
+
+.hero {
+  background: linear-gradient(115deg, #1b2b43, #314965);
+  color: white;
+  border-radius: 22px;
+  padding: 31px;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 50%;
+  right: -65px;
+  top: -100px;
+  box-shadow: 0 0 0 35px rgba(255,255,255,.025),
+              0 0 0 70px rgba(255,255,255,.02);
+}
+
+.hero-label {
+  color: #b9c9df;
+  font-size: 10px;
+  letter-spacing: 3px;
+  font-weight: 700;
+}
+
+.hero h2 {
+  font-size: 27px;
+  margin: 13px 0 8px;
+  letter-spacing: -1px;
+}
+
+.hero p {
+  color: #c5d0df;
+  font-size: 13px;
+  margin: 0;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.stat-value {
+  font-size: 27px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: 10px;
+}
+
+.stat-caption {
+  color: #a0a8b6;
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.schedule-row,
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 0;
+  border-bottom: 1px solid #f0f2f6;
+}
+
+.schedule-row:last-child,
+.list-row:last-child { border-bottom: none; }
+
+.period-box {
+  background: var(--blue-light);
+  color: #5f7598;
+  border-radius: 9px;
+  padding: 9px 6px;
+  min-width: 43px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.row-main { flex: 1; min-width: 0; }
+.row-main strong { display: block; font-size: 13px; }
+.row-main span { display: block; color: var(--muted); font-size: 11px; margin-top: 4px; }
+
+.empty {
+  text-align: center;
+  color: #a1a9b6;
+  padding: 28px 10px;
+  font-size: 12px;
+}
+
+/* TIMETABLE */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+}
+
+.form-grid .full { grid-column: 1 / -1; }
+
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 570px;
+}
+
+th {
+  color: #8994a5;
+  text-align: left;
+  font-weight: 600;
+  background: #f8f9fb;
+}
+
+th, td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+td { color: var(--text); }
+
+.action-row {
+  display: flex;
+  gap: 7px;
+}
+
+/* AI */
+
+.chat-box {
+  min-height: 370px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.chat-message {
+  max-width: 85%;
+  border-radius: 14px;
+  padding: 13px 16px;
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.chat-message.ai {
+  background: #edf2f8;
+  align-self: flex-start;
+}
+
+.chat-message.user {
+  background: #e4eaf3;
+  align-self: flex-end;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 9px;
+  margin-top: 13px;
+}
+
+.chat-input-row input { flex: 1; min-width: 0; }
+
+/* CALENDAR */
+
+.event-item {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.event-item:last-child { border: none; }
+
+.event-date {
+  background: var(--blue-light);
+  color: #60779b;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 11px;
+  min-width: 72px;
+  text-align: center;
+}
+
+/* SETTINGS */
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.setting-row:last-child { border: none; }
+
+.setting-row strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.setting-row span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.setting-row select { max-width: 170px; }
+
+/* MOBILE */
+
+@media(max-width:850px) {
+  .sidebar { width: 210px; }
+  .main { padding: 23px 18px; }
+  .grid-two { grid-template-columns: 1fr; }
+}
+
+@media(max-width:600px) {
+  .app { display: block; }
+
+  .sidebar {
+    position: fixed;
+    z-index: 50;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 7px 4px calc(7px + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(255,255,255,.1);
+  }
+
+  .sidebar .brand,
+  .sidebar .brand-caption,
+  .sidebar .menu-label,
+  .sidebar-bottom { display: none; }
+
+  .nav-list {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .nav-button {
+    flex: 1;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 1px;
+    font-size: 9px;
+  }
+
+  .nav-icon { font-size: 17px; }
+
+  .main { padding: 18px 14px 105px; }
+  .topbar { margin-bottom: 24px; }
+  .hero { padding: 24px 20px; }
+  .hero h2 { font-size: 23px; }
+  .grid-three { grid-template-columns: 1fr 1fr; }
+  .card { padding: 18px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid .full { grid-column: auto; }
+}
+
+body.large-text { font-size: 18px; }
+
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
 }
 </style>
 </head>
+
 <body>
 
-<h1>School Buddy 📚</h1>
-<p>先生専用ページ</p>
-
-<div class="card">
-<h2>📅 今日の予定を登録</h2>
-
-<input type="date" id="date">
-<input type="text" id="schedule" placeholder="授業・予定">
-<textarea id="instruction" placeholder="先生からの指示"></textarea>
-
-<button onclick="saveSchedule()">予定を保存する</button>
-<p id="message"></p>
+<div class="splash" id="splash">
+  <div class="splash-content">
+    <div class="splash-name">School Buddy</div>
+    <div class="splash-tagline">TEACHER DASHBOARD</div>
+  </div>
 </div>
 
-<div class="card">
-<h2>📋 保存した予定</h2>
-<div id="saved"></div>
+<div class="app" id="app">
+
+  <aside class="sidebar">
+    <div class="brand">School <span>Buddy.</span></div>
+    <div class="brand-caption">TEACHER DASHBOARD</div>
+
+    <div class="menu-label">MANAGEMENT</div>
+
+    <nav class="nav-list">
+      <button class="nav-button active" data-page="home">
+        <span class="nav-icon">⌂</span><span data-i18n="home">ホーム</span>
+      </button>
+      <button class="nav-button" data-page="students">
+        <span class="nav-icon">♙</span><span data-i18n="students">生徒</span>
+      </button>
+      <button class="nav-button" data-page="timetable">
+        <span class="nav-icon">▦</span><span data-i18n="timetable">時間割</span>
+      </button>
+      <button class="nav-button" data-page="announcements">
+        <span class="nav-icon">♧</span><span data-i18n="announcements">お知らせ</span>
+      </button>
+      <button class="nav-button" data-page="calendar">
+        <span class="nav-icon">▣</span><span data-i18n="calendar">カレンダー</span>
+      </button>
+      <button class="nav-button" data-page="ai">
+        <span class="nav-icon">✧</span><span>AI Assistant</span>
+      </button>
+      <button class="nav-button" data-page="settings">
+        <span class="nav-icon">⚙</span><span data-i18n="settings">設定</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="teacher-side-name" id="sideTeacherName">Teacher</div>
+      <div class="teacher-side-role">TEACHER ACCOUNT</div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <select id="languageSelect" aria-label="Language">
+        <option value="ja">日本語</option>
+        <option value="en">English</option>
+        <option value="ko">한국어</option>
+        <option value="zh">中文</option>
+        <option value="fr">Français</option>
+        <option value="es">Español</option>
+        <option value="de">Deutsch</option>
+        <option value="pt">Português</option>
+      </select>
+      <button class="top-button" id="notificationButton" title="Notifications">♧</button>
+      <button class="profile" id="profileButton">T</button>
+    </header>
+
+    <!-- HOME -->
+    <section class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-label">YOUR CLASSROOM SPACE</div>
+        <h2 id="welcomeName">Welcome, Teacher.</h2>
+        <p data-i18n="heroText">今日のクラスを確認しましょう。</p>
+      </div>
+
+      <div class="grid-three">
+        <div class="stat-card">
+          <div class="stat-label" data-i18n="classLabel">クラスID</div>
+          <div class="stat-value" id="classValue">--</div>
+          <div class="stat-caption" data-i18n="classCaption">担当クラス</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" data-i18n="todayLessons">今日の授業</div>
+          <div class="stat-value" id="lessonCount">0</div>
+          <div class="stat-caption" data-i18n="lessonCaption">登録済み時間割</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" data-i18n="nextLessons">時間割登録数</div>
+          <div class="stat-value" id="totalLessons">0</div>
+          <div class="stat-caption" data-i18n="totalCaption">クラス全体</div>
+        </div>
+      </div>
+
+      <div class="grid-two" style="margin-top:20px">
+        <div class="card">
+          <h3 class="card-title" data-i18n="todaySchedule">今日の時間割</h3>
+          <div id="homeSchedule">
+            <div class="empty">読み込み中...</div>
+          </div>
+          <button class="secondary-button" style="margin-top:12px"
+            onclick="showPage('timetable')" data-i18n="manageTimetable">
+            時間割を管理
+          </button>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title" data-i18n="quickActions">クイックアクセス</h3>
+          <div class="list-row">
+            <div class="row-main">
+              <strong data-i18n="editSchedule">時間割を編集</strong>
+              <span data-i18n="editScheduleDesc">クラスの授業を登録・変更</span>
+            </div>
+            <button class="secondary-button" onclick="showPage('timetable')">→</button>
+          </div>
+          <div class="list-row">
+            <div class="row-main">
+              <strong data-i18n="openAI">AI Assistant</strong>
+              <span data-i18n="openAIDesc">授業や学校業務について相談</span>
+            </div>
+            <button class="secondary-button" onclick="showPage('ai')">→</button>
+          </div>
+          <div class="list-row">
+            <div class="row-main">
+              <strong data-i18n="openCalendar">カレンダー</strong>
+              <span data-i18n="openCalendarDesc">自分の予定を管理</span>
+            </div>
+            <button class="secondary-button" onclick="showPage('calendar')">→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENTS -->
+    <section class="page" id="page-students">
+      <div class="page-heading">
+        <h1 data-i18n="students">生徒</h1>
+        <p data-i18n="studentsSubtitle">担当クラスの生徒情報を確認する画面です。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="studentManagement">生徒管理</h3>
+        <div class="empty" data-i18n="studentNotConnected">
+          生徒一覧の取得機能は、現在のFirebaseアクセスルールではまだ利用できません。
+        </div>
+        <p class="small muted" data-i18n="studentSecurityNote">
+          生徒の個人情報を安全に扱うため、先生が担当クラスの生徒情報だけを閲覧できる権限設定が必要です。
+        </p>
+      </div>
+    </section>
+
+    <!-- TIMETABLE -->
+    <section class="page" id="page-timetable">
+      <div class="page-heading">
+        <h1 data-i18n="timetable">時間割</h1>
+        <p data-i18n="timetableSubtitle">担当クラスの時間割を作成・管理できます。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" id="scheduleFormTitle" data-i18n="addLesson">授業を追加</h3>
+
+        <div class="form-grid">
+          <select class="field" id="scheduleWeekday">
+            <option value="1">月曜日</option>
+            <option value="2">火曜日</option>
+            <option value="3">水曜日</option>
+            <option value="4">木曜日</option>
+            <option value="5">金曜日</option>
+            <option value="6">土曜日</option>
+            <option value="0">日曜日</option>
+          </select>
+
+          <input class="field" id="schedulePeriod" type="number"
+            min="1" max="12" placeholder="授業の番号">
+
+          <input class="field" id="scheduleSubject" placeholder="教科・授業名">
+
+          <input class="field" id="scheduleRoom" placeholder="教室">
+
+          <input class="field" id="scheduleStart" type="time">
+
+          <input class="field" id="scheduleEnd" type="time">
+
+          <div class="full" style="display:flex;gap:9px;flex-wrap:wrap">
+            <button class="primary-button" id="saveScheduleButton" data-i18n="saveLesson">
+              授業を保存
+            </button>
+            <button class="secondary-button" id="cancelEditButton" style="display:none"
+              data-i18n="cancel">キャンセル</button>
+          </div>
+        </div>
+        <p class="small muted" style="margin-top:14px" data-i18n="scheduleNote">
+          保存した時間割は、同じクラスに所属する生徒のホーム画面にも反映されます。
+        </p>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="registeredLessons">登録済みの時間割</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="weekday">曜日</th>
+                <th data-i18n="period">時限</th>
+                <th data-i18n="subject">教科</th>
+                <th data-i18n="time">時間</th>
+                <th data-i18n="room">教室</th>
+                <th data-i18n="actions">操作</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleTable">
+              <tr><td colspan="6" class="empty">読み込み中...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANNOUNCEMENTS -->
+    <section class="page" id="page-announcements">
+      <div class="page-heading">
+        <h1 data-i18n="announcements">お知らせ</h1>
+        <p data-i18n="announcementsSubtitle">生徒へのお知らせを管理する画面です。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="announcementManagement">お知らせ管理</h3>
+        <div class="empty" data-i18n="announcementNotConnected">
+          お知らせの配信機能はまだ接続されていません。
+        </div>
+        <p class="small muted" data-i18n="announcementNote">
+          生徒画面への配信を行うには、先生側と生徒側で共有するデータ保存先とアクセス権限の設定が必要です。
+        </p>
+      </div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="page" id="page-calendar">
+      <div class="page-heading">
+        <h1 data-i18n="calendar">カレンダー</h1>
+        <p data-i18n="calendarSubtitle">先生個人の予定を管理しましょう。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="addEvent">予定を追加</h3>
+        <input class="field" id="eventTitle" placeholder="予定の名前">
+        <input class="field" id="eventDate" type="date" style="margin-top:10px">
+        <button class="primary-button" id="addEventButton" style="margin-top:12px"
+          data-i18n="add">追加する</button>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="myEvents">自分の予定</h3>
+        <div id="eventsList"></div>
+      </div>
+    </section>
+
+    <!-- AI -->
+    <section class="page" id="page-ai">
+      <div class="page-heading">
+        <h1>AI Assistant</h1>
+        <p data-i18n="aiSubtitle">授業準備や学校業務のアイデアを相談できます。</p>
+      </div>
+
+      <div class="chat-box" id="chatBox">
+        <div class="chat-message ai" data-i18n="aiGreeting">
+          こんにちは！先生向けAI Assistantです。授業準備や説明方法など、気軽に相談してください。
+        </div>
+      </div>
+
+      <div class="chat-input-row">
+        <input class="field" id="chatInput" placeholder="メッセージを入力...">
+        <button class="primary-button" id="sendButton" data-i18n="send">送信</button>
+      </div>
+
+      <p class="small muted" style="margin-top:12px" data-i18n="aiNotice">
+        AIの回答は間違っている場合があります。個人情報や生徒を特定できる情報は入力しないでください。
+      </p>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="page" id="page-settings">
+      <div class="page-heading">
+        <h1 data-i18n="settings">設定</h1>
+        <p data-i18n="settingsSubtitle">画面やアカウントの設定を管理します。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="displaySettings">表示設定</h3>
+
+        <div class="setting-row">
+          <div>
+            <strong data-i18n="textSize">文字サイズ</strong>
+            <span data-i18n="textSizeDesc">画面の文字を大きくする</span>
+          </div>
+          <select class="field" id="textSizeSelect">
+            <option value="normal">標準</option>
+            <option value="large">大きめ</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <strong data-i18n="motion">アニメーション</strong>
+            <span data-i18n="motionDesc">動きを少なくする</span>
+          </div>
+          <select class="field" id="motionSelect">
+            <option value="normal">通常</option>
+            <option value="reduced">少なくする</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="account">アカウント</h3>
+        <div class="setting-row">
+          <div>
+            <strong id="accountName">Teacher</strong>
+            <span data-i18n="signedIn">ログイン中</span>
+          </div>
+          <button class="secondary-button" id="logoutButton" data-i18n="logout">
+            ログアウト
+          </button>
+        </div>
+        <p class="small muted">School Buddy Teacher Dashboard 3.0</p>
+      </div>
+    </section>
+
+  </main>
 </div>
 
-<script>
-function saveSchedule() {
-  const date = document.getElementById("date").value;
-  const schedule = document.getElementById("schedule").value;
-  const instruction = document.getElementById("instruction").value;
+<script type="module">
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
-  if (!date || !schedule || !instruction) {
-    alert("全部入力してね！");
-    return;
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  setDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+import { firebaseConfig } from "./firebase-config.js";
+
+/* FIREBASE */
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+
+const WORKER_URL =
+  "https://proud-term-3a4f.sophiaminion205.workers.dev/";
+
+const $ = id => document.getElementById(id);
+
+let currentUser = null;
+let teacherProfile = {};
+let schedule = [];
+let events = [];
+let editingScheduleId = null;
+let currentLanguage = localStorage.getItem("sb_teacher_language") || "ja";
+
+/* TRANSLATIONS */
+
+const translations = {
+  ja: {
+    home:"ホーム", students:"生徒", timetable:"時間割",
+    announcements:"お知らせ", calendar:"カレンダー",
+    settings:"設定", heroText:"今日のクラスを確認しましょう。",
+    classLabel:"クラスID", classCaption:"担当クラス",
+    todayLessons:"今日の授業", lessonCaption:"登録済み時間割",
+    nextLessons:"時間割登録数", totalCaption:"クラス全体",
+    todaySchedule:"今日の時間割", manageTimetable:"時間割を管理",
+    quickActions:"クイックアクセス", editSchedule:"時間割を編集",
+    editScheduleDesc:"クラスの授業を登録・変更",
+    openAI:"AI Assistant", openAIDesc:"授業や学校業務について相談",
+    openCalendar:"カレンダー", openCalendarDesc:"自分の予定を管理",
+    studentsSubtitle:"担当クラスの生徒情報を確認する画面です。",
+    studentManagement:"生徒管理",
+    studentNotConnected:"生徒一覧の取得機能は、現在のFirebaseアクセスルールではまだ利用できません。",
+    studentSecurityNote:"生徒の個人情報を安全に扱うため、先生が担当クラスの生徒情報だけを閲覧できる権限設定が必要です。",
+    timetableSubtitle:"担当クラスの時間割を作成・管理できます。",
+    addLesson:"授業を追加", saveLesson:"授業を保存",
+    cancel:"キャンセル",
+    scheduleNote:"保存した時間割は、同じクラスに所属する生徒のホーム画面にも反映されます。",
+    registeredLessons:"登録済みの時間割",
+    weekday:"曜日", period:"時限", subject:"教科",
+    time:"時間", room:"教室", actions:"操作",
+    announcementsSubtitle:"生徒へのお知らせを管理する画面です。",
+    announcementManagement:"お知らせ管理",
+    announcementNotConnected:"お知らせの配信機能はまだ接続されていません。",
+    announcementNote:"生徒画面への配信を行うには、先生側と生徒側で共有するデータ保存先とアクセス権限の設定が必要です。",
+    calendarSubtitle:"先生個人の予定を管理しましょう。",
+    addEvent:"予定を追加", add:"追加する", myEvents:"自分の予定",
+    aiSubtitle:"授業準備や学校業務のアイデアを相談できます。",
+    aiGreeting:"こんにちは！先生向けAI Assistantです。授業準備や説明方法など、気軽に相談してください。",
+    aiNotice:"AIの回答は間違っている場合があります。個人情報や生徒を特定できる情報は入力しないでください。",
+    send:"送信", settingsSubtitle:"画面やアカウントの設定を管理します。",
+    displaySettings:"表示設定", textSize:"文字サイズ",
+    textSizeDesc:"画面の文字を大きくする",
+    motion:"アニメーション", motionDesc:"動きを少なくする",
+    account:"アカウント", signedIn:"ログイン中",
+    logout:"ログアウト"
+  },
+
+  en: {
+    home:"Home", students:"Students", timetable:"Timetable",
+    announcements:"Announcements", calendar:"Calendar",
+    settings:"Settings", heroText:"Take a look at today's classroom.",
+    classLabel:"Class ID", classCaption:"Assigned class",
+    todayLessons:"Today's Lessons", lessonCaption:"Scheduled lessons",
+    nextLessons:"Total Lessons", totalCaption:"All weekdays",
+    todaySchedule:"Today's Schedule", manageTimetable:"Manage Timetable",
+    quickActions:"Quick Access", editSchedule:"Edit Timetable",
+    editScheduleDesc:"Add or update class lessons",
+    openAI:"AI Assistant", openAIDesc:"Get help with teaching ideas",
+    openCalendar:"Calendar", openCalendarDesc:"Manage personal events",
+    studentsSubtitle:"View information about your class.",
+    studentManagement:"Student Management",
+    studentNotConnected:"Student listing is not available under the current Firebase access rules.",
+    studentSecurityNote:"Teacher access must be configured to allow viewing only students in the assigned class.",
+    timetableSubtitle:"Create and manage your class timetable.",
+    addLesson:"Add Lesson", saveLesson:"Save Lesson", cancel:"Cancel",
+    scheduleNote:"Saved lessons are also shown on the home page of students in this class.",
+    registeredLessons:"Registered Lessons", weekday:"Day",
+    period:"Period", subject:"Subject", time:"Time",
+    room:"Room", actions:"Actions",
+    announcementsSubtitle:"Manage announcements for students.",
+    announcementManagement:"Announcement Management",
+    announcementNotConnected:"Announcement publishing is not connected yet.",
+    announcementNote:"A shared data location and access rules are needed to publish announcements to student accounts.",
+    calendarSubtitle:"Manage your personal schedule.",
+    addEvent:"Add Event", add:"Add", myEvents:"My Events",
+    aiSubtitle:"Get ideas for lessons and school work.",
+    aiGreeting:"Hello! I'm your teacher AI Assistant. Ask me about lesson preparation or teaching ideas.",
+    aiNotice:"AI can make mistakes. Do not enter private information or details that identify students.",
+    send:"Send", settingsSubtitle:"Manage display and account settings.",
+    displaySettings:"Display Settings", textSize:"Text Size",
+    textSizeDesc:"Make text larger", motion:"Animation",
+    motionDesc:"Reduce motion", account:"Account",
+    signedIn:"Signed in", logout:"Log out"
+  },
+
+  ko: {
+    home:"홈", students:"학생", timetable:"시간표",
+    announcements:"공지사항", calendar:"캘린더", settings:"설정",
+    heroText:"오늘의 수업을 확인하세요.", classLabel:"학급 ID",
+    classCaption:"담당 학급", todayLessons:"오늘의 수업",
+    lessonCaption:"등록된 수업", nextLessons:"전체 수업 수",
+    totalCaption:"전체 요일", todaySchedule:"오늘의 시간표",
+    manageTimetable:"시간표 관리", quickActions:"빠른 메뉴",
+    editSchedule:"시간표 편집", editScheduleDesc:"수업 추가 및 변경",
+    openAI:"AI Assistant", openAIDesc:"수업 아이디어 상담",
+    openCalendar:"캘린더", openCalendarDesc:"개인 일정 관리",
+    studentsSubtitle:"담당 학급의 학생 정보 화면입니다.",
+    studentManagement:"학생 관리",
+    studentNotConnected:"현재 Firebase 권한으로는 학생 목록을 불러올 수 없습니다.",
+    studentSecurityNote:"담당 학급 학생만 볼 수 있도록 권한 설정이 필요합니다.",
+    timetableSubtitle:"담당 학급의 시간표를 관리하세요.",
+    addLesson:"수업 추가", saveLesson:"수업 저장", cancel:"취소",
+    scheduleNote:"저장한 시간표는 같은 학급 학생의 홈 화면에도 표시됩니다.",
+    registeredLessons:"등록된 시간표", weekday:"요일",
+    period:"교시", subject:"과목", time:"시간", room:"교실", actions:"작업",
+    announcementsSubtitle:"학생 공지사항 관리 화면입니다.",
+    announcementManagement:"공지사항 관리",
+    announcementNotConnected:"공지사항 전송 기능은 아직 연결되지 않았습니다.",
+    announcementNote:"학생에게 공지를 보내려면 공유 데이터와 권한 설정이 필요합니다.",
+    calendarSubtitle:"개인 일정을 관리하세요.", addEvent:"일정 추가",
+    add:"추가", myEvents:"내 일정",
+    aiSubtitle:"수업 준비와 학교 업무 아이디어를 상담하세요.",
+    aiGreeting:"안녕하세요! 교사용 AI Assistant입니다. 수업 준비에 대해 질문해 주세요.",
+    aiNotice:"AI 답변은 틀릴 수 있습니다. 학생의 개인정보를 입력하지 마세요.",
+    send:"보내기", settingsSubtitle:"화면 및 계정 설정을 관리하세요.",
+    displaySettings:"화면 설정", textSize:"글자 크기",
+    textSizeDesc:"글자를 크게 표시", motion:"애니메이션",
+    motionDesc:"움직임 줄이기", account:"계정",
+    signedIn:"로그인됨", logout:"로그아웃"
+  },
+
+  zh: {
+    home:"首页", students:"学生", timetable:"课程表",
+    announcements:"通知", calendar:"日历", settings:"设置",
+    heroText:"查看今天的课程。", classLabel:"班级 ID",
+    classCaption:"负责班级", todayLessons:"今日课程",
+    lessonCaption:"已安排课程", nextLessons:"课程总数",
+    totalCaption:"所有日期", todaySchedule:"今日课程表",
+    manageTimetable:"管理课程表", quickActions:"快捷访问",
+    editSchedule:"编辑课程表", editScheduleDesc:"添加或修改课程",
+    openAI:"AI Assistant", openAIDesc:"获取教学灵感",
+    openCalendar:"日历", openCalendarDesc:"管理个人日程",
+    studentsSubtitle:"查看班级学生信息。",
+    studentManagement:"学生管理",
+    studentNotConnected:"当前 Firebase 权限尚不支持获取学生列表。",
+    studentSecurityNote:"需要设置权限，仅允许查看负责班级的学生。",
+    timetableSubtitle:"创建和管理班级课程表。",
+    addLesson:"添加课程", saveLesson:"保存课程", cancel:"取消",
+    scheduleNote:"保存的课程也会显示在本班学生的首页。",
+    registeredLessons:"已登记课程", weekday:"星期",
+    period:"节次", subject:"科目", time:"时间", room:"教室", actions:"操作",
+    announcementsSubtitle:"管理发给学生的通知。",
+    announcementManagement:"通知管理",
+    announcementNotConnected:"通知发布功能尚未连接。",
+    announcementNote:"向学生发布通知需要共享数据位置和权限设置。",
+    calendarSubtitle:"管理个人日程。", addEvent:"添加日程",
+    add:"添加", myEvents:"我的日程",
+    aiSubtitle:"获取课程准备和学校工作的建议。",
+    aiGreeting:"你好！我是教师 AI Assistant。可以向我咨询课程准备。",
+    aiNotice:"AI 可能会出错。请勿输入学生个人信息。",
+    send:"发送", settingsSubtitle:"管理显示和账户设置。",
+    displaySettings:"显示设置", textSize:"字体大小",
+    textSizeDesc:"放大文字", motion:"动画",
+    motionDesc:"减少动态效果", account:"账户",
+    signedIn:"已登录", logout:"退出登录"
+  },
+
+  fr: {
+    home:"Accueil", students:"Élèves", timetable:"Emploi du temps",
+    announcements:"Annonces", calendar:"Calendrier", settings:"Paramètres",
+    heroText:"Consultez les cours du jour.", classLabel:"ID de classe",
+    classCaption:"Classe attribuée", todayLessons:"Cours du jour",
+    lessonCaption:"Cours enregistrés", nextLessons:"Total des cours",
+    totalCaption:"Tous les jours", todaySchedule:"Emploi du temps du jour",
+    manageTimetable:"Gérer l'emploi du temps", quickActions:"Accès rapide",
+    editSchedule:"Modifier l'emploi du temps", editScheduleDesc:"Ajouter ou modifier les cours",
+    openAI:"AI Assistant", openAIDesc:"Idées pour l'enseignement",
+    openCalendar:"Calendrier", openCalendarDesc:"Gérer les événements personnels",
+    studentsSubtitle:"Informations sur la classe.",
+    studentManagement:"Gestion des élèves",
+    studentNotConnected:"La liste des élèves n'est pas disponible avec les règles Firebase actuelles.",
+    studentSecurityNote:"Un accès limité à la classe attribuée doit être configuré.",
+    timetableSubtitle:"Créez et gérez l'emploi du temps de la classe.",
+    addLesson:"Ajouter un cours", saveLesson:"Enregistrer", cancel:"Annuler",
+    scheduleNote:"Les cours enregistrés apparaissent aussi sur l'accueil des élèves.",
+    registeredLessons:"Cours enregistrés", weekday:"Jour",
+    period:"Période", subject:"Matière", time:"Heure", room:"Salle", actions:"Actions",
+    announcementsSubtitle:"Gérer les annonces destinées aux élèves.",
+    announcementManagement:"Gestion des annonces",
+    announcementNotConnected:"La publication des annonces n'est pas encore connectée.",
+    announcementNote:"Un espace de données partagé et des règles d'accès sont nécessaires.",
+    calendarSubtitle:"Gérez votre calendrier personnel.", addEvent:"Ajouter un événement",
+    add:"Ajouter", myEvents:"Mes événements",
+    aiSubtitle:"Obtenez des idées pour les cours et le travail scolaire.",
+    aiGreeting:"Bonjour ! Je suis votre assistant IA pour enseignants.",
+    aiNotice:"L'IA peut se tromper. N'entrez pas d'informations personnelles sur les élèves.",
+    send:"Envoyer", settingsSubtitle:"Gérer l'affichage et le compte.",
+    displaySettings:"Affichage", textSize:"Taille du texte",
+    textSizeDesc:"Agrandir le texte", motion:"Animation",
+    motionDesc:"Réduire les mouvements", account:"Compte",
+    signedIn:"Connecté", logout:"Déconnexion"
+  },
+
+  es: {
+    home:"Inicio", students:"Estudiantes", timetable:"Horario",
+    announcements:"Anuncios", calendar:"Calendario", settings:"Configuración",
+    heroText:"Consulta las clases de hoy.", classLabel:"ID de clase",
+    classCaption:"Clase asignada", todayLessons:"Clases de hoy",
+    lessonCaption:"Clases registradas", nextLessons:"Total de clases",
+    totalCaption:"Todos los días", todaySchedule:"Horario de hoy",
+    manageTimetable:"Administrar horario", quickActions:"Acceso rápido",
+    editSchedule:"Editar horario", editScheduleDesc:"Añadir o cambiar clases",
+    openAI:"AI Assistant", openAIDesc:"Ideas para enseñar",
+    openCalendar:"Calendario", openCalendarDesc:"Gestionar eventos personales",
+    studentsSubtitle:"Información de la clase.",
+    studentManagement:"Gestión de estudiantes",
+    studentNotConnected:"La lista de estudiantes no está disponible con las reglas actuales de Firebase.",
+    studentSecurityNote:"Se necesita configurar el acceso limitado a la clase asignada.",
+    timetableSubtitle:"Crea y administra el horario de tu clase.",
+    addLesson:"Añadir clase", saveLesson:"Guardar clase", cancel:"Cancelar",
+    scheduleNote:"Las clases guardadas también aparecen en el inicio de los estudiantes.",
+    registeredLessons:"Clases registradas", weekday:"Día",
+    period:"Periodo", subject:"Materia", time:"Hora", room:"Aula", actions:"Acciones",
+    announcementsSubtitle:"Gestionar anuncios para estudiantes.",
+    announcementManagement:"Gestión de anuncios",
+    announcementNotConnected:"La publicación de anuncios aún no está conectada.",
+    announcementNote:"Se necesitan datos compartidos y reglas de acceso.",
+    calendarSubtitle:"Administra tu calendario personal.", addEvent:"Añadir evento",
+    add:"Añadir", myEvents:"Mis eventos",
+    aiSubtitle:"Obtén ideas para clases y tareas escolares.",
+    aiGreeting:"¡Hola! Soy tu asistente de IA para docentes.",
+    aiNotice:"La IA puede equivocarse. No introduzcas información personal de estudiantes.",
+    send:"Enviar", settingsSubtitle:"Gestiona la pantalla y la cuenta.",
+    displaySettings:"Configuración de pantalla", textSize:"Tamaño del texto",
+    textSizeDesc:"Aumentar el texto", motion:"Animación",
+    motionDesc:"Reducir movimiento", account:"Cuenta",
+    signedIn:"Conectado", logout:"Cerrar sesión"
+  },
+
+  de: {
+    home:"Start", students:"Schüler", timetable:"Stundenplan",
+    announcements:"Mitteilungen", calendar:"Kalender", settings:"Einstellungen",
+    heroText:"Sieh dir den heutigen Unterricht an.", classLabel:"Klassen-ID",
+    classCaption:"Zugeordnete Klasse", todayLessons:"Heutige Stunden",
+    lessonCaption:"Eingetragene Stunden", nextLessons:"Stunden insgesamt",
+    totalCaption:"Alle Wochentage", todaySchedule:"Heutiger Stundenplan",
+    manageTimetable:"Stundenplan verwalten", quickActions:"Schnellzugriff",
+    editSchedule:"Stundenplan bearbeiten", editScheduleDesc:"Stunden hinzufügen oder ändern",
+    openAI:"AI Assistant", openAIDesc:"Ideen für den Unterricht",
+    openCalendar:"Kalender", openCalendarDesc:"Persönliche Termine verwalten",
+    studentsSubtitle:"Informationen zur Klasse.",
+    studentManagement:"Schülerverwaltung",
+    studentNotConnected:"Die Schülerliste ist mit den aktuellen Firebase-Regeln nicht verfügbar.",
+    studentSecurityNote:"Der Zugriff muss auf die zugewiesene Klasse beschränkt werden.",
+    timetableSubtitle:"Erstelle und verwalte den Stundenplan deiner Klasse.",
+    addLesson:"Stunde hinzufügen", saveLesson:"Stunde speichern", cancel:"Abbrechen",
+    scheduleNote:"Gespeicherte Stunden werden auch auf der Startseite der Schüler angezeigt.",
+    registeredLessons:"Eingetragene Stunden", weekday:"Tag",
+    period:"Stunde", subject:"Fach", time:"Zeit", room:"Raum", actions:"Aktionen",
+    announcementsSubtitle:"Mitteilungen für Schüler verwalten.",
+    announcementManagement:"Mitteilungsverwaltung",
+    announcementNotConnected:"Die Veröffentlichung von Mitteilungen ist noch nicht verbunden.",
+    announcementNote:"Ein gemeinsamer Datenspeicher und Zugriffsregeln sind erforderlich.",
+    calendarSubtitle:"Verwalte deinen persönlichen Kalender.", addEvent:"Termin hinzufügen",
+    add:"Hinzufügen", myEvents:"Meine Termine",
+    aiSubtitle:"Ideen für Unterricht und Schulaufgaben erhalten.",
+    aiGreeting:"Hallo! Ich bin dein KI-Assistent für Lehrkräfte.",
+    aiNotice:"KI kann Fehler machen. Gib keine persönlichen Schülerdaten ein.",
+    send:"Senden", settingsSubtitle:"Anzeige und Konto verwalten.",
+    displaySettings:"Anzeigeeinstellungen", textSize:"Textgröße",
+    textSizeDesc:"Text vergrößern", motion:"Animation",
+    motionDesc:"Bewegung reduzieren", account:"Konto",
+    signedIn:"Angemeldet", logout:"Abmelden"
+  },
+
+  pt: {
+    home:"Início", students:"Alunos", timetable:"Horário",
+    announcements:"Avisos", calendar:"Calendário", settings:"Configurações",
+    heroText:"Confira as aulas de hoje.", classLabel:"ID da turma",
+    classCaption:"Turma atribuída", todayLessons:"Aulas de hoje",
+    lessonCaption:"Aulas cadastradas", nextLessons:"Total de aulas",
+    totalCaption:"Todos os dias", todaySchedule:"Horário de hoje",
+    manageTimetable:"Gerenciar horário", quickActions:"Acesso rápido",
+    editSchedule:"Editar horário", editScheduleDesc:"Adicionar ou alterar aulas",
+    openAI:"AI Assistant", openAIDesc:"Ideias para ensinar",
+    openCalendar:"Calendário", openCalendarDesc:"Gerenciar eventos pessoais",
+    studentsSubtitle:"Informações da turma.",
+    studentManagement:"Gerenciamento de alunos",
+    studentNotConnected:"A lista de alunos não está disponível com as regras atuais do Firebase.",
+    studentSecurityNote:"É necessário configurar acesso limitado à turma atribuída.",
+    timetableSubtitle:"Crie e gerencie o horário da sua turma.",
+    addLesson:"Adicionar aula", saveLesson:"Salvar aula", cancel:"Cancelar",
+    scheduleNote:"As aulas salvas também aparecem na página inicial dos alunos.",
+    registeredLessons:"Aulas cadastradas", weekday:"Dia",
+    period:"Período", subject:"Matéria", time:"Horário", room:"Sala", actions:"Ações",
+    announcementsSubtitle:"Gerenciar avisos para os alunos.",
+    announcementManagement:"Gerenciamento de avisos",
+    announcementNotConnected:"A publicação de avisos ainda não está conectada.",
+    announcementNote:"É necessário configurar dados compartilhados e regras de acesso.",
+    calendarSubtitle:"Gerencie sua agenda pessoal.", addEvent:"Adicionar evento",
+    add:"Adicionar", myEvents:"Meus eventos",
+    aiSubtitle:"Receba ideias para aulas e atividades escolares.",
+    aiGreeting:"Olá! Sou seu assistente de IA para professores.",
+    aiNotice:"A IA pode cometer erros. Não insira dados pessoais dos alunos.",
+    send:"Enviar", settingsSubtitle:"Gerencie a tela e a conta.",
+    displaySettings:"Configurações de tela", textSize:"Tamanho do texto",
+    textSizeDesc:"Aumentar o texto", motion:"Animação",
+    motionDesc:"Reduzir movimento", account:"Conta",
+    signedIn:"Conectado", logout:"Sair"
   }
+};
 
-  const data = {
-    date,
-    schedule,
-    instruction
-  };
-
-  localStorage.setItem("schoolBuddySchedule", JSON.stringify(data));
-
-  document.getElementById("message").textContent =
-    "予定を保存しました！🎉";
-
-  showSchedule();
+function t(key) {
+  return translations[currentLanguage]?.[key] ||
+    translations.ja[key] || key;
 }
 
-function showSchedule() {
-  const data = JSON.parse(
-    localStorage.getItem("schoolBuddySchedule") || "null"
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  })[char]);
+}
+
+function applyLanguage() {
+  document.documentElement.lang = currentLanguage;
+
+  document.querySelectorAll("[data-i18n]").forEach(element => {
+    element.textContent = t(element.dataset.i18n);
+  });
+
+  $("languageSelect").value = currentLanguage;
+  renderSchedule();
+  renderHome();
+  renderEvents();
+}
+
+$("languageSelect").addEventListener("change", event => {
+  currentLanguage = event.target.value;
+  localStorage.setItem("sb_teacher_language", currentLanguage);
+  applyLanguage();
+});
+
+/* NAVIGATION */
+
+window.showPage = function(page) {
+  document.querySelectorAll(".page").forEach(element =>
+    element.classList.remove("active")
   );
 
-  const saved = document.getElementById("saved");
+  document.querySelectorAll(".nav-button").forEach(button =>
+    button.classList.toggle("active", button.dataset.page === page)
+  );
 
-  if (!data) {
-    saved.textContent = "まだ予定はありません。";
+  $("page-" + page)?.classList.add("active");
+};
+
+document.querySelectorAll(".nav-button").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+/* SCHEDULE */
+
+const weekdays = {
+  ja:["日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"],
+  en:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+  ko:["일요일","월요일","화요일","수요일","목요일","금요일","토요일"],
+  zh:["星期日","星期一","星期二","星期三","星期四","星期五","星期六"],
+  fr:["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"],
+  es:["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"],
+  de:["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"],
+  pt:["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"]
+};
+
+function weekdayName(number) {
+  return (weekdays[currentLanguage] || weekdays.ja)[Number(number)] || "";
+}
+
+function sortedSchedule() {
+  return [...schedule].sort((a,b) =>
+    Number(a.weekday) - Number(b.weekday) ||
+    Number(a.period) - Number(b.period)
+  );
+}
+
+function renderSchedule() {
+  const tbody = $("scheduleTable");
+  if (!tbody) return;
+
+  const sorted = sortedSchedule();
+
+  if (!sorted.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">時間割はまだ登録されていません。</td></tr>`;
     return;
   }
 
-  saved.textContent =
-    data.date + " ／ " + data.schedule + " ／ " + data.instruction;
+  tbody.innerHTML = sorted.map(item => `
+    <tr>
+      <td>${escapeHTML(weekdayName(item.weekday))}</td>
+      <td>${escapeHTML(item.period)}</td>
+      <td><strong>${escapeHTML(item.subject)}</strong></td>
+      <td>${escapeHTML(item.startTime || "--")} - ${escapeHTML(item.endTime || "--")}</td>
+      <td>${escapeHTML(item.room || "--")}</td>
+      <td>
+        <div class="action-row">
+          <button class="secondary-button" data-edit="${escapeHTML(item.id)}">編集</button>
+          <button class="danger-button" data-delete="${escapeHTML(item.id)}">削除</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
 }
 
-showSchedule();
+function renderHome() {
+  const today = new Date().getDay();
+  const todays = schedule
+    .filter(item => Number(item.weekday) === today)
+    .sort((a,b) => Number(a.period) - Number(b.period));
+
+  $("lessonCount").textContent = todays.length;
+  $("totalLessons").textContent = schedule.length;
+
+  $("homeSchedule").innerHTML = todays.length
+    ? todays.map(item => `
+      <div class="schedule-row">
+        <div class="period-box">${escapeHTML(item.period)}</div>
+        <div class="row-main">
+          <strong>${escapeHTML(item.subject)}</strong>
+          <span>${escapeHTML(item.startTime || "")}
+          ${item.endTime ? " - " + escapeHTML(item.endTime) : ""}
+          ${item.room ? " · " + escapeHTML(item.room) : ""}</span>
+        </div>
+      </div>
+    `).join("")
+    : `<div class="empty">今日の時間割はありません。</div>`;
+}
+
+function resetScheduleForm() {
+  editingScheduleId = null;
+  $("scheduleFormTitle").textContent = t("addLesson");
+  $("saveScheduleButton").textContent = t("saveLesson");
+  $("cancelEditButton").style.display = "none";
+
+  $("scheduleWeekday").value = "1";
+  $("schedulePeriod").value = "";
+  $("scheduleSubject").value = "";
+  $("scheduleRoom").value = "";
+  $("scheduleStart").value = "";
+  $("scheduleEnd").value = "";
+}
+
+async function saveSchedule() {
+  if (!currentUser || !teacherProfile.classId) return;
+
+  const weekday = Number($("scheduleWeekday").value);
+  const period = Number($("schedulePeriod").value);
+  const subject = $("scheduleSubject").value.trim();
+  const room = $("scheduleRoom").value.trim();
+  const startTime = $("scheduleStart").value;
+  const endTime = $("scheduleEnd").value;
+
+  if (!subject || !period || period < 1 || period > 12) {
+    alert("教科名と1〜12の時限を入力してください。");
+    return;
+  }
+
+  if (startTime && endTime && startTime >= endTime) {
+    alert("終了時間は開始時間より後にしてください。");
+    return;
+  }
+
+  const id = `${weekday}_${period}`;
+
+  const lesson = {
+    weekday,
+    weekdayName: weekdayName(weekday),
+    period,
+    subject,
+    startTime,
+    endTime,
+    room,
+    updatedAt: Date.now(),
+    updatedBy: currentUser.uid
+  };
+
+  const button = $("saveScheduleButton");
+  button.disabled = true;
+
+  try {
+    await setDoc(
+      doc(db, "classes", teacherProfile.classId, "schedule", id),
+      lesson
+    );
+
+    const existingIndex = schedule.findIndex(item => item.id === id);
+
+    if (existingIndex >= 0) {
+      schedule[existingIndex] = { id, ...lesson };
+    } else {
+      schedule.push({ id, ...lesson });
+    }
+
+    resetScheduleForm();
+    renderSchedule();
+    renderHome();
+
+    alert("時間割を保存しました。");
+
+  } catch (error) {
+    console.error(error);
+    alert("保存できませんでした。Firebaseのアクセス権限を確認してください。");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function editSchedule(id) {
+  const item = schedule.find(lesson => lesson.id === id);
+  if (!item) return;
+
+  editingScheduleId = id;
+
+  $("scheduleWeekday").value = item.weekday;
+  $("schedulePeriod").value = item.period;
+  $("scheduleSubject").value = item.subject || "";
+  $("scheduleRoom").value = item.room || "";
+  $("scheduleStart").value = item.startTime || "";
+  $("scheduleEnd").value = item.endTime || "";
+
+  $("scheduleFormTitle").textContent = "授業を編集";
+  $("saveScheduleButton").textContent = "変更を保存";
+  $("cancelEditButton").style.display = "inline-block";
+
+  $("scheduleFormTitle").scrollIntoView({ behavior: "smooth" });
+}
+
+async function deleteSchedule(id) {
+  if (!confirm("この時間割を削除しますか？")) return;
+
+  try {
+    await deleteDoc(
+      doc(db, "classes", teacherProfile.classId, "schedule", id)
+    );
+
+    schedule = schedule.filter(item => item.id !== id);
+    renderSchedule();
+    renderHome();
+
+  } catch (error) {
+    console.error(error);
+    alert("削除できませんでした。アクセス権限を確認してください。");
+  }
+}
+
+$("saveScheduleButton").addEventListener("click", saveSchedule);
+$("cancelEditButton").addEventListener("click", resetScheduleForm);
+
+$("scheduleTable").addEventListener("click", event => {
+  const editButton = event.target.closest("[data-edit]");
+  const deleteButton = event.target.closest("[data-delete]");
+
+  if (editButton) editSchedule(editButton.dataset.edit);
+  if (deleteButton) deleteSchedule(deleteButton.dataset.delete);
+});
+
+/* PERSONAL CALENDAR */
+
+function eventStorageKey() {
+  return `sb_teacher_events_${currentUser?.uid || "unknown"}`;
+}
+
+function loadEvents() {
+  try {
+    events = JSON.parse(localStorage.getItem(eventStorageKey())) || [];
+  } catch {
+    events = [];
+  }
+}
+
+function saveEvents() {
+  localStorage.setItem(eventStorageKey(), JSON.stringify(events));
+}
+
+function renderEvents() {
+  const sorted = [...events].sort((a,b) => a.date.localeCompare(b.date));
+
+  $("eventsList").innerHTML = sorted.length
+    ? sorted.map(item => `
+      <div class="event-item">
+        <div class="event-date">${escapeHTML(item.date)}</div>
+        <div class="row-main">
+          <strong>${escapeHTML(item.title)}</strong>
+        </div>
+        <button class="danger-button" data-delete-event="${escapeHTML(item.id)}">削除</button>
+      </div>
+    `).join("")
+    : `<div class="empty">予定はまだありません。</div>`;
+}
+
+$("addEventButton").addEventListener("click", () => {
+  const title = $("eventTitle").value.trim();
+  const date = $("eventDate").value;
+
+  if (!title || !date) {
+    alert("予定名と日付を入力してください。");
+    return;
+  }
+
+  events.push({
+    id: crypto.randomUUID(),
+    title,
+    date
+  });
+
+  saveEvents();
+  $("eventTitle").value = "";
+  $("eventDate").value = "";
+  renderEvents();
+});
+
+$("eventsList").addEventListener("click", event => {
+  const button = event.target.closest("[data-delete-event]");
+  if (!button) return;
+
+  events = events.filter(item => item.id !== button.dataset.deleteEvent);
+  saveEvents();
+  renderEvents();
+});
+
+/* AI ASSISTANT */
+
+function addMessage(message, type) {
+  const element = document.createElement("div");
+  element.className = `chat-message ${type}`;
+  element.textContent = message;
+  $("chatBox").appendChild(element);
+  $("chatBox").scrollTop = $("chatBox").scrollHeight;
+  return element;
+}
+
+async function askAI(message) {
+  const question = message.trim();
+  if (!question) return;
+
+  addMessage(question, "user");
+
+  const loading = addMessage("AI is thinking...", "ai");
+  $("sendButton").disabled = true;
+
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message:
+          "You are School Buddy Teacher Assistant. " +
+          "Help teachers with lesson planning, explanations, organization, " +
+          "and general school work. Be professional, clear, supportive, " +
+          "and do not request student personal information.\n\n" + question
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("AI request failed: " + response.status);
+    }
+
+    const data = await response.json();
+    loading.textContent = data.reply ||
+      "回答を取得できませんでした。もう一度試してください。";
+
+  } catch (error) {
+    console.error(error);
+    loading.textContent =
+      "AIに接続できませんでした。少し時間をおいて再度お試しください。";
+  } finally {
+    $("sendButton").disabled = false;
+  }
+}
+
+$("sendButton").addEventListener("click", () => {
+  const input = $("chatInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  input.value = "";
+  askAI(message);
+});
+
+$("chatInput").addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    $("sendButton").click();
+  }
+});
+
+/* SETTINGS */
+
+$("textSizeSelect").addEventListener("change", event => {
+  document.body.classList.toggle("large-text", event.target.value === "large");
+  localStorage.setItem("sb_teacher_text_size", event.target.value);
+});
+
+$("motionSelect").addEventListener("change", event => {
+  document.body.classList.toggle("reduce-motion", event.target.value === "reduced");
+  localStorage.setItem("sb_teacher_motion", event.target.value);
+});
+
+/* NOTIFICATIONS */
+
+$("notificationButton").addEventListener("click", () => {
+  alert("現在、新しい通知はありません。");
+});
+
+$("profileButton").addEventListener("click", () => showPage("settings"));
+
+/* LOGOUT */
+
+$("logoutButton").addEventListener("click", async () => {
+  if (!confirm("ログアウトしますか？")) return;
+
+  try {
+    await signOut(auth);
+    location.href = "login.html?role=teacher";
+  } catch (error) {
+    console.error(error);
+    alert("ログアウトできませんでした。");
+  }
+});
+
+/* FIREBASE AUTH & PROFILE */
+
+async function loadTeacher(user) {
+  currentUser = user;
+
+  const profileRef = doc(db, "users", user.uid);
+  const profileSnapshot = await getDoc(profileRef);
+
+  if (!profileSnapshot.exists()) {
+    alert("先生のアカウント情報が見つかりません。");
+    await signOut(auth);
+    location.href = "login.html?role=teacher";
+    return;
+  }
+
+  teacherProfile = profileSnapshot.data();
+
+  if (teacherProfile.role !== "teacher" || !teacherProfile.classId) {
+    alert("先生用アカウント、または担当クラス情報を確認してください。");
+    await signOut(auth);
+    location.href = "login.html?role=teacher";
+    return;
+  }
+
+  const teacherName = teacherProfile.nickname || "Teacher";
+
+  $("welcomeName").textContent = `Welcome, ${teacherName}.`;
+  $("accountName").textContent = teacherName;
+  $("sideTeacherName").textContent = teacherName;
+  $("profileButton").textContent = teacherName.slice(0,1).toUpperCase();
+  $("classValue").textContent = teacherProfile.classId;
+
+  loadEvents();
+
+  const savedLanguage = localStorage.getItem("sb_teacher_language");
+  if (savedLanguage && translations[savedLanguage]) {
+    currentLanguage = savedLanguage;
+  }
+
+  $("languageSelect").value = currentLanguage;
+
+  const textSize = localStorage.getItem("sb_teacher_text_size") || "normal";
+  $("textSizeSelect").value = textSize;
+  document.body.classList.toggle("large-text", textSize === "large");
+
+  const motion = localStorage.getItem("sb_teacher_motion") || "normal";
+  $("motionSelect").value = motion;
+  document.body.classList.toggle("reduce-motion", motion === "reduced");
+
+  applyLanguage();
+
+  try {
+    const snapshot = await getDocs(
+      collection(db, "classes", teacherProfile.classId, "schedule")
+    );
+
+    schedule = snapshot.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
+
+  } catch (error) {
+    console.error("Schedule loading error:", error);
+    schedule = [];
+    alert("時間割を読み込めませんでした。Firebaseのアクセス権限を確認してください。");
+  }
+
+  renderSchedule();
+  renderHome();
+  renderEvents();
+}
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    location.href = "login.html?role=teacher";
+    return;
+  }
+
+  try {
+    await loadTeacher(user);
+  } catch (error) {
+    console.error("Teacher loading error:", error);
+    alert("先生の情報を読み込めませんでした。ページを再読み込みしてください。");
+  }
+});
+
+/* OPENING */
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    $("splash").classList.add("hide");
+    $("app").classList.add("ready");
+  }, 1600);
+});
 </script>
 
 </body>
