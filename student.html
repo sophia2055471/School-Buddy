@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -31,13 +32,20 @@ body {
 button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
 
-/* OPENING */
+/* PREMIUM PEACH & ORANGE OPENING */
 
 .splash {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: #101326;
+  background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      #FFD6C2 0%,
+      #FFAD83 32%,
+      #F27B55 66%,
+      #C94F3D 100%
+    );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,20 +57,21 @@ button { cursor: pointer; }
 .splash::after {
   content: "";
   position: absolute;
-  width: 500px;
-  height: 500px;
-  border: 1px solid rgba(161,143,255,.25);
+  width: min(75vw, 650px);
+  height: min(75vw, 650px);
+  border: 1px solid rgba(255,255,255,.24);
   border-radius: 50%;
-  box-shadow: 0 0 70px rgba(130,105,255,.12),
-              inset 0 0 70px rgba(130,105,255,.08);
-  animation: ring 7s ease-in-out infinite alternate;
+  box-shadow:
+    0 0 90px rgba(255,230,210,.20),
+    inset 0 0 90px rgba(255,230,210,.10);
+  animation: ring 8s ease-in-out infinite alternate;
 }
 
 .splash::after {
-  width: 370px;
-  height: 370px;
-  border-color: rgba(150,190,255,.22);
-  animation-delay: -3s;
+  width: min(55vw, 460px);
+  height: min(55vw, 460px);
+  border-color: rgba(255,245,235,.30);
+  animation-delay: -4s;
 }
 
 .splash-content {
@@ -73,17 +82,19 @@ button { cursor: pointer; }
 }
 
 .splash-name {
-  color: white;
-  font-size: clamp(32px, 6vw, 58px);
+  color: #ffffff;
+  font-size: clamp(35px, 7vw, 66px);
   font-weight: 600;
-  letter-spacing: -2px;
+  letter-spacing: -2.5px;
+  text-shadow: 0 4px 35px rgba(120,45,25,.15);
 }
 
 .splash-tagline {
-  color: #aaa9c7;
-  font-size: 11px;
+  color: rgba(255,255,255,.88);
+  font-size: 10px;
   letter-spacing: 5px;
-  margin-top: 18px;
+  margin-top: 19px;
+  font-weight: 500;
 }
 
 .splash.hide {
@@ -1984,7 +1995,7 @@ window.addEventListener("load", () => {
   setTimeout(() => {
     $("splash").classList.add("hide");
     $("app").classList.add("ready");
-  }, 1700);
+  }, 2800);
 });
 </script>
 
