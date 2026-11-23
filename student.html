@@ -1,465 +1,644 @@
-!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#eaf3ff">
-<title>School Buddy.</title>
+<title>School Buddy</title>
 
 <style>
 :root {
-  --bg:#eaf3ff;
-  --white:rgba(255,255,255,.86);
-  --text:#202b45;
-  --muted:#78849d;
-  --purple:#8875ef;
-  --line:rgba(133,151,190,.16);
-  --shadow:0 12px 35px rgba(94,125,180,.10);
+  --purple: #8878df;
+  --purple-light: #f0edff;
+  --navy: #17182c;
+  --text: #29283b;
+  --muted: #89889b;
+  --line: #eeedf4;
+  --white: #ffffff;
+  --bg: #faf9fd;
+  --radius: 20px;
 }
 
-*{box-sizing:border-box}
+* { box-sizing: border-box; }
 
-body{
-  margin:0;
-  min-height:100vh;
-  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
-  color:var(--text);
-  background:
-  radial-gradient(ellipse at 15% 5%,#fff 0%,transparent 38%),
-  radial-gradient(ellipse at 90% 30%,#d9eaff 0%,transparent 42%),
-  linear-gradient(135deg,#eaf3ff,#f5f6ff 55%,#e5f0ff);
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Noto Sans JP", sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
-.splash{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  display:grid;
-  place-items:center;
-  background:#080a12;
-  color:white;
-  transition:clip-path 1.15s cubic-bezier(.76,0,.24,1);
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+
+/* OPENING */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #101326;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 1s ease, visibility 1s ease;
 }
 
-.splash-logo{
-  font-size:clamp(32px,5vw,58px);
-  font-weight:750;
-  letter-spacing:-2px;
+.splash::before,
+.splash::after {
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border: 1px solid rgba(161,143,255,.25);
+  border-radius: 50%;
+  box-shadow: 0 0 70px rgba(130,105,255,.12),
+              inset 0 0 70px rgba(130,105,255,.08);
+  animation: ring 7s ease-in-out infinite alternate;
 }
 
-.splash-logo span{color:#a998ff}
-
-.splash.leaving{
-  clip-path:inset(0 0 100% 0 round 0 0 45% 45%);
-  pointer-events:none;
+.splash::after {
+  width: 370px;
+  height: 370px;
+  border-color: rgba(150,190,255,.22);
+  animation-delay: -3s;
 }
 
-.app{
-  width:min(1600px,100%);
-  margin:auto;
-  padding:20px 42px 40px;
-  opacity:0;
-  transform:translateY(12px);
-  transition:.65s;
+.splash-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  animation: appear 1.5s ease both;
 }
 
-.app.ready{
-  opacity:1;
-  transform:none;
+.splash-name {
+  color: white;
+  font-size: clamp(32px, 6vw, 58px);
+  font-weight: 600;
+  letter-spacing: -2px;
 }
 
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-  margin-bottom:24px;
+.splash-tagline {
+  color: #aaa9c7;
+  font-size: 11px;
+  letter-spacing: 5px;
+  margin-top: 18px;
 }
 
-.brand{
-  font-size:29px;
-  font-weight:780;
-  letter-spacing:-1.3px;
+.splash.hide {
+  opacity: 0;
+  visibility: hidden;
 }
 
-.brand span{color:var(--purple)}
-
-.header-actions{
-  display:flex;
-  align-items:center;
-  gap:14px;
+@keyframes ring {
+  from { transform: scale(.9) rotate(-8deg); }
+  to { transform: scale(1.08) rotate(8deg); }
 }
 
-.language-select,.settings-row select{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.8);
-  color:var(--text);
-  border-radius:30px;
-  padding:12px 17px;
-  font:inherit;
+@keyframes appear {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.profile-button{
-  width:47px;
-  height:47px;
-  border:1px solid var(--line);
-  border-radius:50%;
-  background:white;
-  font-size:22px;
-  cursor:pointer;
+/* APP LAYOUT */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  opacity: 0;
+  transition: opacity .7s ease;
 }
 
-.nav{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-  padding:9px;
-  margin-bottom:28px;
-  border:1px solid white;
-  border-radius:28px;
-  background:rgba(255,255,255,.58);
-  backdrop-filter:blur(24px);
-  box-shadow:var(--shadow);
+.app.ready { opacity: 1; }
+
+.sidebar {
+  width: 245px;
+  flex-shrink: 0;
+  background: white;
+  border-right: 1px solid var(--line);
+  min-height: 100vh;
+  padding: 30px 19px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 
-.nav button{
-  border:0;
-  border-radius:22px;
-  padding:15px 10px;
-  background:transparent;
-  color:#56627d;
-  font:inherit;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
+.brand {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  padding: 0 12px;
+  margin-bottom: 42px;
 }
 
-.nav button.active{
-  color:#725ce3;
-  background:linear-gradient(135deg,#eeeaff,#e3e9ff);
+.brand span { color: var(--purple); }
+
+.menu-label {
+  color: #aaa8b8;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 0 12px;
+  margin: 0 0 12px;
 }
 
-.hero{
-  position:relative;
-  overflow:hidden;
-  min-height:195px;
-  padding:30px 36px;
-  margin-bottom:25px;
-  border:1px solid white;
-  border-radius:34px;
-  background:linear-gradient(115deg,rgba(255,255,255,.86),rgba(222,235,255,.8));
-  box-shadow:var(--shadow);
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.hero-label{
-  color:#826de9;
-  font-size:13px;
-  font-weight:750;
-  letter-spacing:1.2px;
+.nav-button {
+  border: none;
+  background: transparent;
+  color: #77758b;
+  text-align: left;
+  padding: 13px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: .2s;
 }
 
-.hero h1{
-  margin:12px 0 8px;
-  font-size:clamp(27px,3vw,39px);
-  letter-spacing:-1.3px;
+.nav-button:hover { background: #f8f6ff; }
+
+.nav-button.active {
+  color: #6554c8;
+  background: var(--purple-light);
+  font-weight: 600;
 }
 
-.hero p{
-  margin:0;
-  color:var(--muted);
-  font-size:17px;
+.nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 16px;
 }
 
-.home-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
+.sidebar-bottom {
+  margin-top: auto;
 }
 
-.card{
-  min-width:0;
-  padding:25px;
-  border:1px solid white;
-  border-radius:31px;
-  background:var(--white);
-  backdrop-filter:blur(22px);
-  box-shadow:var(--shadow);
+.sidebar-note {
+  background: #f8f6ff;
+  padding: 17px;
+  border-radius: 15px;
+  color: #77718f;
+  font-size: 11px;
+  line-height: 1.8;
 }
 
-.card-heading{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:20px;
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 30px 4%;
 }
 
-.card-title{
-  display:flex;
-  align-items:center;
-  gap:13px;
-  margin:0;
-  font-size:23px;
-  font-weight:730;
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
 }
 
-.card-icon{
-  display:grid;
-  place-items:center;
-  width:47px;
-  height:47px;
-  border-radius:16px;
-  background:#eeeaff;
-  color:#8068ec;
+.topbar select {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: var(--text);
+  font-size: 12px;
 }
 
-.text-link{
-  border:0;
-  background:transparent;
-  color:#8068ec;
-  font:inherit;
-  font-weight:650;
-  cursor:pointer;
+.top-button {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 12px;
+  width: 39px;
+  height: 39px;
+  color: #77758b;
 }
 
-.period{
-  display:grid;
-  grid-template-columns:54px 1fr auto;
-  align-items:center;
-  gap:15px;
-  padding:9px 12px;
-  margin-bottom:7px;
-  border-radius:15px;
-  background:rgba(244,247,255,.72);
+.profile {
+  border: none;
+  background: var(--purple-light);
+  color: #695ac5;
+  border-radius: 50%;
+  width: 39px;
+  height: 39px;
+  font-weight: 700;
 }
 
-.period-number{
-  display:grid;
-  place-items:center;
-  width:48px;
-  height:37px;
-  border-radius:12px;
-  font-size:17px;
-  font-weight:750;
-  background:#e9e0ff;
-  color:#7557c7;
+.page {
+  display: none;
+  max-width: 1100px;
+  margin: auto;
+  animation: appear .3s ease;
 }
 
-.period:nth-child(2) .period-number{
-  background:#ffe0eb;
-  color:#b64c79;
+.page.active { display: block; }
+
+.page-heading {
+  margin-bottom: 27px;
 }
 
-.period:nth-child(3) .period-number{
-  background:#dceaff;
-  color:#386ab8;
+.page-heading h1 {
+  margin: 0 0 9px;
+  font-size: clamp(25px, 4vw, 32px);
+  letter-spacing: -1px;
 }
 
-.period:nth-child(4) .period-number{
-  background:#ddf5e6;
-  color:#32845b;
+.page-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
 }
 
-.period:nth-child(5) .period-number{
-  background:#fff0ce;
-  color:#a47728;
+/* COMMON CARDS */
+
+.card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 23px;
 }
 
-.subject{
-  font-size:16px;
-  font-weight:650;
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 18px;
 }
 
-.period-time{
-  color:#65718c;
-  font-size:14px;
-  white-space:nowrap;
+.muted { color: var(--muted); }
+
+.small { font-size: 12px; }
+
+.grid-two {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 20px;
 }
 
-.task{
-  display:flex;
-  align-items:center;
-  gap:13px;
-  padding:14px 5px;
-  border-bottom:1px solid var(--line);
-  font-size:16px;
+.primary-button {
+  border: none;
+  background: var(--purple);
+  color: white;
+  border-radius: 11px;
+  padding: 11px 17px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-.task input{
-  width:22px;
-  height:22px;
-  accent-color:var(--purple);
+.secondary-button {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--text);
+  border-radius: 11px;
+  padding: 10px 15px;
+  font-size: 12px;
 }
 
-.task span{flex:1}
-
-.task.done span{
-  color:#929bad;
-  text-decoration:line-through;
+input, textarea, select {
+  max-width: 100%;
 }
 
-.delete-task{
-  border:0;
-  background:transparent;
-  color:#a0a9bb;
-  font-size:18px;
-  cursor:pointer;
+.field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e9e7f0;
+  border-radius: 11px;
+  background: #fff;
+  outline: none;
+  font-size: 13px;
+  color: var(--text);
 }
 
-.add-button{
-  width:42px;
-  height:42px;
-  border:0;
-  border-radius:50%;
-  color:#785fe5;
-  background:#eeeaff;
-  font-size:24px;
-  cursor:pointer;
+.field:focus {
+  border-color: var(--purple);
 }
 
-.page{
-  display:none;
-  animation:pageIn .35s ease both;
+textarea.field {
+  resize: vertical;
+  min-height: 100px;
 }
 
-.page.active{display:block}
+/* HOME */
 
-@keyframes pageIn{
-  from{opacity:0;transform:translateY(7px)}
-  to{opacity:1;transform:none}
+.welcome {
+  background: linear-gradient(115deg, #f0edff, #f9f8ff 70%, #edf2ff);
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 22px;
 }
 
-.page-heading{
-  margin:5px 0 22px;
-  font-size:30px;
+.welcome-label {
+  color: #8475d3;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
 }
 
-.page-description{
-  margin-top:-12px;
-  margin-bottom:25px;
-  color:var(--muted);
+.welcome h2 {
+  font-size: 27px;
+  margin: 12px 0 8px;
+  letter-spacing: -1px;
 }
 
-.ai-box{
-  min-height:430px;
-  display:flex;
-  flex-direction:column;
+.welcome p {
+  font-size: 13px;
+  color: #77748d;
+  margin: 0;
 }
 
-.chat-messages{
-  flex:1;
-  min-height:270px;
-  padding:20px;
-  border-radius:22px;
-  background:rgba(246,248,255,.8);
-  overflow-y:auto;
+.home-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.message{
-  max-width:80%;
-  padding:14px 17px;
-  margin-bottom:12px;
-  border-radius:18px;
-  line-height:1.65;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
+.schedule-row,
+.task-row,
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 0;
+  border-bottom: 1px solid #f2f1f6;
 }
 
-.message.buddy{
-  background:#eeeaff;
-  border-bottom-left-radius:5px;
+.schedule-row:last-child,
+.task-row:last-child,
+.list-row:last-child { border-bottom: none; }
+
+.time-box {
+  background: var(--purple-light);
+  color: #7666cc;
+  border-radius: 10px;
+  min-width: 48px;
+  text-align: center;
+  padding: 9px 5px;
+  font-size: 12px;
+  font-weight: 700;
 }
 
-.message.user{
-  margin-left:auto;
-  background:#e0edff;
-  border-bottom-right-radius:5px;
+.row-main { flex: 1; min-width: 0; }
+.row-main strong { display: block; font-size: 13px; }
+.row-main span { color: var(--muted); font-size: 11px; }
+
+.empty {
+  color: #aaa8b8;
+  text-align: center;
+  padding: 28px 10px;
+  font-size: 12px;
 }
 
-.chat-form{
-  display:flex;
-  gap:10px;
-  margin-top:15px;
+/* TASKS */
+
+.task-check {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--purple);
 }
 
-.chat-form input{
-  flex:1;
-  min-width:0;
-  padding:16px 19px;
-  border:1px solid var(--line);
-  border-radius:30px;
-  background:white;
-  font:inherit;
+.done-text {
+  text-decoration: line-through;
+  color: #aaa8b8 !important;
 }
 
-.send-button{
-  width:53px;
-  height:53px;
-  border:0;
-  border-radius:50%;
-  background:var(--purple);
-  color:white;
-  font-size:21px;
-  cursor:pointer;
+.delete-button {
+  border: none;
+  background: transparent;
+  color: #aaa8b8;
+  font-size: 17px;
 }
 
-.send-button:disabled{opacity:.5}
-
-.settings-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  padding:18px 0;
-  border-bottom:1px solid var(--line);
+.progress-track {
+  background: #f0eef6;
+  height: 7px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 12px 0;
 }
 
-.status{
-  padding:12px 15px;
-  border-radius:14px;
-  background:#f1efff;
-  color:#6957c4;
-  margin-bottom:18px;
-  font-size:14px;
+.progress-fill {
+  background: var(--purple);
+  height: 100%;
+  width: 0;
+  transition: width .3s;
 }
 
-.empty{
-  padding:20px;
-  text-align:center;
-  color:var(--muted);
+/* AI */
+
+.chat-box {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  min-height: 380px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-footer{
-  text-align:center;
-  color:#96a2b9;
-  font-size:12px;
-  padding:25px 0 5px;
+.chat-message {
+  max-width: 85%;
+  padding: 13px 16px;
+  border-radius: 15px;
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
-@media(max-width:760px){
-  .app{padding:16px}
-  .home-grid{grid-template-columns:1fr}
-  .nav{gap:3px;padding:6px}
-  .nav button{padding:12px 5px;font-size:12px}
-  .hero{padding:24px}
-  .card{padding:19px}
+.chat-message.buddy {
+  background: #f2efff;
+  align-self: flex-start;
 }
 
-@media(max-width:430px){
-  .brand{font-size:23px}
-  .header{gap:8px}
-  .language-select{max-width:125px;padding:10px}
-  .hero h1{font-size:26px}
-  .period{grid-template-columns:43px 1fr auto;gap:9px}
-  .period-number{width:39px}
-  .period-time{font-size:12px}
+.chat-message.user {
+  background: #e9e7f1;
+  align-self: flex-end;
 }
 
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    animation-duration:.01ms!important;
-    transition-duration:.01ms!important;
+.chat-input-row {
+  display: flex;
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.chat-input-row input { flex: 1; min-width: 0; }
+
+/* NOTES / CALENDAR */
+
+.note-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.note-item:last-child { border: none; }
+
+.note-item h3 {
+  font-size: 14px;
+  margin: 0 0 7px;
+}
+
+.note-item p {
+  font-size: 12px;
+  color: #77758b;
+  white-space: pre-wrap;
+  margin: 0;
+  line-height: 1.8;
+}
+
+.date-label {
+  color: var(--purple);
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+/* SUPPORT */
+
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.support-item {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 17px;
+  padding: 20px;
+  text-align: left;
+  color: var(--text);
+}
+
+.support-item:hover {
+  border-color: #c9c0fa;
+  background: #fcfbff;
+}
+
+.support-item .symbol {
+  font-size: 23px;
+  margin-bottom: 12px;
+}
+
+.support-item strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+.support-item span {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* SETTINGS */
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.setting-row:last-child { border: none; }
+
+.setting-row strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.setting-row span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.setting-row select { max-width: 170px; }
+
+/* MOBILE */
+
+.mobile-brand { display: none; }
+
+@media (max-width: 800px) {
+  .sidebar {
+    width: 205px;
+    padding: 24px 12px;
   }
+
+  .main { padding: 24px 20px; }
+  .grid-two, .home-columns { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .app { display: block; }
+
+  .sidebar {
+    position: fixed;
+    z-index: 50;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 8px 5px calc(8px + env(safe-area-inset-bottom));
+    border-right: none;
+    border-top: 1px solid var(--line);
+    background: rgba(255,255,255,.97);
+  }
+
+  .sidebar .brand,
+  .sidebar .menu-label,
+  .sidebar-bottom { display: none; }
+
+  .nav-list {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .nav-button {
+    flex: 1;
+    padding: 9px 2px;
+    border-radius: 10px;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    font-size: 9px;
+  }
+
+  .nav-icon { font-size: 17px; }
+
+  .main { padding: 18px 16px 110px; }
+  .topbar { margin-bottom: 25px; }
+  .welcome { padding: 24px 20px; }
+  .welcome h2 { font-size: 23px; }
+  .card { padding: 19px; }
+  .support-grid { grid-template-columns: 1fr 1fr; }
+  .support-item { padding: 15px; }
+  .chat-box { min-height: 330px; }
+}
+
+body.large-text { font-size: 18px; }
+body.large-text .card,
+body.large-text .page { font-size: 16px; }
+
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
 }
 </style>
 </head>
@@ -467,134 +646,58 @@ footer{
 <body>
 
 <div class="splash" id="splash">
-  <div class="splash-logo">School <span>Buddy.</span></div>
+  <div class="splash-content">
+    <div class="splash-name">School Buddy</div>
+    <div class="splash-tagline">YOUR SPACE. YOUR PACE.</div>
+  </div>
 </div>
 
 <div class="app" id="app">
 
-<header class="header">
-  <div class="brand">School <span>Buddy.</span></div>
+  <aside class="sidebar">
+    <div class="brand">School <span>Buddy.</span></div>
 
-  <div class="header-actions">
-    <select class="language-select" id="languageSelect" aria-label="Language">
-      <option value="ja">🌐 日本語</option>
-      <option value="en">🌐 English</option>
-      <option value="ko">🌐 한국어</option>
-      <option value="zh">🌐 中文</option>
-      <option value="fr">🌐 Français</option>
-      <option value="es">🌐 Español</option>
-      <option value="de">🌐 Deutsch</option>
-      <option value="pt">🌐 Português</option>
-    </select>
+    <div class="menu-label">YOUR SPACE</div>
 
-    <button class="profile-button" aria-label="Profile">♙</button>
-  </div>
-</header>
+    <nav class="nav-list">
+      <button class="nav-button active" data-page="home">
+        <span class="nav-icon">⌂</span><span data-i18n="home">ホーム</span>
+      </button>
+      <button class="nav-button" data-page="ai">
+        <span class="nav-icon">✧</span><span>AI Buddy</span>
+      </button>
+      <button class="nav-button" data-page="notes">
+        <span class="nav-icon">▤</span><span data-i18n="notes">ノート</span>
+      </button>
+      <button class="nav-button" data-page="support">
+        <span class="nav-icon">◇</span><span data-i18n="support">学習サポート</span>
+      </button>
+      <button class="nav-button" data-page="calendar">
+        <span class="nav-icon">▦</span><span data-i18n="calendar">カレンダー</span>
+      </button>
+      <button class="nav-button" data-page="announcements">
+        <span class="nav-icon">♧</span><span data-i18n="announcements">お知らせ</span>
+      </button>
+      <button class="nav-button" data-page="goals">
+        <span class="nav-icon">◎</span><span data-i18n="goals">目標・振り返り</span>
+      </button>
+      <button class="nav-button" data-page="settings">
+        <span class="nav-icon">⚙</span><span data-i18n="settings">設定</span>
+      </button>
+    </nav>
 
-<nav class="nav">
-  <button class="active" data-page="home">⌂ <span data-i18n="home">ホーム</span></button>
-  <button data-page="ai">✦ <span>AI Buddy</span></button>
-  <button data-page="schedule">▦ <span data-i18n="schedule">時間割</span></button>
-  <button data-page="tasks">☑ <span data-i18n="tasks">課題</span></button>
-  <button data-page="settings">⚙ <span data-i18n="settings">設定</span></button>
-</nav>
-
-<div id="connectionStatus" class="status">
-  Firebaseに接続しています...
-</div>
-
-<main class="page active" id="page-home">
-
-  <section class="hero">
-    <div class="hero-label">YOUR PERSONAL LEARNING SPACE</div>
-    <h1 data-i18n="heroTitle">今日も自分のペースで。</h1>
-    <p data-i18n="heroText">今日の学校生活をチェックしよう。</p>
-  </section>
-
-  <div class="home-grid">
-
-    <section class="card">
-      <div class="card-heading">
-        <h2 class="card-title">
-          <span class="card-icon">▦</span>
-          <span data-i18n="todaySchedule">今日の時間割</span>
-        </h2>
-        <button class="text-link" data-go="schedule" data-i18n="seeAll">
-          すべて見る ›
-        </button>
-      </div>
-      <div id="homeSchedule"></div>
-    </section>
-
-    <section class="card">
-      <div class="card-heading">
-        <h2 class="card-title">
-          <span class="card-icon">☑</span>
-          <span data-i18n="todayTasks">今日の課題</span>
-        </h2>
-        <button class="add-button" id="addTask">+</button>
-      </div>
-      <div id="homeTasks"></div>
-    </section>
-
-  </div>
-</main>
-
-<section class="page" id="page-ai">
-  <h1 class="page-heading">✦ AI Buddy</h1>
-  <p class="page-description" data-i18n="aiDescription">
-    勉強や学校生活について、何でも相談してね。
-  </p>
-
-  <div class="card ai-box">
-    <div class="chat-messages" id="chatMessages">
-      <div class="message buddy" data-i18n="welcome">
-        こんにちは！Buddyだよ。何でも聞いてね ✨
+    <div class="sidebar-bottom">
+      <div class="sidebar-note">
+        Take your time.<br>
+        Every step matters.
       </div>
     </div>
+  </aside>
 
-    <form class="chat-form" id="chatForm">
-      <input
-        id="question"
-        type="text"
-        data-i18n-placeholder="askPlaceholder"
-        placeholder="Buddyに質問してみよう..."
-        autocomplete="off">
+  <main class="main">
 
-      <button class="send-button" id="sendButton" type="submit">➤</button>
-    </form>
-  </div>
-</section>
-
-<section class="page" id="page-schedule">
-  <h1 class="page-heading" data-i18n="todaySchedule">今日の時間割</h1>
-  <p class="page-description" data-i18n="scheduleDescription">
-    今日の授業を確認しよう。
-  </p>
-  <div class="card">
-    <div id="fullSchedule"></div>
-  </div>
-</section>
-
-<section class="page" id="page-tasks">
-  <h1 class="page-heading" data-i18n="todayTasks">今日の課題</h1>
-  <p class="page-description" data-i18n="tasksDescription">
-    やることをひとつずつ進めよう。
-  </p>
-  <div class="card">
-    <div id="fullTasks"></div>
-  </div>
-</section>
-
-<section class="page" id="page-settings">
-  <h1 class="page-heading" data-i18n="settings">設定</h1>
-
-  <div class="card">
-
-    <div class="settings-row">
-      <strong data-i18n="language">表示言語</strong>
-
-      <select id="languageSelect2">
+    <header class="topbar">
+      <select id="languageSelect" aria-label="Language">
         <option value="ja">日本語</option>
         <option value="en">English</option>
         <option value="ko">한국어</option>
@@ -604,34 +707,294 @@ footer{
         <option value="de">Deutsch</option>
         <option value="pt">Português</option>
       </select>
-    </div>
+      <button class="top-button" id="notificationButton" title="Notifications">♧</button>
+      <button class="profile" id="profileButton">S</button>
+    </header>
 
-    <div class="settings-row">
-      <strong data-i18n="motion">アニメーション</strong>
-      <span data-i18n="motionNote">端末の設定に合わせます</span>
-    </div>
+    <!-- HOME -->
+    <section class="page active" id="page-home">
+      <div class="welcome">
+        <div class="welcome-label">WELCOME TO YOUR SPACE</div>
+        <h2 id="welcomeName">Hello!</h2>
+        <p data-i18n="welcomeText">今日も自分のペースで進んでいこう。</p>
+      </div>
 
-    <div class="settings-row">
-      <strong>School Buddy.</strong>
-      <span>Version 2.2</span>
-    </div>
+      <div class="home-columns">
+        <div class="card">
+          <h3 class="card-title" data-i18n="todaySchedule">今日の時間割</h3>
+          <div id="homeSchedule">
+            <div class="empty" data-i18n="loading">読み込み中...</div>
+          </div>
+        </div>
 
-    <button class="text-link" id="logoutButton">ログアウト</button>
+        <div class="card">
+          <h3 class="card-title" data-i18n="todayTasks">今日の課題</h3>
+          <div id="homeTasks">
+            <div class="empty" data-i18n="loading">読み込み中...</div>
+          </div>
+          <div style="margin-top:15px">
+            <button class="secondary-button" onclick="showPage('tasks')" data-i18n="viewTasks">
+              課題を見る
+            </button>
+          </div>
+        </div>
+      </div>
 
-  </div>
-</section>
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="taskProgress">課題の進み具合</h3>
+        <div id="progressText" class="small muted">0 / 0</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </section>
 
-<footer>School Buddy. © 2026</footer>
+    <!-- AI -->
+    <section class="page" id="page-ai">
+      <div class="page-heading">
+        <h1>AI Buddy</h1>
+        <p data-i18n="aiSubtitle">わからないことや困ったことを気軽に相談してね。</p>
+      </div>
 
+      <div class="chat-box" id="chatBox">
+        <div class="chat-message buddy" data-i18n="aiGreeting">
+          こんにちは！Buddyだよ。勉強のことでも、学校生活のことでも、気軽に話してね ✨
+        </div>
+      </div>
+
+      <div class="chat-input-row">
+        <input class="field" id="chatInput" data-i18n-placeholder="chatPlaceholder"
+          placeholder="メッセージを入力..." />
+        <button class="primary-button" id="sendButton" data-i18n="send">送信</button>
+      </div>
+      <p class="small muted" style="margin-top:12px" data-i18n="aiNotice">
+        AIの回答は間違っていることもあるよ。大切なことは先生や家族にも確認してね。
+      </p>
+    </section>
+
+    <!-- NOTES -->
+    <section class="page" id="page-notes">
+      <div class="page-heading">
+        <h1 data-i18n="notes">ノート</h1>
+        <p data-i18n="notesSubtitle">自分だけのメモを残そう。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="newNote">新しいノート</h3>
+        <input class="field" id="noteTitle" placeholder="タイトル" data-i18n-placeholder="noteTitlePlaceholder">
+        <textarea class="field" id="noteContent" style="margin-top:10px"
+          placeholder="ここにメモを書こう..." data-i18n-placeholder="noteContentPlaceholder"></textarea>
+        <button class="primary-button" id="saveNoteButton" style="margin-top:12px" data-i18n="saveNote">
+          保存する
+        </button>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="savedNotes">保存したノート</h3>
+        <div id="notesList"></div>
+      </div>
+    </section>
+
+    <!-- LEARNING SUPPORT -->
+    <section class="page" id="page-support">
+      <div class="page-heading">
+        <h1 data-i18n="support">学習サポート</h1>
+        <p data-i18n="supportSubtitle">自分に合った方法で、少しずつ進めよう。</p>
+      </div>
+
+      <div class="support-grid">
+        <button class="support-item" onclick="supportPrompt('step')">
+          <div class="symbol">🪜</div>
+          <strong data-i18n="supportStep">順番に説明して</strong>
+          <span data-i18n="supportStepDesc">難しいことを小さなステップに分ける</span>
+        </button>
+
+        <button class="support-item" onclick="supportPrompt('simple')">
+          <div class="symbol">💡</div>
+          <strong data-i18n="supportSimple">やさしく説明して</strong>
+          <span data-i18n="supportSimpleDesc">難しい言葉をわかりやすくする</span>
+        </button>
+
+        <button class="support-item" onclick="supportPrompt('memory')">
+          <div class="symbol">🧠</div>
+          <strong data-i18n="supportMemory">覚え方を考えて</strong>
+          <span data-i18n="supportMemoryDesc">自分に合う覚え方を探す</span>
+        </button>
+
+        <button class="support-item" onclick="supportPrompt('plan')">
+          <div class="symbol">🗓️</div>
+          <strong data-i18n="supportPlan">やることを整理して</strong>
+          <span data-i18n="supportPlanDesc">今日やることを整理する</span>
+        </button>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="supportAsk">何をサポートしてほしい？</h3>
+        <textarea class="field" id="supportInput" placeholder="困っていることを書いてね..."
+          data-i18n-placeholder="supportPlaceholder"></textarea>
+        <button class="primary-button" style="margin-top:12px" id="supportSend"
+          data-i18n="askBuddy">Buddyに相談する</button>
+      </div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="page" id="page-calendar">
+      <div class="page-heading">
+        <h1 data-i18n="calendar">カレンダー</h1>
+        <p data-i18n="calendarSubtitle">自分の予定を管理しよう。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="addEvent">予定を追加</h3>
+        <input class="field" id="eventTitle" placeholder="予定の名前">
+        <input class="field" id="eventDate" type="date" style="margin-top:10px">
+        <button class="primary-button" id="saveEventButton" style="margin-top:12px"
+          data-i18n="add">追加する</button>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="myEvents">自分の予定</h3>
+        <div id="eventsList"></div>
+      </div>
+    </section>
+
+    <!-- ANNOUNCEMENTS -->
+    <section class="page" id="page-announcements">
+      <div class="page-heading">
+        <h1 data-i18n="announcements">お知らせ</h1>
+        <p data-i18n="announcementsSubtitle">学校や先生からのお知らせを確認する場所。</p>
+      </div>
+
+      <div class="card">
+        <div class="empty" data-i18n="announcementEmpty">
+          まだお知らせはありません。
+        </div>
+        <p class="small muted" data-i18n="announcementNote">
+          この画面は現在、先生からのお知らせを受信する機能とはまだ接続されていません。
+        </p>
+      </div>
+    </section>
+
+    <!-- GOALS -->
+    <section class="page" id="page-goals">
+      <div class="page-heading">
+        <h1 data-i18n="goals">目標・振り返り</h1>
+        <p data-i18n="goalsSubtitle">小さな目標も、大切な一歩。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="myGoal">今の目標</h3>
+        <textarea class="field" id="goalInput" placeholder="今の目標を書いてみよう..."></textarea>
+        <button class="primary-button" id="saveGoalButton" style="margin-top:12px"
+          data-i18n="save">保存する</button>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="reflection">今日の振り返り</h3>
+        <textarea class="field" id="reflectionInput"
+          placeholder="今日できたこと、感じたことを書いてみよう..."></textarea>
+        <button class="primary-button" id="saveReflectionButton" style="margin-top:12px"
+          data-i18n="saveReflection">振り返りを保存</button>
+        <div id="reflectionList" style="margin-top:15px"></div>
+      </div>
+    </section>
+
+    <!-- TASKS -->
+    <section class="page" id="page-tasks">
+      <div class="page-heading">
+        <h1 data-i18n="tasks">課題</h1>
+        <p data-i18n="tasksSubtitle">やることを整理して、ひとつずつ進めよう。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="addTask">課題を追加</h3>
+        <div class="chat-input-row">
+          <input class="field" id="newTaskInput" placeholder="課題の名前を入力...">
+          <button class="primary-button" id="addTaskButton" data-i18n="add">追加</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="taskList">課題リスト</h3>
+        <div id="tasksList"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="page" id="page-settings">
+      <div class="page-heading">
+        <h1 data-i18n="settings">設定</h1>
+        <p data-i18n="settingsSubtitle">使いやすいようにカスタマイズしよう。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="appearance">表示・アクセシビリティ</h3>
+
+        <div class="setting-row">
+          <div>
+            <strong data-i18n="textSize">文字サイズ</strong>
+            <span data-i18n="textSizeDesc">画面の文字を大きくする</span>
+          </div>
+          <select id="textSizeSelect" class="field">
+            <option value="normal">標準</option>
+            <option value="large">大きめ</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <strong data-i18n="readAloud">読み上げ</strong>
+            <span data-i18n="readAloudDesc">選択した文章を読み上げる</span>
+          </div>
+          <button class="secondary-button" id="readAloudButton" data-i18n="readButton">使い方</button>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <strong data-i18n="motion">アニメーション</strong>
+            <span data-i18n="motionDesc">動きを少なくする</span>
+          </div>
+          <select id="motionSelect" class="field">
+            <option value="normal">通常</option>
+            <option value="reduced">少なくする</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="aiSettings">AI Buddyの設定</h3>
+        <div class="setting-row">
+          <div>
+            <strong data-i18n="explanationLevel">説明のレベル</strong>
+            <span data-i18n="explanationDesc">AIの説明の詳しさ</span>
+          </div>
+          <select id="explanationSelect" class="field">
+            <option value="simple">やさしく</option>
+            <option value="normal">ふつう</option>
+            <option value="detailed">詳しく</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3 class="card-title" data-i18n="account">アカウント</h3>
+        <div class="setting-row">
+          <div>
+            <strong id="accountName">Student</strong>
+            <span data-i18n="signedIn">ログイン中</span>
+          </div>
+          <button class="secondary-button" id="logoutButton" data-i18n="logout">ログアウト</button>
+        </div>
+        <p class="small muted">School Buddy 3.0</p>
+      </div>
+    </section>
+
+  </main>
 </div>
 
 <script type="module">
-
-import { firebaseConfig } from "./firebase-config.js";
-
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
 import {
   getAuth,
@@ -641,720 +1004,989 @@ import {
 
 import {
   getFirestore,
-  collection,
   doc,
   getDoc,
+  collection,
   getDocs,
   setDoc,
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+import { firebaseConfig } from "./firebase-config.js";
 
-/* FIREBASE */
+/* CONNECTIONS */
 
 const appFirebase = initializeApp(firebaseConfig);
 const auth = getAuth(appFirebase);
 const db = getFirestore(appFirebase);
 
-let currentUser = null;
-let classId = null;
-let tasks = [];
-let periods = [];
-
+const WORKER_URL =
+  "https://proud-term-3a4f.sophiaminion205.workers.dev/";
 
 /* LANGUAGE */
 
 const translations = {
+  ja: {
+    home:"ホーム", notes:"ノート", support:"学習サポート",
+    calendar:"カレンダー", announcements:"お知らせ",
+    goals:"目標・振り返り", settings:"設定", tasks:"課題",
+    welcomeText:"今日も自分のペースで進んでいこう。",
+    todaySchedule:"今日の時間割", todayTasks:"今日の課題",
+    loading:"読み込み中...", viewTasks:"課題を見る",
+    taskProgress:"課題の進み具合",
+    aiSubtitle:"わからないことや困ったことを気軽に相談してね。",
+    aiGreeting:"こんにちは！Buddyだよ。勉強のことでも、学校生活のことでも、気軽に話してね ✨",
+    chatPlaceholder:"メッセージを入力...", send:"送信",
+    aiNotice:"AIの回答は間違っていることもあるよ。大切なことは先生や家族にも確認してね。",
+    notesSubtitle:"自分だけのメモを残そう。",
+    newNote:"新しいノート", noteTitlePlaceholder:"タイトル",
+    noteContentPlaceholder:"ここにメモを書こう...", saveNote:"保存する",
+    savedNotes:"保存したノート",
+    supportSubtitle:"自分に合った方法で、少しずつ進めよう。",
+    supportStep:"順番に説明して", supportStepDesc:"難しいことを小さなステップに分ける",
+    supportSimple:"やさしく説明して", supportSimpleDesc:"難しい言葉をわかりやすくする",
+    supportMemory:"覚え方を考えて", supportMemoryDesc:"自分に合う覚え方を探す",
+    supportPlan:"やることを整理して", supportPlanDesc:"今日やることを整理する",
+    supportAsk:"何をサポートしてほしい？",
+    supportPlaceholder:"困っていることを書いてね...", askBuddy:"Buddyに相談する",
+    calendarSubtitle:"自分の予定を管理しよう。",
+    addEvent:"予定を追加", add:"追加する", myEvents:"自分の予定",
+    announcementsSubtitle:"学校や先生からのお知らせを確認する場所。",
+    announcementEmpty:"まだお知らせはありません。",
+    announcementNote:"この画面は現在、先生からのお知らせを受信する機能とはまだ接続されていません。",
+    goalsSubtitle:"小さな目標も、大切な一歩。",
+    myGoal:"今の目標", reflection:"今日の振り返り",
+    save:"保存する", saveReflection:"振り返りを保存",
+    tasksSubtitle:"やることを整理して、ひとつずつ進めよう。",
+    addTask:"課題を追加", taskList:"課題リスト",
+    settingsSubtitle:"使いやすいようにカスタマイズしよう。",
+    appearance:"表示・アクセシビリティ",
+    textSize:"文字サイズ", textSizeDesc:"画面の文字を大きくする",
+    readAloud:"読み上げ", readAloudDesc:"選択した文章を読み上げる",
+    readButton:"使い方", motion:"アニメーション",
+    motionDesc:"動きを少なくする", aiSettings:"AI Buddyの設定",
+    explanationLevel:"説明のレベル", explanationDesc:"AIの説明の詳しさ",
+    account:"アカウント", signedIn:"ログイン中", logout:"ログアウト"
+  },
 
-ja:{
-home:"ホーム",schedule:"時間割",tasks:"課題",settings:"設定",
-heroTitle:"今日も自分のペースで。",
-heroText:"今日の学校生活をチェックしよう。",
-todaySchedule:"今日の時間割",todayTasks:"今日の課題",
-seeAll:"すべて見る ›",
-aiDescription:"勉強や学校生活について、何でも相談してね。",
-welcome:"こんにちは！Buddyだよ。何でも聞いてね ✨",
-askPlaceholder:"Buddyに質問してみよう...",
-scheduleDescription:"今日の授業を確認しよう。",
-tasksDescription:"やることをひとつずつ進めよう。",
-language:"表示言語",motion:"アニメーション",
-motionNote:"端末の設定に合わせます",
-enterTask:"課題名を入力してね",
-thinking:"Buddyが考えているよ...",
-error:"AIに接続できなかったよ。もう一度試してね。",
-emptySchedule:"今日の時間割はまだ登録されていません。",
-emptyTasks:"課題はまだありません。",
-connection:"Firebaseに接続しました。",
-noLogin:"ログインしていません。ログイン画面に戻ります。"
-},
+  en: {
+    home:"Home", notes:"Notes", support:"Learning Support",
+    calendar:"Calendar", announcements:"Announcements",
+    goals:"Goals & Reflection", settings:"Settings", tasks:"Tasks",
+    welcomeText:"Take today at your own pace.",
+    todaySchedule:"Today's Schedule", todayTasks:"Today's Tasks",
+    loading:"Loading...", viewTasks:"View Tasks", taskProgress:"Task Progress",
+    aiSubtitle:"Ask Buddy anything you're wondering about.",
+    aiGreeting:"Hi! I'm Buddy. You can talk to me about school, studying, or anything on your mind ✨",
+    chatPlaceholder:"Type a message...", send:"Send",
+    aiNotice:"AI can make mistakes. Check important information with a teacher or family member.",
+    notesSubtitle:"Keep your own private notes.", newNote:"New Note",
+    noteTitlePlaceholder:"Title", noteContentPlaceholder:"Write a note...",
+    saveNote:"Save Note", savedNotes:"Saved Notes",
+    supportSubtitle:"Find a way of learning that works for you.",
+    supportStep:"Explain step by step", supportStepDesc:"Break things into smaller steps",
+    supportSimple:"Explain simply", supportSimpleDesc:"Make difficult words easier",
+    supportMemory:"Help me remember", supportMemoryDesc:"Find helpful memory strategies",
+    supportPlan:"Organize my tasks", supportPlanDesc:"Plan what to do today",
+    supportAsk:"What would you like help with?",
+    supportPlaceholder:"Tell Buddy what you need help with...", askBuddy:"Ask Buddy",
+    calendarSubtitle:"Manage your personal schedule.",
+    addEvent:"Add an Event", add:"Add", myEvents:"My Events",
+    announcementsSubtitle:"School and teacher announcements.",
+    announcementEmpty:"No announcements yet.",
+    announcementNote:"Teacher announcements are not connected to this page yet.",
+    goalsSubtitle:"Every small step matters.", myGoal:"My Goal",
+    reflection:"Today's Reflection", save:"Save", saveReflection:"Save Reflection",
+    tasksSubtitle:"Organize your tasks and take them one at a time.",
+    addTask:"Add a Task", taskList:"Task List",
+    settingsSubtitle:"Customize your experience.",
+    appearance:"Display & Accessibility", textSize:"Text Size",
+    textSizeDesc:"Make text larger", readAloud:"Read Aloud",
+    readAloudDesc:"Read selected text aloud", readButton:"How to use",
+    motion:"Animation", motionDesc:"Reduce motion",
+    aiSettings:"AI Buddy Settings", explanationLevel:"Explanation Level",
+    explanationDesc:"How detailed AI explanations should be",
+    account:"Account", signedIn:"Signed in", logout:"Log out"
+  },
 
-en:{
-home:"Home",schedule:"Schedule",tasks:"Tasks",settings:"Settings",
-heroTitle:"Go at your own pace.",
-heroText:"Let's check today's school life.",
-todaySchedule:"Today's Schedule",todayTasks:"Today's Tasks",
-seeAll:"See all ›",
-aiDescription:"Ask me anything about learning or school.",
-welcome:"Hi! I'm Buddy. Ask me anything ✨",
-askPlaceholder:"Ask Buddy a question...",
-scheduleDescription:"Check today's classes.",
-tasksDescription:"Take things one step at a time.",
-language:"Language",motion:"Animation",
-motionNote:"Follows your device settings",
-enterTask:"Enter a task name",
-thinking:"Buddy is thinking...",
-error:"Couldn't connect to AI. Please try again.",
-emptySchedule:"No schedule has been added for today.",
-emptyTasks:"No tasks yet.",
-connection:"Connected to Firebase.",
-noLogin:"You are not logged in. Returning to login."
-},
+  ko: {
+    home:"홈", notes:"노트", support:"학습 지원", calendar:"캘린더",
+    announcements:"공지사항", goals:"목표와 돌아보기", settings:"설정",
+    tasks:"과제", welcomeText:"오늘도 나만의 속도로 나아가자.",
+    todaySchedule:"오늘의 시간표", todayTasks:"오늘의 과제",
+    loading:"불러오는 중...", viewTasks:"과제 보기",
+    taskProgress:"과제 진행 상황", aiSubtitle:"궁금한 것을 Buddy에게 물어보세요.",
+    aiGreeting:"안녕! 나는 Buddy야. 공부나 학교생활에 대해 편하게 이야기해 줘 ✨",
+    chatPlaceholder:"메시지를 입력하세요...", send:"보내기",
+    aiNotice:"AI의 답변은 틀릴 수 있어요. 중요한 내용은 선생님이나 가족에게 확인하세요.",
+    notesSubtitle:"나만의 메모를 남겨 보세요.", newNote:"새 노트",
+    noteTitlePlaceholder:"제목", noteContentPlaceholder:"메모를 작성하세요...",
+    saveNote:"저장", savedNotes:"저장된 노트",
+    supportSubtitle:"나에게 맞는 방법으로 조금씩 진행해요.",
+    supportStep:"순서대로 설명해 줘", supportStepDesc:"작은 단계로 나누어 설명",
+    supportSimple:"쉽게 설명해 줘", supportSimpleDesc:"어려운 말을 쉽게 바꾸기",
+    supportMemory:"기억하는 방법", supportMemoryDesc:"나에게 맞는 기억 방법 찾기",
+    supportPlan:"할 일 정리하기", supportPlanDesc:"오늘 할 일 계획하기",
+    supportAsk:"어떤 도움이 필요해요?", supportPlaceholder:"어려운 점을 적어 주세요...",
+    askBuddy:"Buddy에게 물어보기", calendarSubtitle:"나의 일정을 관리해요.",
+    addEvent:"일정 추가", add:"추가", myEvents:"나의 일정",
+    announcementsSubtitle:"학교와 선생님의 공지사항",
+    announcementEmpty:"아직 공지사항이 없어요.",
+    announcementNote:"선생님 공지 기능은 아직 연결되지 않았어요.",
+    goalsSubtitle:"작은 목표도 소중한 한 걸음이에요.",
+    myGoal:"나의 목표", reflection:"오늘 돌아보기", save:"저장",
+    saveReflection:"돌아보기 저장", tasksSubtitle:"할 일을 하나씩 정리해요.",
+    addTask:"과제 추가", taskList:"과제 목록",
+    settingsSubtitle:"사용하기 편하게 설정해 보세요.",
+    appearance:"화면 및 접근성", textSize:"글자 크기",
+    textSizeDesc:"글자를 크게 표시", readAloud:"읽어 주기",
+    readAloudDesc:"선택한 문장을 소리 내어 읽기",
+    readButton:"사용 방법", motion:"애니메이션", motionDesc:"움직임 줄이기",
+    aiSettings:"AI Buddy 설정", explanationLevel:"설명 수준",
+    explanationDesc:"AI 설명의 자세한 정도", account:"계정",
+    signedIn:"로그인됨", logout:"로그아웃"
+  },
 
-ko:{
-home:"홈",schedule:"시간표",tasks:"과제",settings:"설정",
-heroTitle:"오늘도 나만의 속도로.",
-heroText:"오늘의 학교생활을 확인해 봐요.",
-todaySchedule:"오늘의 시간표",todayTasks:"오늘의 과제",
-seeAll:"모두 보기 ›",
-aiDescription:"공부나 학교생활에 대해 무엇이든 물어봐요.",
-welcome:"안녕! 나는 Buddy야 ✨",
-askPlaceholder:"Buddy에게 질문하기...",
-scheduleDescription:"오늘 수업을 확인해요.",
-tasksDescription:"하나씩 차근차근 해봐요.",
-language:"언어",motion:"애니메이션",
-motionNote:"기기 설정을 따릅니다",
-enterTask:"과제 이름을 입력해 주세요",
-thinking:"Buddy가 생각하고 있어요...",
-error:"AI에 연결할 수 없어요.",
-emptySchedule:"오늘 등록된 시간표가 없습니다.",
-emptyTasks:"과제가 없습니다.",
-connection:"Firebase에 연결되었습니다.",
-noLogin:"로그인이 필요합니다."
-},
+  zh: {
+    home:"首页", notes:"笔记", support:"学习支持", calendar:"日历",
+    announcements:"通知", goals:"目标与回顾", settings:"设置",
+    tasks:"任务", welcomeText:"今天也按照自己的节奏前进吧。",
+    todaySchedule:"今日课程表", todayTasks:"今日任务",
+    loading:"加载中...", viewTasks:"查看任务", taskProgress:"任务进度",
+    aiSubtitle:"有问题可以随时向 Buddy 提问。",
+    aiGreeting:"你好！我是 Buddy。学习或学校生活方面的问题都可以和我聊聊 ✨",
+    chatPlaceholder:"输入消息...", send:"发送",
+    aiNotice:"AI 的回答可能有误。重要信息请向老师或家人确认。",
+    notesSubtitle:"记录自己的笔记。", newNote:"新建笔记",
+    noteTitlePlaceholder:"标题", noteContentPlaceholder:"写下笔记...",
+    saveNote:"保存", savedNotes:"已保存的笔记",
+    supportSubtitle:"找到适合自己的学习方式。",
+    supportStep:"分步骤解释", supportStepDesc:"把复杂内容拆分成小步骤",
+    supportSimple:"简单解释", supportSimpleDesc:"让难懂的词语更容易理解",
+    supportMemory:"帮助记忆", supportMemoryDesc:"寻找适合自己的记忆方法",
+    supportPlan:"整理任务", supportPlanDesc:"安排今天要做的事情",
+    supportAsk:"你需要什么帮助？", supportPlaceholder:"写下遇到的困难...",
+    askBuddy:"向 Buddy 提问", calendarSubtitle:"管理自己的日程。",
+    addEvent:"添加日程", add:"添加", myEvents:"我的日程",
+    announcementsSubtitle:"查看学校和老师的通知。",
+    announcementEmpty:"暂时没有通知。",
+    announcementNote:"老师通知功能目前尚未连接。",
+    goalsSubtitle:"每一个小目标都很重要。",
+    myGoal:"我的目标", reflection:"今日回顾", save:"保存",
+    saveReflection:"保存回顾", tasksSubtitle:"整理任务，一件一件完成。",
+    addTask:"添加任务", taskList:"任务列表",
+    settingsSubtitle:"根据自己的需要进行设置。",
+    appearance:"显示与辅助功能", textSize:"字体大小",
+    textSizeDesc:"放大屏幕文字", readAloud:"朗读",
+    readAloudDesc:"朗读选中的文字", readButton:"使用方法",
+    motion:"动画", motionDesc:"减少动态效果",
+    aiSettings:"AI Buddy 设置", explanationLevel:"解释程度",
+    explanationDesc:"AI 解释的详细程度", account:"账户",
+    signedIn:"已登录", logout:"退出登录"
+  },
 
-zh:{
-home:"主页",schedule:"课程表",tasks:"任务",settings:"设置",
-heroTitle:"按照自己的节奏前进。",
-heroText:"查看今天的校园生活。",
-todaySchedule:"今日课程表",todayTasks:"今日任务",
-seeAll:"查看全部 ›",
-aiDescription:"学习或校园生活方面的问题都可以问我。",
-welcome:"你好！我是Buddy ✨",
-askPlaceholder:"向Buddy提问...",
-scheduleDescription:"查看今天的课程。",
-tasksDescription:"一步一步完成任务。",
-language:"语言",motion:"动画",
-motionNote:"跟随设备设置",
-enterTask:"请输入任务名称",
-thinking:"Buddy正在思考...",
-error:"无法连接AI。",
-emptySchedule:"今天暂无课程表。",
-emptyTasks:"暂无任务。",
-connection:"已连接Firebase。",
-noLogin:"请先登录。"
-},
+  fr: {
+    home:"Accueil", notes:"Notes", support:"Aide à l'apprentissage",
+    calendar:"Calendrier", announcements:"Annonces",
+    goals:"Objectifs et bilan", settings:"Paramètres", tasks:"Tâches",
+    welcomeText:"Avance à ton rythme aujourd'hui.",
+    todaySchedule:"Emploi du temps", todayTasks:"Tâches du jour",
+    loading:"Chargement...", viewTasks:"Voir les tâches",
+    taskProgress:"Progression", aiSubtitle:"Pose tes questions à Buddy.",
+    aiGreeting:"Salut ! Je suis Buddy. Tu peux me parler de l'école ou des études ✨",
+    chatPlaceholder:"Écris un message...", send:"Envoyer",
+    aiNotice:"L'IA peut se tromper. Vérifie les informations importantes avec un adulte.",
+    notesSubtitle:"Garde tes notes personnelles.", newNote:"Nouvelle note",
+    noteTitlePlaceholder:"Titre", noteContentPlaceholder:"Écris une note...",
+    saveNote:"Enregistrer", savedNotes:"Notes enregistrées",
+    supportSubtitle:"Trouve une méthode qui te convient.",
+    supportStep:"Expliquer étape par étape", supportStepDesc:"Diviser en petites étapes",
+    supportSimple:"Expliquer simplement", supportSimpleDesc:"Rendre les mots plus faciles",
+    supportMemory:"M'aider à mémoriser", supportMemoryDesc:"Trouver des astuces de mémoire",
+    supportPlan:"Organiser mes tâches", supportPlanDesc:"Planifier ma journée",
+    supportAsk:"De quelle aide as-tu besoin ?",
+    supportPlaceholder:"Écris ce qui te pose problème...", askBuddy:"Demander à Buddy",
+    calendarSubtitle:"Gère ton emploi du temps personnel.",
+    addEvent:"Ajouter un événement", add:"Ajouter", myEvents:"Mes événements",
+    announcementsSubtitle:"Annonces de l'école et des enseignants.",
+    announcementEmpty:"Aucune annonce pour le moment.",
+    announcementNote:"Les annonces des enseignants ne sont pas encore connectées.",
+    goalsSubtitle:"Chaque petit pas compte.", myGoal:"Mon objectif",
+    reflection:"Bilan du jour", save:"Enregistrer", saveReflection:"Enregistrer le bilan",
+    tasksSubtitle:"Organise tes tâches une par une.", addTask:"Ajouter une tâche",
+    taskList:"Liste des tâches", settingsSubtitle:"Personnalise ton expérience.",
+    appearance:"Affichage et accessibilité", textSize:"Taille du texte",
+    textSizeDesc:"Agrandir le texte", readAloud:"Lecture à voix haute",
+    readAloudDesc:"Lire le texte sélectionné", readButton:"Comment utiliser",
+    motion:"Animation", motionDesc:"Réduire les mouvements",
+    aiSettings:"Paramètres AI Buddy", explanationLevel:"Niveau d'explication",
+    explanationDesc:"Détail des explications", account:"Compte",
+    signedIn:"Connecté", logout:"Déconnexion"
+  },
 
-fr:{
-home:"Accueil",schedule:"Emploi du temps",tasks:"Tâches",settings:"Réglages",
-heroTitle:"Avance à ton rythme.",
-heroText:"Découvrons ta journée scolaire.",
-todaySchedule:"Aujourd'hui",todayTasks:"Mes tâches",
-seeAll:"Tout voir ›",
-aiDescription:"Parle-moi des études ou de l'école.",
-welcome:"Salut ! Je suis Buddy ✨",
-askPlaceholder:"Pose une question à Buddy...",
-scheduleDescription:"Consulte tes cours.",
-tasksDescription:"Avance étape par étape.",
-language:"Langue",motion:"Animation",
-motionNote:"Suit les réglages de l'appareil",
-enterTask:"Saisis une tâche",
-thinking:"Buddy réfléchit...",
-error:"Connexion impossible.",
-emptySchedule:"Aucun cours prévu aujourd'hui.",
-emptyTasks:"Aucune tâche.",
-connection:"Connecté à Firebase.",
-noLogin:"Veuillez vous connecter."
-},
+  es: {
+    home:"Inicio", notes:"Notas", support:"Apoyo al aprendizaje",
+    calendar:"Calendario", announcements:"Anuncios",
+    goals:"Metas y reflexión", settings:"Configuración", tasks:"Tareas",
+    welcomeText:"Avanza a tu propio ritmo hoy.",
+    todaySchedule:"Horario de hoy", todayTasks:"Tareas de hoy",
+    loading:"Cargando...", viewTasks:"Ver tareas", taskProgress:"Progreso",
+    aiSubtitle:"Pregúntale a Buddy lo que quieras.",
+    aiGreeting:"¡Hola! Soy Buddy. Puedes hablar conmigo sobre la escuela o los estudios ✨",
+    chatPlaceholder:"Escribe un mensaje...", send:"Enviar",
+    aiNotice:"La IA puede equivocarse. Consulta la información importante con un adulto.",
+    notesSubtitle:"Guarda tus notas personales.", newNote:"Nueva nota",
+    noteTitlePlaceholder:"Título", noteContentPlaceholder:"Escribe una nota...",
+    saveNote:"Guardar", savedNotes:"Notas guardadas",
+    supportSubtitle:"Encuentra una forma de aprender que funcione para ti.",
+    supportStep:"Explicar paso a paso", supportStepDesc:"Dividir en pasos pequeños",
+    supportSimple:"Explicar fácilmente", supportSimpleDesc:"Usar palabras más sencillas",
+    supportMemory:"Ayúdame a recordar", supportMemoryDesc:"Buscar estrategias de memoria",
+    supportPlan:"Organizar mis tareas", supportPlanDesc:"Planificar el día",
+    supportAsk:"¿Qué ayuda necesitas?", supportPlaceholder:"Cuéntame qué te cuesta...",
+    askBuddy:"Preguntar a Buddy", calendarSubtitle:"Organiza tu horario personal.",
+    addEvent:"Añadir evento", add:"Añadir", myEvents:"Mis eventos",
+    announcementsSubtitle:"Anuncios de la escuela y los profesores.",
+    announcementEmpty:"Todavía no hay anuncios.",
+    announcementNote:"Los anuncios de profesores aún no están conectados.",
+    goalsSubtitle:"Cada pequeño paso importa.", myGoal:"Mi objetivo",
+    reflection:"Reflexión de hoy", save:"Guardar", saveReflection:"Guardar reflexión",
+    tasksSubtitle:"Organiza tus tareas una por una.", addTask:"Añadir tarea",
+    taskList:"Lista de tareas", settingsSubtitle:"Personaliza tu experiencia.",
+    appearance:"Pantalla y accesibilidad", textSize:"Tamaño del texto",
+    textSizeDesc:"Aumentar el texto", readAloud:"Leer en voz alta",
+    readAloudDesc:"Leer el texto seleccionado", readButton:"Cómo usar",
+    motion:"Animación", motionDesc:"Reducir movimiento",
+    aiSettings:"Configuración de AI Buddy", explanationLevel:"Nivel de explicación",
+    explanationDesc:"Detalle de las explicaciones", account:"Cuenta",
+    signedIn:"Sesión iniciada", logout:"Cerrar sesión"
+  },
 
-es:{
-home:"Inicio",schedule:"Horario",tasks:"Tareas",settings:"Ajustes",
-heroTitle:"Avanza a tu propio ritmo.",
-heroText:"Revisemos tu día escolar.",
-todaySchedule:"Horario de hoy",todayTasks:"Tareas de hoy",
-seeAll:"Ver todo ›",
-aiDescription:"Pregúntame sobre estudios o la escuela.",
-welcome:"¡Hola! Soy Buddy ✨",
-askPlaceholder:"Pregunta a Buddy...",
-scheduleDescription:"Consulta tus clases.",
-tasksDescription:"Avanza paso a paso.",
-language:"Idioma",motion:"Animación",
-motionNote:"Sigue los ajustes del dispositivo",
-enterTask:"Escribe una tarea",
-thinking:"Buddy está pensando...",
-error:"No se pudo conectar.",
-emptySchedule:"No hay horario para hoy.",
-emptyTasks:"No hay tareas.",
-connection:"Conectado a Firebase.",
-noLogin:"Inicia sesión primero."
-},
+  de: {
+    home:"Start", notes:"Notizen", support:"Lernhilfe",
+    calendar:"Kalender", announcements:"Mitteilungen",
+    goals:"Ziele & Rückblick", settings:"Einstellungen", tasks:"Aufgaben",
+    welcomeText:"Geh heute in deinem eigenen Tempo voran.",
+    todaySchedule:"Heutiger Stundenplan", todayTasks:"Heutige Aufgaben",
+    loading:"Laden...", viewTasks:"Aufgaben ansehen",
+    taskProgress:"Aufgabenfortschritt", aiSubtitle:"Frag Buddy, was dich beschäftigt.",
+    aiGreeting:"Hallo! Ich bin Buddy. Du kannst mit mir über Schule und Lernen sprechen ✨",
+    chatPlaceholder:"Nachricht eingeben...", send:"Senden",
+    aiNotice:"KI kann Fehler machen. Prüfe wichtige Informationen mit einer erwachsenen Person.",
+    notesSubtitle:"Speichere deine privaten Notizen.", newNote:"Neue Notiz",
+    noteTitlePlaceholder:"Titel", noteContentPlaceholder:"Notiz schreiben...",
+    saveNote:"Speichern", savedNotes:"Gespeicherte Notizen",
+    supportSubtitle:"Finde eine Lernmethode, die zu dir passt.",
+    supportStep:"Schritt für Schritt erklären", supportStepDesc:"In kleine Schritte aufteilen",
+    supportSimple:"Einfach erklären", supportSimpleDesc:"Schwierige Wörter vereinfachen",
+    supportMemory:"Beim Merken helfen", supportMemoryDesc:"Gedächtnisstrategien finden",
+    supportPlan:"Aufgaben ordnen", supportPlanDesc:"Den heutigen Tag planen",
+    supportAsk:"Welche Hilfe brauchst du?",
+    supportPlaceholder:"Schreib auf, was schwierig ist...", askBuddy:"Buddy fragen",
+    calendarSubtitle:"Verwalte deinen persönlichen Kalender.",
+    addEvent:"Termin hinzufügen", add:"Hinzufügen", myEvents:"Meine Termine",
+    announcementsSubtitle:"Mitteilungen der Schule und Lehrkräfte.",
+    announcementEmpty:"Noch keine Mitteilungen.",
+    announcementNote:"Mitteilungen der Lehrkräfte sind noch nicht verbunden.",
+    goalsSubtitle:"Jeder kleine Schritt zählt.", myGoal:"Mein Ziel",
+    reflection:"Mein Tagesrückblick", save:"Speichern",
+    saveReflection:"Rückblick speichern", tasksSubtitle:"Ordne deine Aufgaben Schritt für Schritt.",
+    addTask:"Aufgabe hinzufügen", taskList:"Aufgabenliste",
+    settingsSubtitle:"Passe deine Einstellungen an.",
+    appearance:"Anzeige & Barrierefreiheit", textSize:"Textgröße",
+    textSizeDesc:"Text vergrößern", readAloud:"Vorlesen",
+    readAloudDesc:"Ausgewählten Text vorlesen", readButton:"Anleitung",
+    motion:"Animation", motionDesc:"Bewegung reduzieren",
+    aiSettings:"AI Buddy Einstellungen", explanationLevel:"Erklärungsniveau",
+    explanationDesc:"Wie ausführlich die KI erklärt", account:"Konto",
+    signedIn:"Angemeldet", logout:"Abmelden"
+  },
 
-de:{
-home:"Start",schedule:"Stundenplan",tasks:"Aufgaben",settings:"Einstellungen",
-heroTitle:"Lerne in deinem Tempo.",
-heroText:"Schauen wir auf deinen Schultag.",
-todaySchedule:"Heutiger Stundenplan",todayTasks:"Heutige Aufgaben",
-seeAll:"Alle ansehen ›",
-aiDescription:"Frage mich alles über Lernen und Schule.",
-welcome:"Hallo! Ich bin Buddy ✨",
-askPlaceholder:"Stelle Buddy eine Frage...",
-scheduleDescription:"Sieh dir deine Stunden an.",
-tasksDescription:"Schritt für Schritt.",
-language:"Sprache",motion:"Animation",
-motionNote:"Folgt den Geräteeinstellungen",
-enterTask:"Aufgabe eingeben",
-thinking:"Buddy denkt nach...",
-error:"KI-Verbindung fehlgeschlagen.",
-emptySchedule:"Für heute ist kein Stundenplan vorhanden.",
-emptyTasks:"Keine Aufgaben vorhanden.",
-connection:"Mit Firebase verbunden.",
-noLogin:"Bitte zuerst anmelden."
-},
-
-pt:{
-home:"Início",schedule:"Horário",tasks:"Tarefas",settings:"Configurações",
-heroTitle:"No seu próprio ritmo.",
-heroText:"Vamos conferir seu dia na escola.",
-todaySchedule:"Horário de hoje",todayTasks:"Tarefas de hoje",
-seeAll:"Ver tudo ›",
-aiDescription:"Pergunte sobre estudos ou vida escolar.",
-welcome:"Olá! Sou o Buddy ✨",
-askPlaceholder:"Pergunte ao Buddy...",
-scheduleDescription:"Confira suas aulas.",
-tasksDescription:"Um passo de cada vez.",
-language:"Idioma",motion:"Animação",
-motionNote:"Segue as configurações do dispositivo",
-enterTask:"Digite uma tarefa",
-thinking:"Buddy está pensando...",
-error:"Não foi possível conectar.",
-emptySchedule:"Não há horário para hoje.",
-emptyTasks:"Nenhuma tarefa.",
-connection:"Conectado ao Firebase.",
-noLogin:"Faça login primeiro."
-}
-
+  pt: {
+    home:"Início", notes:"Notas", support:"Apoio à aprendizagem",
+    calendar:"Calendário", announcements:"Avisos",
+    goals:"Metas e reflexão", settings:"Configurações", tasks:"Tarefas",
+    welcomeText:"Avance no seu próprio ritmo hoje.",
+    todaySchedule:"Horário de hoje", todayTasks:"Tarefas de hoje",
+    loading:"Carregando...", viewTasks:"Ver tarefas",
+    taskProgress:"Progresso das tarefas", aiSubtitle:"Pergunte ao Buddy o que quiser.",
+    aiGreeting:"Olá! Sou o Buddy. Pode conversar comigo sobre escola e estudos ✨",
+    chatPlaceholder:"Digite uma mensagem...", send:"Enviar",
+    aiNotice:"A IA pode cometer erros. Confirme informações importantes com um adulto.",
+    notesSubtitle:"Guarde suas notas pessoais.", newNote:"Nova nota",
+    noteTitlePlaceholder:"Título", noteContentPlaceholder:"Escreva uma nota...",
+    saveNote:"Salvar", savedNotes:"Notas salvas",
+    supportSubtitle:"Encontre uma forma de aprender que funcione para você.",
+    supportStep:"Explicar passo a passo", supportStepDesc:"Dividir em pequenas etapas",
+    supportSimple:"Explicar de forma simples", supportSimpleDesc:"Facilitar palavras difíceis",
+    supportMemory:"Ajudar a memorizar", supportMemoryDesc:"Encontrar estratégias de memória",
+    supportPlan:"Organizar tarefas", supportPlanDesc:"Planejar o dia",
+    supportAsk:"De que ajuda você precisa?",
+    supportPlaceholder:"Conte o que está difícil...", askBuddy:"Perguntar ao Buddy",
+    calendarSubtitle:"Organize sua agenda pessoal.",
+    addEvent:"Adicionar evento", add:"Adicionar", myEvents:"Meus eventos",
+    announcementsSubtitle:"Avisos da escola e dos professores.",
+    announcementEmpty:"Ainda não há avisos.",
+    announcementNote:"Os avisos dos professores ainda não estão conectados.",
+    goalsSubtitle:"Cada pequeno passo importa.", myGoal:"Minha meta",
+    reflection:"Reflexão de hoje", save:"Salvar",
+    saveReflection:"Salvar reflexão", tasksSubtitle:"Organize suas tarefas uma de cada vez.",
+    addTask:"Adicionar tarefa", taskList:"Lista de tarefas",
+    settingsSubtitle:"Personalize sua experiência.",
+    appearance:"Tela e acessibilidade", textSize:"Tamanho do texto",
+    textSizeDesc:"Aumentar o texto", readAloud:"Leitura em voz alta",
+    readAloudDesc:"Ler o texto selecionado", readButton:"Como usar",
+    motion:"Animação", motionDesc:"Reduzir movimento",
+    aiSettings:"Configurações do AI Buddy", explanationLevel:"Nível de explicação",
+    explanationDesc:"Detalhe das explicações", account:"Conta",
+    signedIn:"Conectado", logout:"Sair"
+  }
 };
 
+let currentLanguage = localStorage.getItem("sb_language") || "ja";
+let currentUser = null;
+let userProfile = {};
+let tasks = [];
+let schedule = [];
+let notes = [];
+let events = [];
+let reflections = [];
+let currentPage = "home";
 
-/* BASIC FUNCTIONS */
+const $ = id => document.getElementById(id);
 
-let currentLanguage =
-  localStorage.getItem("schoolBuddyLanguage") || "ja";
-
-if(!translations[currentLanguage]){
-  currentLanguage = "ja";
+function t(key) {
+  return translations[currentLanguage]?.[key] ||
+    translations.ja[key] || key;
 }
 
-const t = key =>
-  translations[currentLanguage][key] ??
-  translations.ja[key] ??
-  key;
-
-function setStatus(message){
-  document.getElementById("connectionStatus").textContent = message;
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  })[char]);
 }
 
-function userCollection(name){
-  return collection(db,"users",currentUser.uid,name);
+function localKey(name) {
+  return `schoolBuddy_${name}_${currentUser?.uid || "guest"}`;
 }
 
-function classScheduleCollection(){
-  return collection(db,"classes",classId,"schedule");
-}
-
-
-/* NAVIGATION */
-
-function showPage(name){
-
-  document.querySelectorAll(".page").forEach(page=>{
-    page.classList.remove("active");
-  });
-
-  document.getElementById("page-"+name)?.classList.add("active");
-
-  document.querySelectorAll(".nav button").forEach(button=>{
-    button.classList.toggle(
-      "active",
-      button.dataset.page===name
-    );
-  });
-
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-document.querySelectorAll(".nav button").forEach(button=>{
-  button.addEventListener("click",()=>{
-    showPage(button.dataset.page);
-  });
-});
-
-document.querySelectorAll("[data-go]").forEach(button=>{
-  button.addEventListener("click",()=>{
-    showPage(button.dataset.go);
-  });
-});
-
-
-/* SCHEDULE */
-
-function renderSchedule(targetId){
-
-  const target = document.getElementById(targetId);
-  target.replaceChildren();
-
-  if(!periods.length){
-
-    const empty = document.createElement("div");
-    empty.className = "empty";
-    empty.textContent = t("emptySchedule");
-
-    target.append(empty);
-    return;
+function loadLocal(name, fallback = []) {
+  try {
+    return JSON.parse(localStorage.getItem(localKey(name))) ?? fallback;
+  } catch {
+    return fallback;
   }
-
-  periods.forEach(period=>{
-
-    const row = document.createElement("div");
-    row.className = "period";
-
-    const number = document.createElement("div");
-    number.className = "period-number";
-    number.textContent = period.period + "";
-
-    const subject = document.createElement("div");
-    subject.className = "subject";
-    subject.textContent = period.subject || "";
-
-    const time = document.createElement("div");
-    time.className = "period-time";
-
-    time.textContent =
-      (period.startTime || "") +
-      (period.endTime ? " – " + period.endTime : "") +
-      (period.room ? " ／ " + period.room : "");
-
-    row.append(number,subject,time);
-    target.append(row);
-
-  });
-
 }
 
-
-/* TASKS */
-
-function renderTasks(targetId){
-
-  const target = document.getElementById(targetId);
-  target.replaceChildren();
-
-  if(!tasks.length){
-
-    const empty = document.createElement("div");
-    empty.className = "empty";
-    empty.textContent = t("emptyTasks");
-
-    target.append(empty);
-    return;
-  }
-
-  tasks.forEach(task=>{
-
-    const row = document.createElement("label");
-    row.className = "task" + (task.done ? " done" : "");
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = !!task.done;
-
-    checkbox.addEventListener("change",async()=>{
-
-      const previous = task.done;
-      task.done = checkbox.checked;
-
-      renderAll();
-
-      try{
-
-        await setDoc(
-          doc(userCollection("tasks"),task.id),
-          task
-        );
-
-      }catch(error){
-
-        task.done = previous;
-        renderAll();
-
-        console.error(error);
-        setStatus("保存できませんでした。Firestoreルールを確認してください。");
-
-      }
-
-    });
-
-    const name = document.createElement("span");
-    name.textContent = task.title || "";
-
-    const del = document.createElement("button");
-    del.type = "button";
-    del.className = "delete-task";
-    del.textContent = "×";
-    del.setAttribute("aria-label","Delete task");
-
-    del.addEventListener("click",async()=>{
-
-      if(!confirm("この課題を削除しますか？")) return;
-
-      try{
-
-        await deleteDoc(
-          doc(userCollection("tasks"),task.id)
-        );
-
-        tasks = tasks.filter(item=>item.id!==task.id);
-        renderAll();
-
-      }catch(error){
-
-        console.error(error);
-        setStatus("削除できませんでした。");
-
-      }
-
-    });
-
-    row.append(checkbox,name,del);
-    target.append(row);
-
-  });
-
+function saveLocal(name, value) {
+  localStorage.setItem(localKey(name), JSON.stringify(value));
 }
 
+/* LANGUAGE SWITCH */
 
-function renderAll(){
-
-  renderSchedule("homeSchedule");
-  renderSchedule("fullSchedule");
-
-  renderTasks("homeTasks");
-  renderTasks("fullTasks");
-
-}
-
-
-/* LOAD FIREBASE DATA */
-
-async function loadUserData(){
-
-  const profileRef = doc(db,"users",currentUser.uid);
-  const profileSnap = await getDoc(profileRef);
-
-  if(!profileSnap.exists()){
-    throw new Error("Student profile not found.");
-  }
-
-  const profile = profileSnap.data();
-
-  if(profile.role !== "student"){
-    throw new Error("This account is not a student account.");
-  }
-
-  if(!profile.classId){
-    throw new Error("Class ID is not set.");
-  }
-
-  classId = profile.classId;
-
-  const today = new Date().getDay();
-
-  const [scheduleSnap,tasksSnap] = await Promise.all([
-
-    getDocs(classScheduleCollection()),
-
-    getDocs(userCollection("tasks"))
-
-  ]);
-
-  periods = scheduleSnap.docs
-
-    .map(document=>({
-      id:document.id,
-      ...document.data()
-    }))
-
-    .filter(item=>Number(item.weekday)===today)
-
-    .sort((a,b)=>Number(a.period)-Number(b.period));
-
-  tasks = tasksSnap.docs.map(document=>({
-    id:document.id,
-    ...document.data()
-  }));
-
-  renderAll();
-
-}
-
-
-/* ADD TASK */
-
-async function addTask(){
-
-  const title = prompt(t("enterTask"));
-
-  if(!title?.trim()) return;
-
-  const id = crypto.randomUUID();
-
-  const task = {
-    id,
-    title:title.trim(),
-    done:false,
-    createdAt:Date.now()
-  };
-
-  try{
-
-    await setDoc(
-      doc(userCollection("tasks"),id),
-      task
-    );
-
-    tasks.push(task);
-    renderAll();
-
-  }catch(error){
-
-    console.error(error);
-    alert("課題を保存できませんでした。Firestoreのルールを確認してね。");
-
-  }
-
-}
-
-document.getElementById("addTask")
-.addEventListener("click",addTask);
-
-
-/* LANGUAGE CHANGE */
-
-function changeLanguage(language){
-
-  currentLanguage = translations[language] ? language : "ja";
-
-  localStorage.setItem(
-    "schoolBuddyLanguage",
-    currentLanguage
-  );
-
+function applyLanguage() {
   document.documentElement.lang = currentLanguage;
 
-  document.getElementById("languageSelect").value = currentLanguage;
-  document.getElementById("languageSelect2").value = currentLanguage;
-
-  document.querySelectorAll("[data-i18n]").forEach(element=>{
-    element.textContent = t(element.dataset.i18n);
+  document.querySelectorAll("[data-i18n]").forEach(element => {
+    const key = element.dataset.i18n;
+    element.textContent = t(key);
   });
 
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(element=>{
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
     element.placeholder = t(element.dataset.i18nPlaceholder);
   });
 
+  $("languageSelect").value = currentLanguage;
   renderAll();
-
 }
 
-document.getElementById("languageSelect")
-.addEventListener("change",event=>{
-  changeLanguage(event.target.value);
+$("languageSelect").addEventListener("change", event => {
+  currentLanguage = event.target.value;
+  localStorage.setItem("sb_language", currentLanguage);
+  applyLanguage();
 });
 
-document.getElementById("languageSelect2")
-.addEventListener("change",event=>{
-  changeLanguage(event.target.value);
+/* NAVIGATION */
+
+window.showPage = function(page) {
+  currentPage = page;
+
+  document.querySelectorAll(".page").forEach(element => {
+    element.classList.remove("active");
+  });
+
+  document.querySelectorAll(".nav-button").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === page);
+  });
+
+  const target = $("page-" + page);
+  if (target) target.classList.add("active");
+
+  if (page === "notes") renderNotes();
+  if (page === "calendar") renderEvents();
+  if (page === "goals") renderReflections();
+  if (page === "tasks") renderTasks();
+};
+
+document.querySelectorAll(".nav-button").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
 });
 
+/* LOCAL DATA */
 
-/* AI BUDDY */
+function loadPrivateData() {
+  notes = loadLocal("notes");
+  events = loadLocal("events");
+  reflections = loadLocal("reflections");
+  $("goalInput").value = localStorage.getItem(localKey("goal")) || "";
+}
 
-const WORKER_URL =
-  "https://proud-term-3a4f.sophiaminion205.workers.dev/";
+function renderAll() {
+  renderSchedule();
+  renderTasks();
+  renderNotes();
+  renderEvents();
+  renderReflections();
+}
 
-document.getElementById("chatForm")
-.addEventListener("submit",async event=>{
+/* SCHEDULE */
 
-  event.preventDefault();
-
-  const input = document.getElementById("question");
-  const button = document.getElementById("sendButton");
-  const messages = document.getElementById("chatMessages");
-
-  const question = input.value.trim();
-
-  if(!question) return;
-
-  const userMessage = document.createElement("div");
-  userMessage.className = "message user";
-  userMessage.textContent = question;
-
-  messages.append(userMessage);
-
-  input.value = "";
-  button.disabled = true;
-
-  const loading = document.createElement("div");
-  loading.className = "message buddy";
-  loading.textContent = t("thinking");
-
-  messages.append(loading);
-  messages.scrollTop = messages.scrollHeight;
-
-  try{
-
-    const response = await fetch(WORKER_URL,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        message:question
-      })
-    });
-
-    const data = await response.json();
-
-    if(!response.ok){
-      throw new Error(data.error || "Connection failed");
+function renderSchedule() {
+  const targets = [$("homeSchedule")];
+  targets.forEach(target => {
+    if (!schedule.length) {
+      target.innerHTML = `<div class="empty">${escapeHTML(t("noSchedule") === "noSchedule" ? "時間割はまだ登録されていません。" : t("noSchedule"))}</div>`;
+      return;
     }
 
-    loading.textContent = data.reply || t("error");
+    target.innerHTML = schedule.map(item => `
+      <div class="schedule-row">
+        <div class="time-box">${escapeHTML(item.period ?? "-")}</div>
+        <div class="row-main">
+          <strong>${escapeHTML(item.subject || "授業")}</strong>
+          <span>${escapeHTML(item.startTime || "")}
+          ${item.endTime ? " - " + escapeHTML(item.endTime) : ""}
+          ${item.room ? " · " + escapeHTML(item.room) : ""}</span>
+        </div>
+      </div>
+    `).join("");
+  });
+}
 
-  }catch(error){
+/* TASKS */
 
-    loading.textContent = t("error");
+function renderTasks() {
+  const pending = tasks.filter(task => !task.done);
+  const done = tasks.filter(task => task.done);
+  const sorted = [...pending, ...done];
+
+  const html = sorted.length ? sorted.map(task => `
+    <div class="task-row">
+      <input class="task-check" type="checkbox"
+        ${task.done ? "checked" : ""}
+        data-task-id="${escapeHTML(task.id)}">
+      <div class="row-main">
+        <strong class="${task.done ? "done-text" : ""}">
+          ${escapeHTML(task.title)}
+        </strong>
+      </div>
+      <button class="delete-button" data-delete-task="${escapeHTML(task.id)}"
+        aria-label="Delete">×</button>
+    </div>
+  `).join("") : `<div class="empty">課題はまだありません。</div>`;
+
+  $("tasksList").innerHTML = html;
+  $("homeTasks").innerHTML = sorted.length
+    ? sorted.slice(0, 4).map(task => `
+      <div class="task-row">
+        <span>${task.done ? "✓" : "○"}</span>
+        <div class="row-main">
+          <strong class="${task.done ? "done-text" : ""}">
+            ${escapeHTML(task.title)}
+          </strong>
+        </div>
+      </div>
+    `).join("")
+    : `<div class="empty">課題はまだありません。</div>`;
+
+  const completed = tasks.filter(task => task.done).length;
+  const total = tasks.length;
+  const percentage = total ? completed / total * 100 : 0;
+
+  $("progressText").textContent = `${completed} / ${total}`;
+  $("progressFill").style.width = percentage + "%";
+}
+
+async function addTask() {
+  const input = $("newTaskInput");
+  const title = input.value.trim();
+  if (!title || !currentUser) return;
+
+  const task = {
+    id: crypto.randomUUID(),
+    title,
+    done: false,
+    createdAt: Date.now()
+  };
+
+  try {
+    await setDoc(doc(db, "users", currentUser.uid, "tasks", task.id), task);
+    tasks.push(task);
+    input.value = "";
+    renderTasks();
+  } catch (error) {
     console.error(error);
-
-  }finally{
-
-    button.disabled = false;
-    messages.scrollTop = messages.scrollHeight;
-
+    alert("課題を保存できませんでした。通信やアクセス権限を確認してね。");
   }
+}
 
+async function updateTask(id, done) {
+  const task = tasks.find(item => item.id === id);
+  if (!task) return;
+
+  const updated = { ...task, done };
+
+  try {
+    await setDoc(doc(db, "users", currentUser.uid, "tasks", id), updated);
+    tasks = tasks.map(item => item.id === id ? updated : item);
+    renderTasks();
+  } catch (error) {
+    console.error(error);
+    alert("課題を更新できませんでした。");
+  }
+}
+
+async function removeTask(id) {
+  if (!confirm("この課題を削除する？")) return;
+
+  try {
+    await deleteDoc(doc(db, "users", currentUser.uid, "tasks", id));
+    tasks = tasks.filter(item => item.id !== id);
+    renderTasks();
+  } catch (error) {
+    console.error(error);
+    alert("課題を削除できませんでした。");
+  }
+}
+
+$("addTaskButton").addEventListener("click", addTask);
+$("newTaskInput").addEventListener("keydown", event => {
+  if (event.key === "Enter") addTask();
 });
 
-
-/* LOGOUT */
-
-document.getElementById("logoutButton")
-.addEventListener("click",async()=>{
-
-  try{
-
-    await signOut(auth);
-    location.href = "login.html?role=student";
-
-  }catch(error){
-
-    alert("ログアウトできませんでした。");
-    console.error(error);
-
+$("tasksList").addEventListener("change", event => {
+  if (event.target.matches("[data-task-id]")) {
+    updateTask(event.target.dataset.taskId, event.target.checked);
   }
-
 });
 
+$("tasksList").addEventListener("click", event => {
+  const button = event.target.closest("[data-delete-task]");
+  if (button) removeTask(button.dataset.deleteTask);
+});
 
-/* START LANGUAGE */
+/* NOTES */
 
-changeLanguage(currentLanguage);
+function renderNotes() {
+  $("notesList").innerHTML = notes.length
+    ? [...notes].reverse().map(note => `
+      <div class="note-item">
+        <div class="date-label">${new Date(note.createdAt).toLocaleString()}</div>
+        <h3>${escapeHTML(note.title)}</h3>
+        <p>${escapeHTML(note.content)}</p>
+        <button class="delete-button" data-delete-note="${escapeHTML(note.id)}">削除</button>
+      </div>
+    `).join("")
+    : `<div class="empty">ノートはまだありません。</div>`;
+}
 
+$("saveNoteButton").addEventListener("click", () => {
+  const title = $("noteTitle").value.trim();
+  const content = $("noteContent").value.trim();
 
-/* LOGIN CHECK */
+  if (!title && !content) return;
 
-onAuthStateChanged(auth,async user=>{
+  notes.push({
+    id: crypto.randomUUID(),
+    title: title || "Untitled",
+    content,
+    createdAt: Date.now()
+  });
 
-  if(!user){
+  saveLocal("notes", notes);
+  $("noteTitle").value = "";
+  $("noteContent").value = "";
+  renderNotes();
+});
 
-    setStatus(t("noLogin"));
+$("notesList").addEventListener("click", event => {
+  const button = event.target.closest("[data-delete-note]");
+  if (!button) return;
 
-    setTimeout(()=>{
-      location.href = "login.html?role=student";
-    },1200);
+  notes = notes.filter(note => note.id !== button.dataset.deleteNote);
+  saveLocal("notes", notes);
+  renderNotes();
+});
 
+/* PERSONAL CALENDAR */
+
+function renderEvents() {
+  const sorted = [...events].sort((a,b) => a.date.localeCompare(b.date));
+
+  $("eventsList").innerHTML = sorted.length
+    ? sorted.map(event => `
+      <div class="list-row">
+        <div class="time-box">▦</div>
+        <div class="row-main">
+          <strong>${escapeHTML(event.title)}</strong>
+          <span>${escapeHTML(event.date)}</span>
+        </div>
+        <button class="delete-button" data-delete-event="${escapeHTML(event.id)}">×</button>
+      </div>
+    `).join("")
+    : `<div class="empty">予定はまだありません。</div>`;
+}
+
+$("saveEventButton").addEventListener("click", () => {
+  const title = $("eventTitle").value.trim();
+  const date = $("eventDate").value;
+
+  if (!title || !date) {
+    alert("予定の名前と日付を入力してね。");
     return;
   }
 
-  currentUser = user;
-
-  try{
-
-    await loadUserData();
-
-    setStatus(t("connection"));
-
-  }catch(error){
-
-    console.error(error);
-
-    if(error.message === "Class ID is not set."){
-
-      setStatus(
-        "生徒プロフィールにクラス情報がありません。先生または管理者に確認してください。"
-      );
-
-    }else if(error.message === "This account is not a student account."){
-
-      setStatus(
-        "生徒用アカウントでログインしてください。"
-      );
-
-    }else{
-
-      setStatus(
-        "Firebaseのデータを読み込めませんでした。Firestoreルールとクラス設定を確認してください。"
-      );
-
-    }
-
-  }
-
+  events.push({ id: crypto.randomUUID(), title, date });
+  saveLocal("events", events);
+  $("eventTitle").value = "";
+  $("eventDate").value = "";
+  renderEvents();
 });
 
+$("eventsList").addEventListener("click", event => {
+  const button = event.target.closest("[data-delete-event]");
+  if (!button) return;
 
-/* INTRO ANIMATION */
+  events = events.filter(item => item.id !== button.dataset.deleteEvent);
+  saveLocal("events", events);
+  renderEvents();
+});
 
-const splash = document.getElementById("splash");
-const appElement = document.getElementById("app");
+/* GOALS & REFLECTION */
 
-if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+$("saveGoalButton").addEventListener("click", () => {
+  localStorage.setItem(localKey("goal"), $("goalInput").value);
+  alert("目標を保存したよ！");
+});
 
-  splash.remove();
-  appElement.classList.add("ready");
-
-}else{
-
-  setTimeout(()=>{
-    splash.classList.add("leaving");
-    appElement.classList.add("ready");
-  },1200);
-
-  setTimeout(()=>{
-    splash.remove();
-  },2400);
-
+function renderReflections() {
+  $("reflectionList").innerHTML = reflections.length
+    ? [...reflections].reverse().map(item => `
+      <div class="note-item">
+        <div class="date-label">${escapeHTML(item.date)}</div>
+        <p>${escapeHTML(item.content)}</p>
+        <button class="delete-button" data-delete-reflection="${escapeHTML(item.id)}">削除</button>
+      </div>
+    `).join("")
+    : `<div class="empty">振り返りはまだありません。</div>`;
 }
 
+$("saveReflectionButton").addEventListener("click", () => {
+  const content = $("reflectionInput").value.trim();
+  if (!content) return;
+
+  reflections.push({
+    id: crypto.randomUUID(),
+    content,
+    date: new Date().toLocaleDateString()
+  });
+
+  saveLocal("reflections", reflections);
+  $("reflectionInput").value = "";
+  renderReflections();
+});
+
+$("reflectionList").addEventListener("click", event => {
+  const button = event.target.closest("[data-delete-reflection]");
+  if (!button) return;
+
+  reflections = reflections.filter(item => item.id !== button.dataset.deleteReflection);
+  saveLocal("reflections", reflections);
+  renderReflections();
+});
+
+/* AI BUDDY */
+
+function addChatMessage(message, type) {
+  const element = document.createElement("div");
+  element.className = `chat-message ${type}`;
+  element.textContent = message;
+  $("chatBox").appendChild(element);
+  $("chatBox").scrollTop = $("chatBox").scrollHeight;
+  return element;
+}
+
+async function askBuddy(message) {
+  const question = message.trim();
+  if (!question) return;
+
+  addChatMessage(question, "user");
+
+  const loading = addChatMessage("Buddyが考えているよ... ✨", "buddy");
+
+  $("sendButton").disabled = true;
+
+  const level = $("explanationSelect").value;
+
+  const levelInstructions = {
+    simple: "Use simple words and short sentences. Explain one step at a time.",
+    normal: "Give a clear and friendly explanation.",
+    detailed: "Give a detailed explanation with examples and steps."
+  };
+
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message:
+          "You are Buddy, a friendly and supportive school assistant for students. " +
+          "Be kind, clear, age-appropriate, and never judgmental. " +
+          "Do not ask for private personal information. " +
+          levelInstructions[level] + "\n\n" + question
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("AI request failed: " + response.status);
+    }
+
+    const data = await response.json();
+    loading.textContent = data.reply || "回答を取得できなかったよ。もう一度試してね。";
+
+  } catch (error) {
+    console.error(error);
+    loading.textContent =
+      "AIに接続できなかったよ。少し時間をおいて、もう一度試してね。";
+  } finally {
+    $("sendButton").disabled = false;
+  }
+}
+
+$("sendButton").addEventListener("click", () => {
+  const input = $("chatInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  input.value = "";
+  askBuddy(message);
+});
+
+$("chatInput").addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    $("sendButton").click();
+  }
+});
+
+window.supportPrompt = function(type) {
+  const prompts = {
+    step: "次の内容を小さなステップに分けて、順番に説明してください。",
+    simple: "次の内容を、難しい言葉を避けてやさしく説明してください。",
+    memory: "次の内容を覚えやすくする方法をいくつか考えてください。",
+    plan: "今日やることを整理して、無理のない順番を考えてください。"
+  };
+
+  $("supportInput").value = prompts[type] + "\n\n";
+  $("supportInput").focus();
+};
+
+$("supportSend").addEventListener("click", () => {
+  const message = $("supportInput").value.trim();
+  if (!message) return;
+
+  $("supportInput").value = "";
+  showPage("ai");
+  askBuddy(message);
+});
+
+/* NOTIFICATIONS */
+
+$("notificationButton").addEventListener("click", () => {
+  const unfinished = tasks.filter(task => !task.done).length;
+  alert(`未完了の課題は ${unfinished} 件だよ。`);
+});
+
+/* ACCESSIBILITY SETTINGS */
+
+$("textSizeSelect").addEventListener("change", event => {
+  document.body.classList.toggle("large-text", event.target.value === "large");
+  localStorage.setItem("sb_textSize", event.target.value);
+});
+
+$("motionSelect").addEventListener("change", event => {
+  document.body.classList.toggle("reduce-motion", event.target.value === "reduced");
+  localStorage.setItem("sb_motion", event.target.value);
+});
+
+$("explanationSelect").addEventListener("change", event => {
+  localStorage.setItem("sb_explanation", event.target.value);
+});
+
+$("readAloudButton").addEventListener("click", () => {
+  const selected = window.getSelection()?.toString().trim();
+
+  if (!selected) {
+    alert("読み上げたい文章を選択してから押してね。");
+    return;
+  }
+
+  if (!("speechSynthesis" in window)) {
+    alert("このブラウザでは読み上げ機能を利用できません。");
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(selected);
+  utterance.lang = currentLanguage === "ja" ? "ja-JP" : currentLanguage;
+  speechSynthesis.speak(utterance);
+});
+
+/* ACCOUNT */
+
+$("logoutButton").addEventListener("click", async () => {
+  if (!confirm("ログアウトする？")) return;
+
+  try {
+    await signOut(auth);
+    location.href = "login.html?role=student";
+  } catch (error) {
+    console.error(error);
+    alert("ログアウトできませんでした。");
+  }
+});
+
+$("profileButton").addEventListener("click", () => showPage("settings"));
+
+/* FIREBASE DATA */
+
+async function loadUserData(user) {
+  currentUser = user;
+
+  const profileRef = doc(db, "users", user.uid);
+  const profileSnapshot = await getDoc(profileRef);
+
+  if (!profileSnapshot.exists()) {
+    alert("ユーザー情報が見つかりません。先生に確認してください。");
+    await signOut(auth);
+    location.href = "login.html?role=student";
+    return;
+  }
+
+  userProfile = profileSnapshot.data();
+
+  if (userProfile.role !== "student") {
+    alert("生徒用アカウントでログインしてください。");
+    await signOut(auth);
+    location.href = "login.html?role=student";
+    return;
+  }
+
+  const nickname = userProfile.nickname || "Student";
+
+  $("welcomeName").textContent = `Hello, ${nickname}.`;
+  $("accountName").textContent = nickname;
+  $("profileButton").textContent = nickname.slice(0, 1).toUpperCase();
+
+  loadPrivateData();
+
+  const savedLanguage = localStorage.getItem("sb_language");
+  if (savedLanguage && translations[savedLanguage]) {
+    currentLanguage = savedLanguage;
+  }
+
+  const savedTextSize = localStorage.getItem("sb_textSize") || "normal";
+  $("textSizeSelect").value = savedTextSize;
+  document.body.classList.toggle("large-text", savedTextSize === "large");
+
+  const savedMotion = localStorage.getItem("sb_motion") || "normal";
+  $("motionSelect").value = savedMotion;
+  document.body.classList.toggle("reduce-motion", savedMotion === "reduced");
+
+  $("explanationSelect").value =
+    localStorage.getItem("sb_explanation") || "simple";
+
+  applyLanguage();
+
+  /* TEACHER SCHEDULE */
+
+  if (userProfile.classId) {
+    try {
+      const scheduleSnapshot = await getDocs(
+        collection(db, "classes", userProfile.classId, "schedule")
+      );
+
+      const today = new Date().getDay();
+
+      schedule = scheduleSnapshot.docs
+        .map(item => ({ id: item.id, ...item.data() }))
+        .filter(item => Number(item.weekday) === today)
+        .sort((a,b) => Number(a.period) - Number(b.period));
+
+    } catch (error) {
+      console.error("Schedule error:", error);
+      schedule = [];
+    }
+  } else {
+    schedule = [];
+  }
+
+  /* STUDENT TASKS */
+
+  try {
+    const taskSnapshot = await getDocs(
+      collection(db, "users", user.uid, "tasks")
+    );
+
+    tasks = taskSnapshot.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
+
+  } catch (error) {
+    console.error("Task error:", error);
+    tasks = [];
+  }
+
+  renderAll();
+}
+
+/* AUTH */
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    location.href = "login.html?role=student";
+    return;
+  }
+
+  try {
+    await loadUserData(user);
+  } catch (error) {
+    console.error("User loading error:", error);
+    alert("データを読み込めませんでした。ページを再読み込みしてね。");
+  }
+});
+
+/* OPENING ANIMATION */
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    $("splash").classList.add("hide");
+    $("app").classList.add("ready");
+  }, 1700);
+});
 </script>
 
 </body>
